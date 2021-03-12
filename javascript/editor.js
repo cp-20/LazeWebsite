@@ -19,3 +19,12 @@ document.getElementById('editor-editbox').addEventListener('DOMSubtreeModified',
 		lineNumber.innerText = `${i}`;
 	})
 });
+
+$("#editor-line-numbers").scroll(function () { 
+  $("#editor-editbox").scrollTop($("#editor-line-numbers").scrollTop());
+  $("#editor-editbox").scrollLeft($("#editor-line-numbers").scrollLeft());
+});
+$("#editor-editbox").scroll(function () { 
+  $("#editor-line-numbers").scrollTop($("#editor-editbox").scrollTop());
+  $("#editor-line-numbers").scrollLeft($("#editor-editbox").scrollLeft());
+});
