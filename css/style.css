@@ -5,7 +5,7 @@ html {
 html body {
   margin: 0;
   height: 100%;
-  background-color: lightgray;
+  background-color: #ebebeb;
   color: #1f1f1f;
 }
 
@@ -32,11 +32,35 @@ html body main div.tab div.tab-content {
 }
 
 html body main div.explorer {
+  display: none;
   width: 150px;
 }
 
 html body main div.editor {
   margin-top: 20px;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+html body main div.editor div#editor-line-numbers {
+  height: 100%;
+  width: 30px;
+  margin-top: 30px;
+}
+
+html body main div.editor div#editor-line-numbers div.editor-line-number {
+  height: 20px;
+}
+
+html body main div.editor div.editor-main {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -44,12 +68,10 @@ html body main div.editor {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  -webkit-box-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
+  width: 100%;
 }
 
-html body main div.editor div.editor-tabs {
+html body main div.editor div.editor-main div.editor-tabs {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -60,7 +82,7 @@ html body main div.editor div.editor-tabs {
   height: 30px;
 }
 
-html body main div.editor div.editor-tabs div.editor-tab {
+html body main div.editor div.editor-main div.editor-tabs div.editor-tab {
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
@@ -70,19 +92,22 @@ html body main div.editor div.editor-tabs div.editor-tab {
   border-radius: 5px 5px 0 0;
 }
 
-html body main div.editor div.editor-tabs div.editor-tab span {
+html body main div.editor div.editor-main div.editor-tabs div.editor-tab span {
   position: relative;
   top: 4px;
 }
 
-html body main div.editor div.editor-tabs div.editor-tab.selected {
+html body main div.editor div.editor-main div.editor-tabs div.editor-tab.selected {
   background-color: white;
 }
 
-html body main div.editor div.editor-main {
+html body main div.editor div.editor-main div#editor-editbox {
   width: 100%;
   height: 100%;
   margin-bottom: 10px;
+  padding: 5px;
   outline: 0;
+  line-height: 20px;
+  font-family: "consolas";
   background-color: white;
 }

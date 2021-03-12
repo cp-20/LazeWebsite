@@ -36,20 +36,32 @@
 
 		<!-- エディター -->
 		<div class="editor">
-			<!-- タブ -->
-			<div class="editor-tabs">
-				<div class="editor-tab selected">
-					<span>File1</span>
+			<!-- 行番号 -->
+			<div id="editor-line-numbers">
+				
+			</div>
+
+			<!-- メイン -->
+			<div class="editor-main">
+				<!-- タブ -->
+				<div class="editor-tabs">
+					<div class="editor-tab selected">
+						<span>File1</span>
+					</div>
+					<div class="editor-tab">
+						<span>File2</span>
+					</div>
 				</div>
-				<div class="editor-tab">
-					<span>File2</span>
+
+				<!-- エディタ本体 -->
+				<div id="editor-editbox" contenteditable="true">
+					<div class="editbox-line">
+						<span>print</span>
+					</div>
 				</div>
 			</div>
 
-			<!-- エディタ本体 -->
-			<div class="editor-main" contenteditable="true">
-				mes "Hello World"
-			</div>
+			<script src="./javascript/editor.js"></script>
 		</div>
 	</main>
 </body>

@@ -1,6 +1,6 @@
 $color: (
 	// background
-	main-background: lightgray,
+	main-background: rgb(235, 235, 235),
 	editor-background: white,
 	// text color
 	main-text: rgb(31, 31, 31),
@@ -37,6 +37,7 @@ html {
 
 			// エクスプローラー
 			div.explorer {
+				display: none;
 				width: 150px;
 
 				// ボタン類
@@ -58,44 +59,66 @@ html {
 			// エディタ
 			div.editor {
 				margin-top: 20px;
-				display: flex;
-				flex-direction: column;
 				flex: 1;
+				display: flex;
+				flex-direction: row;
 
-				// タブ
-				div.editor-tabs {
-					display: flex;
-					flex-direction: row;
-					height: 30px;
+				// 行番号
+				div#editor-line-numbers {
+					height: 100%;
+					width: 30px;
 
-					div.editor-tab {
-						flex: 1;
-						max-width: 100px;
-						padding: 0 0 0 10px;
-
-						background-color: rgb(196, 196, 196);
-						border-radius: 5px 5px 0 0;
-
-						span {
-							position: relative;
-							top: 4px;
-						}
-
-						&.selected {
-							background-color: white;
-						}
+					margin-top: 30px;
+					
+					div.editor-line-number {
+						height: 20px;
 					}
 				}
 
 				// エディタ本体
 				div.editor-main {
+					display: flex;
+					flex-direction: column;
 					width: 100%;
-					height: 100%;
-					margin-bottom: 10px;
 
-					outline: 0;
+					// タブ
+					div.editor-tabs {
+						display: flex;
+						flex-direction: row;
+						height: 30px;
+						
+						div.editor-tab {
+							flex: 1;
+							max-width: 100px;
+							padding: 0 0 0 10px;
+							
+							background-color: rgb(196, 196, 196);
+							border-radius: 5px 5px 0 0;
+							
+							span {
+								position: relative;
+								top: 4px;
+							}
+							
+							&.selected {
+								background-color: white;
+							}
+						}
+					}
 					
-					background-color: white;
+					// エディタ本体
+					div#editor-editbox {
+						width: 100%;
+						height: 100%;
+						margin-bottom: 10px;
+						padding: 5px;
+						
+						outline: 0;
+						line-height: 20px;
+						
+						font-family: "consolas";
+						background-color: white;
+					}
 				}
 			}
 		}
