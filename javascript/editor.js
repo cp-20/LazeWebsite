@@ -1,8 +1,16 @@
 const editorLineNumbers = document.getElementById('editor-line-numbers');
 
 document.getElementById('editor-editbox').addEventListener('DOMSubtreeModified', function() {
-	const lineCount = document.getElementsByClassName('editbox-line').length + 1;
-	
+	let lineCount = document.getElementsByClassName('editbox-line').length + 1;
+
+	if (lineCount == 1) {
+		const line = document.createElement('div');
+		line.classList.add('editbox-line');
+		line.innerHTML = '<span></span>'
+		document.getElementById('editor-editbox').appendChild(line);
+		lineCount++;
+	}
+
 	while(true) {
 		if (lineCount > editorLineNumbers.childNodes.length) {
 			const lineNumber = document.createElement('div');
