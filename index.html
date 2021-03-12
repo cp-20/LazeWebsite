@@ -1,12 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compiler</title>
-    
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Compiler</title>
+	
+	<link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-    <h1>Hello World!</h1>
+	<main>
+		<!-- タブ -->
+		<div class="tab">
+			<div class="tab-content">
+				<span>Sample</span>
+			</div>
+		</div>
+
+		<!-- エクスプローラー -->
+		<div class="explorer">
+			<!-- ボタン類 -->
+			<div class="explorer-buttons">
+				<div class="explorer-button-newfile">
+					
+				</div>
+				<div class="explorer-button-newfolder">
+					
+				</div>
+			</div>
+
+			<!-- ファイルエクスプローラー -->
+			<div id="file-explorer">
+
+			</div>
+		</div>
+
+		<!-- エディター -->
+		<div class="editor">
+			<!-- タブ -->
+			<div class="editor-tabs">
+				<div class="editor-tab selected">
+					<span>File1</span>
+				</div>
+				<div class="editor-tab">
+					<span>File2</span>
+				</div>
+			</div>
+
+			<!-- エディタ本体 -->
+			<div class="editor-main" contenteditable="true">
+				mes "Hello World"
+			</div>
+		</div>
+	</main>
 </body>
 </html>

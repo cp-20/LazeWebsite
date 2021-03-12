@@ -1,0 +1,103 @@
+$color: (
+	// background
+	main-background: lightgray,
+	editor-background: white,
+	// text color
+	main-text: rgb(31, 31, 31),
+	// accent
+	accent: rgb(0, 132, 209)
+);
+
+html {
+	height: 100%;
+
+	body {
+		margin: 0;
+		height: 100%;
+
+		background-color: map-get($map: $color, $key: main-background);
+		color: map-get($map: $color, $key: main-text);
+
+		main {
+			display: flex;
+			height: 100%;
+
+			// タブ
+			div.tab {
+				width: 150px;
+
+				div.tab-content {
+					display: flex;
+					align-items: center;
+					height: 50px;
+
+					padding-left: 15px;
+				}
+			}
+
+			// エクスプローラー
+			div.explorer {
+				width: 150px;
+
+				// ボタン類
+				div.explorer-buttons {
+					div.explorer-button-newfile {
+
+					}
+					div.explorer-button-newfolder {
+
+					}
+				}
+
+				// ファイルエクスプローラー
+				div#file-explorer {
+
+				}
+			}
+
+			// エディタ
+			div.editor {
+				margin-top: 20px;
+				display: flex;
+				flex-direction: column;
+				flex: 1;
+
+				// タブ
+				div.editor-tabs {
+					display: flex;
+					flex-direction: row;
+					height: 30px;
+
+					div.editor-tab {
+						flex: 1;
+						max-width: 100px;
+						padding: 0 0 0 10px;
+
+						background-color: rgb(196, 196, 196);
+						border-radius: 5px 5px 0 0;
+
+						span {
+							position: relative;
+							top: 4px;
+						}
+
+						&.selected {
+							background-color: white;
+						}
+					}
+				}
+
+				// エディタ本体
+				div.editor-main {
+					width: 100%;
+					height: 100%;
+					margin-bottom: 10px;
+
+					outline: 0;
+					
+					background-color: white;
+				}
+			}
+		}
+	}
+}
