@@ -7,6 +7,7 @@ document.getElementById('editor-editbox').addEventListener('DOMSubtreeModified',
 		if (lineCount > editorLineNumbers.childNodes.length) {
 			const lineNumber = document.createElement('div');
 			lineNumber.classList.add('editor-line-number');
+			lineNumber.innerText = `${editorLineNumbers.childNodes.length}`;
 			editorLineNumbers.appendChild(lineNumber);
 		}else if (lineCount < editorLineNumbers.childNodes.length) {
 			editorLineNumbers.removeChild(editorLineNumbers.childNodes[editorLineNumbers.childNodes.length - 1]);
@@ -14,10 +15,6 @@ document.getElementById('editor-editbox').addEventListener('DOMSubtreeModified',
 			break;
 		}
 	}
-
-	editorLineNumbers.childNodes.forEach((lineNumber, i) => {
-		lineNumber.innerText = `${i}`;
-	})
 });
 
 $("#editor-line-numbers").scroll(function () { 
