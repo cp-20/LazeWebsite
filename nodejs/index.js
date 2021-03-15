@@ -17,7 +17,16 @@ app.listen(port, () => {
 io.on('connection', socket => {
   socket.on('compile', async input => {
     // コンパイル
-    exec('')
+    exec('./home/pi/compilerserver/Compiler/compiler3/compiler test.lang', (err, stdout, stderr) =>
+    {
+        if(err)
+        {
+            console.log('stderr: ${stderr}');
+            return;
+        }
+        console.log(('stdout: ${stdout}'));
+    }
+    );
 
     // 出力
   })
