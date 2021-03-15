@@ -1,5 +1,5 @@
 const express = require('express');
-const { exec } = require('node:child_process');
+const { exec } = require('child_process');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
