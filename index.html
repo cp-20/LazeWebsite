@@ -38,11 +38,6 @@
 
 		<!-- エディター -->
 		<div class="editor">
-			<!-- 行番号 -->
-			<div id="editor-line-numbers">
-				
-			</div>
-
 			<!-- メイン -->
 			<div class="editor-main">
 				<!-- タブ -->
@@ -56,14 +51,12 @@
 				</div>
 
 				<!-- エディタ本体 -->
-				<div id="editor-editbox" contenteditable="true">
-					<div class="editbox-line">
-						<span>print</span>
-					</div>
-				</div>
+				<textarea id="editor-editbox"></textarea>
+				<script src="lib/codemirror.js"></script>
+				<link rel="stylesheet" href="lib/codemirror.css">
+				<script src="mode/javascript/javascript.js"></script>
+				<script src="./javascript/editor.js"></script>
 			</div>
-
-			<script src="./javascript/editor.js"></script>
 		</div>
 	</main>
 </body>

@@ -107,16 +107,16 @@ html body main div.editor div.editor-main div.editor-tabs div.editor-tab.selecte
   background-color: white;
 }
 
-html body main div.editor div.editor-main div#editor-editbox {
-  width: 100%;
+html body main div.editor div.editor-main div.CodeMirror {
   height: 100%;
-  padding: 5px;
-  outline: 0;
-  overflow: auto;
-  background-color: white;
+  left: -30px;
+  font-family: 'Consolas';
 }
 
-html body main div.editor div.editor-main div#editor-editbox div.editbox-line {
-  height: 20px;
-  line-height: 20px;
+html body main div.editor div.editor-main div.CodeMirror div.CodeMirror-linenumber {
+  color: #525252;
+}
+
+html body main div.editor div.editor-main div.CodeMirror div.CodeMirror-gutters {
+  background-color: #ebebeb;
 }
