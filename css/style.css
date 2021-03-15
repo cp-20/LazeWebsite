@@ -163,6 +163,10 @@ html body main div.editor div.editor-main div.CodeMirror {
   font-size: 14px;
 }
 
+html body main div.editor div.editor-main div.CodeMirror div.CodeMirror-lines {
+  padding: 0;
+}
+
 html body main div.editor div.editor-main div.CodeMirror div.CodeMirror-linenumber {
   color: #525252;
 }

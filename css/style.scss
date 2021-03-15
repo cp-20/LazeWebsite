@@ -160,6 +160,9 @@ html {
 						font-family: 'Consolas';
 						font-size: 14px;
 
+						div.CodeMirror-lines {
+							padding: 0;
+						}
 						div.CodeMirror-linenumber {
 							color: lighten(map-get($map: $color, $key: main-text), 20%);
 						}
