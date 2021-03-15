@@ -35,6 +35,6 @@ io.on('connection', socket => {
   })
 });
 
-app.listen(port, () => {
+http.listen(port, () => {
   console.log(`Compiler Server listening at http://rootlang.ddns.net`);
 });
