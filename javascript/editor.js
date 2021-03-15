@@ -1,3 +1,8 @@
+const { isObject } = require("node:util");
+
+// Socket.IO
+const socket = io();
+
 const editor = CodeMirror(function(elt) {
 	const editor = document.getElementById('editor-editbox');
 	editor.parentNode.replaceChild(elt, editor);
@@ -8,12 +13,15 @@ const editor = CodeMirror(function(elt) {
 	tabSize: 2,
 	indentWithTabs: true,
 	electricChars: true,
-	lineNumbers: true
+	lineNumbers: true,
+	styleActiveLine: true
 });
+editor.setOption('styleActiveLine', {nonEmpty: false});
 
 // コンパイル
 function compile() {
-	console.log(editor.getValue());
+	const value = editor.getValue();
+	socket.emit()
 }
 
 // イベント登録
