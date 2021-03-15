@@ -102,13 +102,18 @@ html {
 								cursor: pointer;
 								transition: all .1s;
 								
-								&::before {
+								&#editor-button-compile::before {
 									content: 'コンパイル & 実行';
-									
+									width: 120px;
+								}
+								&#editor-button-save::before {
+									content: '保存';
+									width: 40px;
+								}
+								&::before {
 									display: inline-block;
 									position: absolute;
 									margin-top: 55px;
-									width: 120px;
 									
 									pointer-events: none;
 									
@@ -162,6 +167,18 @@ html {
 
 						div.CodeMirror-lines {
 							padding: 0;
+
+							div.CodeMirror-cursor {
+								height: 20px!important;
+								border-left: solid 2px rgb(43, 43, 43);
+							}
+
+							div.CodeMirror-code {
+								div {
+									height: 20px;
+									line-height: 20px;
+								}
+							}
 						}
 						div.CodeMirror-linenumber {
 							color: lighten(map-get($map: $color, $key: main-text), 20%);
