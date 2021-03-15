@@ -10,8 +10,9 @@ app.get('/', (req, res) => {
   res.sendFile('/home/pi/compilerserver/Compiler/index.html');
 });
 
-io.on('connection', socket => {
-  console.log('connected!');
+io.sockets.on('connection', socket => {
+  var address = socket.handshake.address;
+  console.log('New connection from ' + JSON.stringify(address));
   socket.on('compile', async input => {
     // コンパイル
     exec('./compiler test.lang', (err, stdout, stderr) =>
