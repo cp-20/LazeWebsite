@@ -14,7 +14,7 @@ io.on('connection', socket => {
   console.log('connected!');
   socket.on('compile', async input => {
     // コンパイル
-    exec('./home/pi/compilerserver/Compiler/compiler3/compiler test.lang', (err, stdout, stderr) =>
+    exec('./compiler test.lang', (err, stdout, stderr) =>
     {
       // 出力
         if(err) {
