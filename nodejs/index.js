@@ -15,6 +15,7 @@ io.sockets.on('connection', socket => {
   console.log('New connection from ' + JSON.stringify(address));
   socket.on('compile', async input => {
     // コンパイル
+    exec('echo \"' + input + '\" > test.lang');
     exec('./compiler test.lang', (err, stdout, stderr) =>
     {
       // 出力
@@ -33,6 +34,13 @@ io.sockets.on('connection', socket => {
     }
     );
 
+  })
+  socket.on('save', async input => {
+    exec('echo \"' + input + '\" > /media/usb/compilerserver/testsavefile.lang');
+    socket.emit('output', {
+      success: true,
+      value: "Saved!"
+    });
   })
 });
 
