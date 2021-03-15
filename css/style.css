@@ -77,6 +77,19 @@ html body main div.editor div.editor-main {
   width: 100%;
 }
 
+html body main div.editor div.editor-main div.editor-buttons {
+  margin-bottom: 30px;
+}
+
+html body main div.editor div.editor-main div.editor-buttons button.editor-button {
+  outline: 0;
+  border: 0;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: #0094eb;
+  color: white;
+}
+
 html body main div.editor div.editor-main div.editor-tabs {
   display: -webkit-box;
   display: -ms-flexbox;

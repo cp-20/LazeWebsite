@@ -88,6 +88,21 @@ html {
 					flex-direction: column;
 					width: 100%;
 
+					// ボタン類
+					div.editor-buttons {
+						margin-bottom: 30px;
+
+						button.editor-button {
+							outline: 0;
+							border: 0;
+							padding: 5px 10px;
+							border-radius: 5px;
+
+							background-color: lighten(map-get($map: $color, $key: accent), 5%);
+							color: white;
+						}
+					}
+
 					// タブ
 					div.editor-tabs {
 						display: flex;
