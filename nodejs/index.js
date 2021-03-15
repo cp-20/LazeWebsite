@@ -10,7 +10,10 @@ app.get('/', (req, res) => {
   res.sendFile('/home/pi/compilerserver/Compiler/index.html');
 });
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 67fa7cca256ec406aed5760a3759244b903b55ca
 io.on('connection', socket => {
   socket.on('compile', async input => {
     // コンパイル
@@ -30,6 +33,11 @@ io.on('connection', socket => {
 });
 
 app.listen(port, () => {
+<<<<<<< HEAD
     console.log(`Compiler Server listening at http://rootlang.ddns.net`);
   });
   
+=======
+  console.log(`Compiler Server listening at http://rootlang.ddns.net`);
+});
+>>>>>>> 67fa7cca256ec406aed5760a3759244b903b55ca
