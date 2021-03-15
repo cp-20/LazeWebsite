@@ -143,6 +143,25 @@ html {
 							background-color: map-get($map: $color, $key: main-background);
 						}
 					}
+
+					// 出力
+					div.editor-output {
+						width: calc(100% - 30px);
+						height: 200px;
+
+						P {
+							margin-bottom: 0;
+						}
+						div#editor-output {
+							height: 200px;
+							overflow: auto;
+
+							background-color: map-get($map: $color, $key: editor-background);
+
+							div.err { color: rgb(216, 0, 0); }
+							div.log { color: rgb(20, 20, 20); }
+						}
+					}
 				}
 			}
 		}
