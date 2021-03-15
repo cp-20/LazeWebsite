@@ -42,12 +42,12 @@ void parseTest(string fname)
 int main(int argc, char **argv)
 {
     // setlocale(LC_CTYPE, "C.UTF-16");
-    yydebug = 1;
+    // yydebug = 1;
     string fname;
     int tok;
     if(argc != 2)
     {
-        fprintf(stdout, "usage: ./a.out filename\n");
+        fprintf(stderr, "usage: ./a.out filename\n");
         exit(1);
     }
     fname = argv[1];
