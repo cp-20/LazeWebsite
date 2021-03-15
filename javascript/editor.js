@@ -1,5 +1,5 @@
 // Socket.IO
-const socket = io.connect('/');
+const socket = io.connect('');
 
 const editor = CodeMirror(function(elt) {
 	const editor = document.getElementById('editor-editbox');

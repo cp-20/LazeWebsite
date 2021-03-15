@@ -20,12 +20,12 @@ io.on('connection', socket => {
         if(err) {
           socket.emit('output', {
             success: false,
-            value: err
+            value: stderr
           });
         }else {
           socket.emit('output', {
             success: true,
-            value: err
+            value: stdout
           })
         }
         return;
