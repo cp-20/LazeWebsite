@@ -15,16 +15,22 @@ io.on('connection', socket => {
     // コンパイル
     exec('./home/pi/compilerserver/Compiler/compiler3/compiler test.lang', (err, stdout, stderr) =>
     {
-        if(err)
-        {
-            console.log('stderr: ${stderr}');
-            return;
+      // 出力
+        if(err) {
+          socket.emit('output', {
+            success: false,
+            value: err
+          });
+          return;
+        }else {
+          socket.emit('output', {
+            success: true,
+            value: err
+          })
         }
-        console.log(('stdout: ${stdout}'));
     }
     );
 
-    // 出力
   })
 });
 

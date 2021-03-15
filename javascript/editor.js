@@ -22,8 +22,12 @@ function compile() {
 	socket.emit('compile', value);
 }
 
-socket.on('output', value => {
-	console.log(value);
+socket.on('output', result => {
+	if (result.success) {
+		console.log(result.value);
+	}else {
+		console.error(result.value);
+	}
 })
 
 // イベント登録
