@@ -23,7 +23,7 @@ editor.setOption('styleActiveLine', {nonEmpty: false});
 // コンパイル
 function compile() {
 	const value = editor.getValue();
-	socket.emit('compile', value)
+	socket.emit('compile', value);
 }
 
 socket.on('output', value => {
