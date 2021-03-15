@@ -11,7 +11,7 @@ y.tab.o: y.tab.c
 	cc -g -c -DYYERROR_VERBOSE -DYYDEBUG=1 y.tab.c
 
 y.tab.c: lang.y
-	yacc -dv -v lang.y
+	echo "y.tab.c"
 
 y.tab.h: y.tab.c
 	echo "created y.tab.h"
@@ -32,10 +32,10 @@ lex.yy.o: lex.yy.c errormsg.h util.h
 	cc -g -c lex.yy.c
 
 lex.yy.c: lang.l
-	lex -w lang.l
+	echo "lex.yy.c"
 
 util.o: util.c util.h
 	cc -g -c util.c
 
 clean: 
-	rm -f compiler util.o lexAnalyze.o lex.yy.o lex.yy.c errormsg.o y.tab.o
+	rm -f compiler util.o lexAnalyze.o lex.yy.o errormsg.o y.tab.o parse.o absyn.o table.o symbol.o

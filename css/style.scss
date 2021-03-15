@@ -63,25 +63,6 @@ html {
 				display: flex;
 				flex-direction: row;
 
-				// 行番号
-				div#editor-line-numbers {
-					height: 100%;
-					width: 50px;
-
-					margin-top: 30px;
-					padding: 5px 0;
-					height: calc(100% - 30px);
-
-					overflow: hidden;
-					
-					div.editor-line-number {
-						height: 20px;
-						line-height: 20px;
-						padding-right: 10px;
-						text-align: right;
-					}
-				}
-
 				// エディタ本体
 				div.editor-main {
 					display: flex;
@@ -92,14 +73,57 @@ html {
 					div.editor-buttons {
 						margin-bottom: 30px;
 
-						button.editor-button {
-							outline: 0;
-							border: 0;
-							padding: 5px 10px;
-							border-radius: 5px;
+						div.editor-button-area {
+							display: inline-block;
 
-							background-color: lighten(map-get($map: $color, $key: accent), 5%);
-							color: white;
+							&:hover button.editor-button {
+								transform: translateY(2px);
+								box-shadow: darken(map-get($map: $color, $key: main-background), 50%) 0 2px;
+
+								&::before {
+									visibility: visible;
+									opacity: 1;
+								}
+							}
+							button.editor-button {
+								display: flex;
+								justify-content: center;
+								align-items: center;
+								
+								outline: 0;
+								border: 0;
+								border-radius: 3px 3px 0 0;
+								padding: 2px 2px;
+								box-shadow: darken(map-get($map: $color, $key: main-background), 50%) 0 4px;
+								
+								background-color: darken(map-get($map: $color, $key: main-background), 25%);
+								color: white;
+								
+								cursor: pointer;
+								transition: all .1s;
+								
+								&::before {
+									content: 'コンパイル & 実行';
+									
+									display: inline-block;
+									position: absolute;
+									margin-top: 55px;
+									width: 120px;
+									
+									pointer-events: none;
+									
+									background-color: rgba(black, 0.5);
+									border-radius: 2px;
+									
+									transition: all .1s;
+									visibility: hidden;
+									opacity: 0;
+								}
+								&:active {
+									transform: translateY(4px);
+									box-shadow: 0 0;
+								}
+							}
 						}
 					}
 
@@ -136,11 +160,54 @@ html {
 						font-family: 'Consolas';
 						font-size: 14px;
 
+						div.CodeMirror-lines {
+							padding: 0;
+						}
 						div.CodeMirror-linenumber {
 							color: lighten(map-get($map: $color, $key: main-text), 20%);
 						}
 						div.CodeMirror-gutters {
 							background-color: map-get($map: $color, $key: main-background);
+						}
+					}
+
+					// 出力
+					div.editor-output {
+						width: calc(100% - 30px);
+						height: 200px;
+
+						P {
+							margin-bottom: 5px;
+							height: 20px;
+						}
+
+						div#editor-output {
+							height: 160px;
+							overflow: hidden scroll;
+
+							background-color: map-get($map: $color, $key: editor-background);
+
+							font-size: 14px;
+
+							div {
+								display: flex;
+								align-items: center;
+								padding: 3px 10px;
+
+								span.output-timestamp {
+									margin-left: auto;
+									color: rgb(175, 175, 175);
+								}
+
+								&:hover {
+									background-color: whitesmoke;
+									span.output-timestamp {
+										color: rgb(102, 102, 102);
+									}
+								}
+							}
+							div.err { color: rgb(216, 0, 0); }
+							div.log { color: rgb(59, 59, 59); }
 						}
 					}
 				}

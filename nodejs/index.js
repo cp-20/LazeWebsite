@@ -11,24 +11,31 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', socket => {
+  console.log('connected!');
   socket.on('compile', async input => {
     // コンパイル
-    exec('./home/pi/compilerserver/Compiler/compiler3/compiler test.lang', (err, stdout, stderr) =>
+    exec('./compiler test.lang', (err, stdout, stderr) =>
     {
-        if(err)
-        {
-            console.log('stderr: ${stderr}');
-            return;
+      // 出力
+        if(err) {
+          socket.emit('output', {
+            success: false,
+            value: stderr
+          });
+        }else {
+          socket.emit('output', {
+            success: true,
+            value: stdout
+          })
         }
-        console.log(('stdout: ${stdout}'));
+        return;
     }
     );
 
-    // 出力
   })
 });
 
-app.listen(port, () => {
+http.listen(port, () => {
     console.log(`Compiler Server listening at http://rootlang.ddns.net`);
   });
   

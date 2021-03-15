@@ -42,7 +42,11 @@
 			<div class="editor-main">
 				<!-- ボタン類 -->
 				<div class="editor-buttons">
-					<button class="editor-button" id="editor-button-compile">コンパイル</button>
+					<div class="editor-button-area">
+						<button class="editor-button" id="editor-button-compile">
+							<img src="assets/icons/check.svg" alt="" width="24" >
+						</button>
+					</div>
 				</div>
 
 				<!-- タブ -->
@@ -61,8 +65,17 @@
 				<link rel="stylesheet" href="lib/codemirror.css">
 				<script src="mode/javascript/javascript.js"></script>
 				<script src="addons/active-line.js"></script>
-				<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.2/socket.io.js"></script>
+				<script src="javascript/moment.js"></script>
 				<script src="./javascript/editor.js"></script>
+
+				<!-- 出力 -->
+				<div class="editor-output">
+					<p>出力：</p>
+					<div id="editor-output">
+
+					</div>
+				</div>
 			</div>
 		</div>
 	</main>
