@@ -31,11 +31,11 @@ void parseTest(string fname)
     EM_reset(fname);
     if(yyparse() == 0)
     {
-        fprintf(stderr, "Parsing Successful\n");
+        fprintf(stdout, "Parsing Successful\n");
     }
     else
     {
-        fprintf(stderr, "Parsing Failed\n");
+        fprintf(stdout, "Parsing Failed\n");
     }
 }
 
@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     int tok;
     if(argc != 2)
     {
-        fprintf(stderr, "usage: ./a.out filename\n");
+        fprintf(stdout, "usage: ./a.out filename\n");
         exit(1);
     }
     fname = argv[1];
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
     strcat(tempFileName, fname);
     EM_reset(tempFileName);
     while(!toByte(fname, tempFileName));
-    fprintf(stderr, "\n");
+    fprintf(stdout, "\n");
     // parse(tempFileName);
     parseTest(tempFileName);
 
