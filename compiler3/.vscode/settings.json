@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "stdlib.h": "c",
+        "cstddef": "cpp",
+        "cwchar": "cpp",
+        "type_traits": "cpp",
+        "cmath": "cpp",
+        "limits": "cpp"
+    }
+}
