@@ -1,9 +1,5 @@
 // Socket.IO
-try {
-	const socket = io();
-}catch(err) {
-	console.error(err);
-}
+const socket = io.connect();
 
 const editor = CodeMirror(function(elt) {
 	const editor = document.getElementById('editor-editbox');
