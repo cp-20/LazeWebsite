@@ -91,6 +91,7 @@ html body main div.editor div.editor-main div.editor-buttons div.editor-button-a
       -ms-flex-align: center;
           align-items: center;
   outline: 0;
+  margin: 0 5px;
   border: 0;
   border-radius: 3px 3px 0 0;
   padding: 2px 2px;
@@ -101,6 +102,10 @@ html body main div.editor div.editor-main div.editor-buttons div.editor-button-a
   cursor: pointer;
   -webkit-transition: all .1s;
   transition: all .1s;
+}
+
+html body main div.editor div.editor-main div.editor-buttons div.editor-button-area button.editor-button img {
+  width: 32px;
 }
 
 html body main div.editor div.editor-main div.editor-buttons div.editor-button-area button.editor-button#editor-button-compile::before {
@@ -116,7 +121,7 @@ html body main div.editor div.editor-main div.editor-buttons div.editor-button-a
 html body main div.editor div.editor-main div.editor-buttons div.editor-button-area button.editor-button::before {
   display: inline-block;
   position: absolute;
-  margin-top: 55px;
+  margin-top: 65px;
   pointer-events: none;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 2px;
