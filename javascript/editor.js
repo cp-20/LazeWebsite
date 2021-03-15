@@ -1,7 +1,9 @@
-const { isObject } = require("node:util");
-
 // Socket.IO
-const socket = io();
+try {
+	const socket = io();
+}catch(err) {
+	console.error(err);
+}
 
 const editor = CodeMirror(function(elt) {
 	const editor = document.getElementById('editor-editbox');
@@ -21,8 +23,12 @@ editor.setOption('styleActiveLine', {nonEmpty: false});
 // コンパイル
 function compile() {
 	const value = editor.getValue();
-	socket.emit()
+	socket.emit('compile', value)
 }
+
+socket.on('output', value => {
+	console.log(value);
+})
 
 // イベント登録
 document.getElementById('editor-button-compile').onclick = compile;
