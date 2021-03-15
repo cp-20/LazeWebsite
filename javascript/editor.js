@@ -23,12 +23,11 @@ function compile() {
 }
 
 socket.on('output', result => {
-	if (result.success) {
-		console.log(result.value);
-	}else {
-		console.error(result.value);
-	}
-})
+	let output = document.createElement('div');
+	output.classList.add(result.success ? 'log' : 'err');
+	output.innerText = result.value;
+	document.getElementById('editor-output').appendChild(output);
+});
 
 // イベント登録
 document.getElementById('editor-button-compile').onclick = compile;

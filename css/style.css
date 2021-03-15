@@ -133,3 +133,26 @@ html body main div.editor div.editor-main div.CodeMirror div.CodeMirror-linenumb
 html body main div.editor div.editor-main div.CodeMirror div.CodeMirror-gutters {
   background-color: #ebebeb;
 }
+
+html body main div.editor div.editor-main div.editor-output {
+  width: calc(100% - 30px);
+  height: 200px;
+}
+
+html body main div.editor div.editor-main div.editor-output P {
+  margin-bottom: 0;
+}
+
+html body main div.editor div.editor-main div.editor-output div#editor-output {
+  height: 200px;
+  overflow: auto;
+  background-color: white;
+}
+
+html body main div.editor div.editor-main div.editor-output div#editor-output div.err {
+  color: #d80000;
+}
+
+html body main div.editor div.editor-main div.editor-output div#editor-output div.log {
+  color: #141414;
+}
