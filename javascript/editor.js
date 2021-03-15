@@ -22,11 +22,25 @@ function compile() {
 	socket.emit('compile', value);
 }
 
-socket.on('output', result => {
+// ログ出力
+function logOutput(value, style='log') {
+	const outputArea = document.getElementById('editor-output');
+
 	let output = document.createElement('div');
-	output.classList.add(result.success ? 'log' : 'err');
-	output.innerText = result.value;
-	document.getElementById('editor-output').appendChild(output);
+	output.classList.add(style);
+	output.innerHTML = `<span class="output-value">${value}</span><span class="output-timestamp">${moment().format('HH:mm')}</span>`;
+	outputArea.appendChild(output);
+
+	// スクロール
+	outputArea.scrollTop = outputArea.scrollHeight;
+}
+
+socket.on('output', result => {
+	if (result.success) {
+		logOutput(result.value, 'log');
+	}else {
+		logOutput(result.value, 'err');
+	}
 });
 
 // イベント登録

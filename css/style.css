@@ -1,3 +1,4 @@
+@charset "UTF-8";
 html {
   height: 100%;
 }
@@ -48,22 +49,6 @@ html body main div.editor {
           flex-direction: row;
 }
 
-html body main div.editor div#editor-line-numbers {
-  height: 100%;
-  width: 50px;
-  margin-top: 30px;
-  padding: 5px 0;
-  height: calc(100% - 30px);
-  overflow: hidden;
-}
-
-html body main div.editor div#editor-line-numbers div.editor-line-number {
-  height: 20px;
-  line-height: 20px;
-  padding-right: 10px;
-  text-align: right;
-}
-
 html body main div.editor div.editor-main {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -79,13 +64,65 @@ html body main div.editor div.editor-main div.editor-buttons {
   margin-bottom: 30px;
 }
 
-html body main div.editor div.editor-main div.editor-buttons button.editor-button {
+html body main div.editor div.editor-main div.editor-buttons div.editor-button-area {
+  display: inline-block;
+}
+
+html body main div.editor div.editor-main div.editor-buttons div.editor-button-area:hover button.editor-button {
+  -webkit-transform: translateY(2px);
+          transform: translateY(2px);
+  -webkit-box-shadow: #6c6c6c 0 2px;
+          box-shadow: #6c6c6c 0 2px;
+}
+
+html body main div.editor div.editor-main div.editor-buttons div.editor-button-area:hover button.editor-button::before {
+  visibility: visible;
+  opacity: 1;
+}
+
+html body main div.editor div.editor-main div.editor-buttons div.editor-button-area button.editor-button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   outline: 0;
   border: 0;
-  padding: 5px 10px;
-  border-radius: 5px;
-  background-color: #0094eb;
+  border-radius: 3px 3px 0 0;
+  padding: 2px 2px;
+  -webkit-box-shadow: #6c6c6c 0 4px;
+          box-shadow: #6c6c6c 0 4px;
+  background-color: #ababab;
   color: white;
+  cursor: pointer;
+  -webkit-transition: all .1s;
+  transition: all .1s;
+}
+
+html body main div.editor div.editor-main div.editor-buttons div.editor-button-area button.editor-button::before {
+  content: 'コンパイル & 実行';
+  display: inline-block;
+  position: absolute;
+  margin-top: 55px;
+  width: 120px;
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 2px;
+  -webkit-transition: all .1s;
+  transition: all .1s;
+  visibility: hidden;
+  opacity: 0;
+}
+
+html body main div.editor div.editor-main div.editor-buttons div.editor-button-area button.editor-button:active {
+  -webkit-transform: translateY(4px);
+          transform: translateY(4px);
+  -webkit-box-shadow: 0 0;
+          box-shadow: 0 0;
 }
 
 html body main div.editor div.editor-main div.editor-tabs {
@@ -140,13 +177,38 @@ html body main div.editor div.editor-main div.editor-output {
 }
 
 html body main div.editor div.editor-main div.editor-output P {
-  margin-bottom: 0;
+  margin-bottom: 5px;
+  height: 20px;
 }
 
 html body main div.editor div.editor-main div.editor-output div#editor-output {
-  height: 200px;
-  overflow: auto;
+  height: 160px;
+  overflow: hidden scroll;
   background-color: white;
+  font-size: 14px;
+}
+
+html body main div.editor div.editor-main div.editor-output div#editor-output div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 3px 10px;
+}
+
+html body main div.editor div.editor-main div.editor-output div#editor-output div span.output-timestamp {
+  margin-left: auto;
+  color: #afafaf;
+}
+
+html body main div.editor div.editor-main div.editor-output div#editor-output div:hover {
+  background-color: whitesmoke;
+}
+
+html body main div.editor div.editor-main div.editor-output div#editor-output div:hover span.output-timestamp {
+  color: #666666;
 }
 
 html body main div.editor div.editor-main div.editor-output div#editor-output div.err {
@@ -154,5 +216,5 @@ html body main div.editor div.editor-main div.editor-output div#editor-output di
 }
 
 html body main div.editor div.editor-main div.editor-output div#editor-output div.log {
-  color: #141414;
+  color: #3b3b3b;
 }
