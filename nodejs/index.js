@@ -42,6 +42,7 @@ io.sockets.on('connection', socket => {
         return;
     }
     );
+    exec('rm -f ' + input.filename + ' .' + input.filename);
 
   })
   socket.on('save', async input => {
