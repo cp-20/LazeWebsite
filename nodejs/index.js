@@ -5,6 +5,8 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port = 80;
 
+let users = new Map();
+
 app.use('/', express.static('/home/pi/compilerserver/Compiler/'));
 app.get('/', (req, res) => {
   res.sendFile('/home/pi/compilerserver/Compiler/index.html');
@@ -13,6 +15,7 @@ app.get('/', (req, res) => {
 io.sockets.on('connection', socket => {
   var address = socket.handshake.address;
   console.log('New connection from ' + JSON.stringify(address) + socket.id);
+  users.set(socket.id, "guest");
   socket.on('compile', async input => {
     // コンパイル
     exec('echo \"' + input + '\" > test.lang');
@@ -36,7 +39,7 @@ io.sockets.on('connection', socket => {
 
   })
   socket.on('save', async input => {
-    exec('echo \"' + input + '\" > /media/usb/compilerserver/testsavefile.lang');
+    exec('echo \"' + input.value + '\" > /media/usb/compilerserver/accounts/' + users.get(socket.id) + '/' + input.filename);
     socket.emit('output', {
       value: 'Successfully saved!',
       style: 'info'
