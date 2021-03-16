@@ -380,7 +380,7 @@ html {
 			}
 		}
 
-		div.overlays {
+		div#overlay {
 			z-index: 10;
 			display: flex;
 			justify-content: center;
@@ -446,6 +446,120 @@ html {
 
 						button {
 							padding: 2px 10px!important;
+						}
+					}
+				}
+			}
+		}
+
+		div#popup-message {
+			position: fixed;
+			width: 300px;
+			height: 100%;
+			top: 10px;
+			right: 10px;
+
+			div.popup {
+				display: flex;
+				align-items: center;
+
+				width: 300px;
+				height: 40px;
+
+				background-color: rgba(black, 0.5);
+				color: whitesmoke;
+
+				&.err {
+					background-color: rgba(rgb(184, 12, 0), 0.7);
+
+					&::after {
+						background-color: rgba(rgb(153, 10, 0), 0.9);
+					}
+				}
+
+				margin-bottom: 10px;
+
+				@keyframes popup {
+					0% {
+						transform: translateX(30px);
+						opacity: 0;
+					}
+					100% {
+						transform: translateX(0);
+						opacity: 1;
+					}
+				}
+				@keyframes popup-end {
+					0% {
+						height: 40px;
+						opacity: 1;
+						margin-bottom: 10px;
+					}
+					100% {
+						height: 0;
+						opacity: 0;
+						margin-bottom: 0;
+					}
+				}
+				animation: popup .5s forwards, popup-end .5s 5.5s;
+
+				&.close {
+					@keyframes popup-end2 {
+						0% {
+							height: 40px;
+							opacity: 1;
+							margin-bottom: 10px;
+						}
+						100% {
+							height: 0;
+							opacity: 0;
+							margin-bottom: 0;
+						}
+					}
+
+					animation: popup-end2 .5s forwards;
+				}
+
+				span {
+					margin-left: 10px;
+				}
+
+				button {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+
+					margin: 0 10px 0 auto;
+					
+					background-color: transparent;
+					outline: 0;
+					border: none;
+
+					cursor: pointer;
+
+					img {
+						width: 16px;
+					}
+				}
+
+				&::after {
+					content: '';
+
+					display: inline-block;
+
+					position: absolute;
+					margin-top: 37px;
+					height: 3px;
+
+					background-color: rgba(black, 0.5);
+					
+					animation: popup-progress 5s .5s linear forwards;
+					@keyframes popup-progress {
+						0% {
+							width: 0;
+						}
+						100% {
+							width: 100%;
 						}
 					}
 				}
