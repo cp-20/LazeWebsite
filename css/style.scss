@@ -141,23 +141,148 @@ html {
 					div.editor-tabs {
 						display: flex;
 						flex-direction: row;
+
 						height: 30px;
-						
-						div.editor-tab {
-							flex: 1;
-							max-width: 100px;
-							padding: 0 0 0 10px;
+
+						div#editor-tab-group {
+							display: flex;
+							flex-direction: row;
+
+							max-width: calc(100% - 30px);
+							height: 30px;
+
+							overflow: scroll hidden;
 							
-							background-color: rgb(196, 196, 196);
-							border-radius: 5px 5px 0 0;
-							
-							span {
-								position: relative;
-								top: 4px;
+							&::-webkit-scrollbar{
+								height: 3px;
 							}
-							
-							&.selected {
-								background-color: white;
+							&::-webkit-scrollbar-thumb{
+								background: rgb(107, 107, 107);
+								border-radius: 2px;
+								box-shadow: none;
+							}
+
+							div.editor-tab {
+								display: flex;
+								align-items: center;
+
+								background-color: rgb(196, 196, 196);
+								border-radius: 5px 5px 0 0;
+
+								cursor: context-menu;
+
+								transform-origin: left;
+								animation: newfile-tab .1s ease-out forwards;
+
+								@keyframes newfile-tab {
+									0% {
+										min-width: 25px;
+										width: 25px;
+									}
+									100% {
+										min-width: 100px;
+										width: 100px;
+									}
+								}
+
+								&.closefile {
+									animation: closefile-tab .2s ease;
+
+									@keyframes closefile-tab {
+										0% {
+											min-width: 100px;
+											width: 100px;
+										}
+										100% {
+											min-width: 0;
+											width: 0;
+										}
+									};
+								}
+
+								span {
+									margin-left: 10px;
+									white-space: nowrap;
+									overflow: hidden;
+									text-overflow: ellipsis;
+								}
+
+								button.editor-button-closefile {
+									display: flex;
+									align-items: center;
+									justify-content: center;
+									
+									width: 20px;
+									height: 20px;
+									margin: 0 5px 0 auto;
+									padding: 0;
+
+									border: none;
+									border-radius: 50%;
+									outline: 0;
+									background-color: transparent;
+
+									cursor: pointer;
+
+									img {
+										width: 12px;
+									}
+								}
+								
+								&.selected {
+									background-color: white;
+								}
+
+								// 横線
+								&:not(:first-of-type)::before {
+									content: '';
+									display: inline-block;
+
+									margin-top: 1px;
+
+									width: 2px;
+									height: 20px;
+
+									background-color: rgb(241, 241, 241);
+								}
+								&.selected + div::before {
+									display: none;
+								}
+							}
+						}
+
+						div.editor-tab-button {
+							display: flex;
+							justify-content: center;
+							align-items: center;
+	
+							width: 30px;
+
+							button#editor-button-newfile {
+								display: flex;
+								justify-content: center;
+								align-items: center;
+
+								width: 80%;
+								height: 80%;
+
+								background-color: transparent;
+								border: none;
+								border-radius: 50%;
+								outline: 0;
+								padding: 0;
+
+								cursor: pointer;
+
+								transition: background-color .3s;
+
+								&:hover {
+									background-color: rgb(219, 219, 219);
+								}
+								
+								img {
+									width: 20px;
+								}
 							}
 						}
 					}
@@ -230,9 +355,8 @@ html {
 
 								&:hover {
 									background-color: whitesmoke;
-									span.output-timestamp {
-										color: rgb(102, 102, 102);
-									}
+
+									span.output-timestamp { color: rgb(102, 102, 102); }
 								}
 							}
 							div.err { color: rgb(216, 0, 0); }
