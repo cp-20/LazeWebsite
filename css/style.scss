@@ -141,23 +141,91 @@ html {
 					div.editor-tabs {
 						display: flex;
 						flex-direction: row;
+
 						height: 30px;
+
+						div#editor-tab-group {
+							display: flex;
+							flex-direction: row;
+
+							max-width: calc(100% - 30px);
+							height: 30px;
+
+							overflow-x: auto;
 						
-						div.editor-tab {
-							flex: 1;
-							max-width: 100px;
-							padding: 0 0 0 10px;
-							
-							background-color: rgb(196, 196, 196);
-							border-radius: 5px 5px 0 0;
-							
-							span {
-								position: relative;
-								top: 4px;
+							div.editor-tab {
+								display: flex;
+								align-items: center;
+
+								flex: 1;
+								width: 100px;
+								padding: 0 0 0 10px;
+								
+								background-color: rgb(196, 196, 196);
+								border-radius: 5px 5px 0 0;
+
+								cursor: context-menu;
+
+								button.editor-button-closefile {
+									display: flex;
+									align-items: center;
+									justify-content: center;
+									
+									width: 20px;
+									height: 20px;
+									margin: 0 5px 0 auto;
+									padding: 0;
+
+									border: none;
+									border-radius: 50%;
+									outline: 0;
+									background-color: transparent;
+
+									cursor: pointer;
+
+									img {
+										width: 12px;
+									}
+								}
+								
+								&.selected {
+									background-color: white;
+								}
 							}
-							
-							&.selected {
-								background-color: white;
+						}
+
+						div.editor-tab-button {
+							display: flex;
+							justify-content: center;
+							align-items: center;
+	
+							width: 30px;
+
+							button#editor-button-newfile {
+								display: flex;
+								justify-content: center;
+								align-items: center;
+
+								width: 80%;
+								height: 80%;
+
+								background-color: transparent;
+								border: none;
+								border-radius: 50%;
+								outline: 0;
+								padding: 0;
+
+								cursor: pointer;
+
+								transition: background-color .3s;
+
+								&:hover {
+									background-color: rgb(219, 219, 219);
+								}
+								
+								img {
+									width: 20px;
+								}
 							}
 						}
 					}
@@ -230,9 +298,8 @@ html {
 
 								&:hover {
 									background-color: whitesmoke;
-									span.output-timestamp {
-										color: rgb(102, 102, 102);
-									}
+
+									span.output-timestamp { color: rgb(102, 102, 102); }
 								}
 							}
 							div.err { color: rgb(216, 0, 0); }
