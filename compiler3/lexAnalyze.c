@@ -54,6 +54,8 @@ int main(int argc, char **argv)
     char *tempFileName = checked_malloc(sizeof fname + sizeof(char));
     strcat(tempFileName, ".");
     strcat(tempFileName, fname);
+    FILE *temp = fopen(tempFileName, "w");
+    fclose(temp);
     EM_reset(tempFileName);
     while(!toByte(fname, tempFileName));
     fprintf(stdout, "\n");
