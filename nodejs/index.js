@@ -22,8 +22,8 @@ io.sockets.on('connection', socket => {
   users.set(socket.id, "guest");
   socket.on('compile', async input => {
     // コンパイル
-    exec('echo \"' + input + '\" > test.lang');
-    exec('./compiler test.lang', (err, stdout, stderr) =>
+    exec('echo \"' + input.value + '\" > ' + input.filename);
+    exec('./compiler ' + input.filename, (err, stdout, stderr) =>
     {
       // 出力
         if(err) {
