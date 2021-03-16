@@ -19,7 +19,7 @@ io.sockets.on('connection', socket => {
   var address = socket.handshake.address;
   console.log('New connection from ' + JSON.stringify(address) + socket.id);
   //defaultはguestとして入る
-  users.set(socket.id, "guest");
+  users.set(socket.id, "guesta");
   socket.on('compile', async input => {
     // コンパイル
     exec('echo \"' + input + '\" > test.lang');
