@@ -54,6 +54,7 @@ io.sockets.on('connection', socket => {
       exec('echo \"' + input.value + '\" > /media/usb/compilerserver/accounts/' + users.get(socket.id) + '/' + input.filename, (err, stdout, stderr) => {
         if(err) {
           socket.emit('saved', {
+            title: 'Save not complete.',
             value: stderr + ' : Save not complete.',
             style : 'err',
             success: false
@@ -62,6 +63,7 @@ io.sockets.on('connection', socket => {
         else
         {
           socket.emit('saved', {
+            title: 'Save complete.',
             value: 'Save complete.',
             style: 'info',
             success: true
