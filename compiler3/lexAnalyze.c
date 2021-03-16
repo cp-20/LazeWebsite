@@ -35,7 +35,7 @@ void parseTest(string fname)
     }
     else
     {
-        fprintf(stdout, "Parsing Failed\n");
+        fprintf(stderr, "Parsing Failed\n");
     }
 }
 
