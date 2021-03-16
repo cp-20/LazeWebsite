@@ -1,6 +1,9 @@
 // Socket.IO
 const socket = io.connect('');
 
+// 編集内容
+let editContents = {}
+
 const editor = CodeMirror(function(elt) {
 	const editor = document.getElementById('editor-editbox');
 	editor.parentNode.replaceChild(elt, editor);
@@ -57,9 +60,11 @@ function selectFile(index) {
 	const tabGroup = document.getElementById('editor-tab-group');
 	const selectedTab = tabGroup.getElementsByClassName('selected');
 	for (let i = 0; i < selectedTab.length; i++) {
+		editContents[selectedTab[i].id] = editor.getValue();
 		selectedTab[i].classList.remove('selected');
 	}
 	tabGroup.children[index].classList.add('selected');
+	editor.setValue(editContents[tabGroup.children[index].id]);
 }
 
 // ファイルを閉じる
@@ -90,12 +95,19 @@ function closeFile(index) {
 // 新規ファイル
 document.getElementById('editor-button-newfile').onclick = newFile;
 function newFile() {
+	// ユニークID生成関数
+	const uniqueID = () => {
+    return Date.now().toString(16) + Math.floor(1000 * Math.random()).toString(16);
+	}
+
 	const tabGroup = document.getElementById('editor-tab-group');
 	const index = tabGroup.children.length;
 	const newfile = document.createElement('div');
 	newfile.classList.add('editor-tab');
 	newfile.dataset.index = index;
 	newfile.innerHTML = `<span>無題</span><button class="editor-button-closefile"><img src="assets/icons/cross.svg"></button>`;
+	newfile.id = uniqueID();
+	editContents[newfile.id] = '';
 	newfile.getElementsByTagName('button')[0].onclick = function(e) {
 		e.stopPropagation();
 		closeFile(parseInt(this.parentNode.dataset.index));
