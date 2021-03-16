@@ -30,7 +30,7 @@ socket.on('saved', result => {
 	logOutput(result.value, result.style);
 
 	// ポップアップ
-	logPopup(result.title, result.style);
+	logPopup(result.value, result.style);
 });
 
 // ログ出力
