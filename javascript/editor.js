@@ -46,6 +46,8 @@ socket.on('output', result => logOutput(result.value, result.style));
 document.getElementById('editor-button-compile').onclick = compile;
 function compile() {
 	const value = editor.getValue();
+	const tabGroup = document.getElementById('editor-tab-group');
+	const selectedTab = tabGroup.getElementsByClassName('selected')[0];
 	const filename = selectedTab.getElementsByTagName('span')[0].innerText;
 	socket.emit('compile', {
 		filename: filename,
