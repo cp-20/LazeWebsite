@@ -7,6 +7,9 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port = 80;
 
+//socket.idをkey、アカウント名をvalueとしたmap
+let users = new Map();
+
 app.use('/', express.static('/home/pi/compilerserver/Compiler/'));
 app.get('/', (req, res) => {
   res.sendFile('/home/pi/compilerserver/Compiler/index.html');
@@ -15,6 +18,8 @@ app.get('/', (req, res) => {
 io.sockets.on('connection', socket => {
   var address = socket.handshake.address;
   console.log('New connection from ' + JSON.stringify(address) + socket.id);
+  //defaultはguestとして入る
+  users.set(socket.id, "guest");
   socket.on('compile', async input => {
     // コンパイル
     exec('echo \"' + input + '\" > test.lang');
@@ -38,7 +43,23 @@ io.sockets.on('connection', socket => {
 
   })
   socket.on('save', async input => {
-    exec('echo \"' + input + '\" > /media/usb/compilerserver/testsavefile.lang');
+    //ファイルにセーブ
+    exec('echo \"' + input.value + '\" > /media/usb/compilerserver/accounts/' + users.get(socket.id) + '/' + input.filename, (err, stdout, stderr) => {
+      if(err) {
+        socket.emit('output', {
+          value: stderr + ' : Save not complete.',
+          style : 'err'
+        })
+      }
+      else
+      {
+        socket.emit('output', {
+          value: 'Save complete.',
+          style: 'log'
+        })
+      }
+      return;
+    });
     socket.emit('output', {
       value: 'Successfully saved!',
       style: 'info'
