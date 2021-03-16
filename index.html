@@ -46,12 +46,12 @@
 			<div class="editor-main">
 				<!-- ボタン類 -->
 				<div class="editor-buttons">
-					<div class="editor-button-area">
+					<div class="editor-button-area ui-button">
 						<button class="editor-button" id="editor-button-compile">
 							<img src="assets/icons/check.svg" alt="" >
 						</button>
 					</div>
-					<div class="editor-button-area">
+					<div class="editor-button-area ui-button">
 						<button class="editor-button" id="editor-button-save">
 							<img src="assets/icons/save.svg" alt="" >
 						</button>
@@ -78,7 +78,6 @@
 				<script src="addon/hint/show-hint.js"></script>
 				<script src="addon/hint/css-hint.js"></script>
 				<link rel="stylesheet" href="addon/hint/show-hint.css">
-				<script src="./javascript/editor.js"></script>
 
 				<!-- 出力 -->
 				<div class="editor-output">
@@ -90,5 +89,22 @@
 			</div>
 		</div>
 	</main>
+
+	<div class="overlays" id="overlay">
+		<div class="editor-setname-area">
+			<p>ファイル名を入力してください</p>
+			<input type="text" id="setname-name">
+			<div class="select-buttons">
+				<div class="ui-button cancel">
+					<button id="setname-cancel">キャンセル</button>
+				</div>
+				<div class="ui-button enter">
+					<button id="setname-enter">保存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="./javascript/editor.js"></script>
 </body>
 </html>
