@@ -23,13 +23,13 @@ io.sockets.on('connection', socket => {
       // 出力
         if(err) {
           socket.emit('output', {
-            success: false,
-            value: stderr
+            value: stderr,
+            style: 'err'
           });
         }else {
           socket.emit('output', {
-            success: true,
-            value: stdout
+            value: stdout,
+            style: 'log'
           })
         }
         return;
@@ -40,8 +40,8 @@ io.sockets.on('connection', socket => {
   socket.on('save', async input => {
     exec('echo \"' + input + '\" > /media/usb/compilerserver/testsavefile.lang');
     socket.emit('output', {
-      success: true,
-      value: "Saved!"
+      value: 'Successfully saved!',
+      style: 'info'
     });
   })
 });

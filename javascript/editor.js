@@ -16,12 +16,6 @@ const editor = CodeMirror(function(elt) {
 });
 editor.setOption('styleActiveLine', {nonEmpty: false});
 
-// コンパイル
-function compile() {
-	const value = editor.getValue();
-	socket.emit('compile', value);
-}
-
 // ログ出力
 function logOutput(value, style='log') {
 	const outputArea = document.getElementById('editor-output');
@@ -29,19 +23,25 @@ function logOutput(value, style='log') {
 	let output = document.createElement('div');
 	output.classList.add(style);
 	output.innerHTML = `<span class="output-value">${value}</span><span class="output-timestamp">${moment().format('HH:mm')}</span>`;
-	outputArea.appendChild(output);
+	outputArea.prepend(output);
 
 	// スクロール
 	outputArea.scrollTop = outputArea.scrollHeight;
 }
 
-socket.on('output', result => {
-	if (result.success) {
-		logOutput(result.value, 'log');
-	}else {
-		logOutput(result.value, 'err');
-	}
-});
+// 出力ウィンドウ
+socket.on('output', result => logOutput(result.value, result.style));
 
-// イベント登録
+// コンパイル
 document.getElementById('editor-button-compile').onclick = compile;
+function compile() {
+	const value = editor.getValue();
+	socket.emit('compile', value);
+}
+
+// セーブ
+document.getElementById('editor-button-save').onclick = save;
+function save() {
+	const value = editor.getValue();
+	socket.emit('save', value);
+}

@@ -167,8 +167,11 @@ html {
 						width: 100%;
 						height: 100%;
 						left: -30px;
+
 						font-family: 'Consolas';
 						font-size: 14px;
+
+						cursor: text;
 
 						div.CodeMirror-lines {
 							padding: 0;
@@ -190,6 +193,7 @@ html {
 						}
 						div.CodeMirror-gutters {
 							background-color: map-get($map: $color, $key: main-background);
+							cursor: default;
 						}
 					}
 
@@ -204,6 +208,9 @@ html {
 						}
 
 						div#editor-output {
+							display: flex;
+							flex-direction: column-reverse;
+
 							height: 160px;
 							overflow: hidden scroll;
 
@@ -230,6 +237,7 @@ html {
 							}
 							div.err { color: rgb(216, 0, 0); }
 							div.log { color: rgb(59, 59, 59); }
+							div.info { color: rgb(0, 168, 0); }
 						}
 					}
 				}
