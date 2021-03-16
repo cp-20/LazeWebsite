@@ -46,24 +46,29 @@ io.sockets.on('connection', socket => {
     //ファイルにセーブ
     if(users.get(socket.id) == 'guest')
     {
-      socket.emit('output', {
+      socket.emit('saved', {
         value: 'If you want to save a file, please create an account.',
-        style: 'err'
+        style: 'err',
+        success: false
       })
     }
     else{
       exec('echo \"' + input.value + '\" > /media/usb/compilerserver/accounts/' + users.get(socket.id) + '/' + input.filename, (err, stdout, stderr) => {
         if(err) {
-          socket.emit('output', {
+          socket.emit('saved', {
+            title: 'Save not complete.',
             value: stderr + ' : Save not complete.',
-            style : 'err'
+            style : 'err',
+            success: false
           })
         }
         else
         {
-          socket.emit('output', {
+          socket.emit('saved', {
+            title: 'Save complete.',
             value: 'Save complete.',
-            style: 'info'
+            style: 'info',
+            success: true
           })
         }
         return;

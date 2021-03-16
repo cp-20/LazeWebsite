@@ -25,6 +25,13 @@ editor.on('change', function() {
 	const selectedTab = tabGroup.getElementsByClassName('selected')[0];
 	if (!selectedTab.classList.contains('unsave')) selectedTab.classList.add('unsave')
 });
+socket.on('saved', result => {
+	// ログ
+	logOutput(result.value, result.style);
+
+	// ポップアップ
+	logPopup(result.title, result.style);
+});
 
 // ログ出力
 function logOutput(value, style='log') {
@@ -38,6 +45,22 @@ function logOutput(value, style='log') {
 	// スクロール
 	outputArea.scrollTop = outputArea.scrollHeight;
 }
+// ポップアップメッセージ
+function logPopup(value, style='info') {
+	const outputArea = document.getElementById('popup-message');
+
+	let output = document.createElement('div');
+	output.classList.add('popup');
+	output.classList.add(style);
+	output.innerHTML = `<span>${value}</span><button><img src="./assets/icons/cross2.svg"></button>`;
+	output.addEventListener('animationend', function(e) {
+		if (e.animationName.startsWith('popup-end')) this.remove();
+	});
+	output.getElementsByTagName('button')[0].onclick = function() {
+		this.parentNode.classList.add('close');
+	}
+	outputArea.prepend(output);
+}
 
 // 出力ウィンドウ
 socket.on('output', result => logOutput(result.value, result.style));
@@ -46,6 +69,8 @@ socket.on('output', result => logOutput(result.value, result.style));
 document.getElementById('editor-button-compile').onclick = compile;
 function compile() {
 	const value = editor.getValue();
+	const tabGroup = document.getElementById('editor-tab-group');
+	const selectedTab = tabGroup.getElementsByClassName('selected')[0];
 	const filename = selectedTab.getElementsByTagName('span')[0].innerText;
 	socket.emit('compile', {
 		filename: filename,
@@ -75,9 +100,6 @@ function save() {
 			filename: filename,
 			value: value
 		});
-
-		// 保存済み
-		selectedTab.classList.remove('unsave');
 	}
 }
 
