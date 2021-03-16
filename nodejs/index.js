@@ -25,6 +25,7 @@ io.sockets.on('connection', socket => {
     exec('echo \"' + input.value + '\" > ' + input.filename);
     exec('./compiler ' + input.filename, (err, stdout, stderr) =>
     {
+	console.log(stdout);
       // 出力
         if(err) {
           socket.emit('output', {
