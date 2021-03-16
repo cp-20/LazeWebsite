@@ -55,14 +55,10 @@ io.sockets.on('connection', socket => {
       {
         socket.emit('output', {
           value: 'Save complete.',
-          style: 'log'
+          style: 'info'
         })
       }
       return;
-    });
-    socket.emit('output', {
-      value: 'Successfully saved!',
-      style: 'info'
     });
   })
 });
