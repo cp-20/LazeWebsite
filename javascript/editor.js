@@ -16,15 +16,6 @@ const editor = CodeMirror(function(elt) {
 });
 editor.setOption('styleActiveLine', {nonEmpty: false});
 
-// 出力ウィンドウ
-socket.on('output', result => {
-	if (result.success) {
-		logOutput(result.value, 'log');
-	}else {
-		logOutput(result.value, 'err');
-	}
-});
-
 // ログ出力
 function logOutput(value, style='log') {
 	const outputArea = document.getElementById('editor-output');
@@ -38,6 +29,9 @@ function logOutput(value, style='log') {
 	outputArea.scrollTop = outputArea.scrollHeight;
 }
 
+// 出力ウィンドウ
+socket.on('output', result => logOutput(result.value, result.style));
+
 // コンパイル
 document.getElementById('editor-button-compile').onclick = compile;
 function compile() {
@@ -48,5 +42,6 @@ function compile() {
 // セーブ
 document.getElementById('editor-button-save').onclick = save;
 function save() {
-	
+	const value = editor.getValue();
+	socket.emit('save', value);
 }
