@@ -42,22 +42,31 @@ io.sockets.on('connection', socket => {
   })
   socket.on('save', async input => {
     //ファイルにセーブ
-    exec('echo \"' + input.value + '\" > /media/usb/compilerserver/accounts/' + users.get(socket.id) + '/' + input.filename, (err, stdout, stderr) => {
-      if(err) {
-        socket.emit('output', {
-          value: stderr + ' : Save not complete.',
-          style : 'err'
-        })
-      }
-      else
-      {
-        socket.emit('output', {
-          value: 'Save complete.',
-          style: 'info'
-        })
-      }
-      return;
-    });
+    if(users.get(socket.id) == 'guest')
+    {
+      socket.emit('output', {
+        value: 'If you want to save a file, please create an account.',
+        style: 'err'
+      })
+    }
+    else{
+      exec('echo \"' + input.value + '\" > /media/usb/compilerserver/accounts/' + users.get(socket.id) + '/' + input.filename, (err, stdout, stderr) => {
+        if(err) {
+          socket.emit('output', {
+            value: stderr + ' : Save not complete.',
+            style : 'err'
+          })
+        }
+        else
+        {
+          socket.emit('output', {
+            value: 'Save complete.',
+            style: 'info'
+          })
+        }
+        return;
+      });
+    }
   })
 });
 
