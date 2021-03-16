@@ -76,7 +76,9 @@ function closeFile(index) {
 			selectFile(index + 1);
 		}
 	}
-	closeingFile.remove();
+	closeingFile.classList.add('closefile');
+	closeingFile.getElementsByTagName('button')[0].remove();
+	closeingFile.addEventListener('animationend', function() { this.remove(); });
 	
 	// 後ろのindexをずらす
 	const tabs = tabGroup.children;

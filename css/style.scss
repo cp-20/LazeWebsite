@@ -151,22 +151,60 @@ html {
 							max-width: calc(100% - 30px);
 							height: 30px;
 
-							overflow-x: auto;
-						
+							overflow: scroll hidden;
+							
+							&::-webkit-scrollbar{
+								height: 3px;
+							}
+							&::-webkit-scrollbar-thumb{
+								background: rgb(107, 107, 107);
+								border-radius: 2px;
+								box-shadow: none;
+							}
+
 							div.editor-tab {
 								display: flex;
 								align-items: center;
 
-								flex: 1;
-								width: 100px;
-								
 								background-color: rgb(196, 196, 196);
 								border-radius: 5px 5px 0 0;
 
 								cursor: context-menu;
 
+								transform-origin: left;
+								animation: newfile-tab .1s ease-out forwards;
+
+								@keyframes newfile-tab {
+									0% {
+										min-width: 25px;
+										width: 25px;
+									}
+									100% {
+										min-width: 100px;
+										width: 100px;
+									}
+								}
+
+								&.closefile {
+									animation: closefile-tab .2s ease;
+
+									@keyframes closefile-tab {
+										0% {
+											min-width: 100px;
+											width: 100px;
+										}
+										100% {
+											min-width: 0;
+											width: 0;
+										}
+									};
+								}
+
 								span {
 									margin-left: 10px;
+									white-space: nowrap;
+									overflow: hidden;
+									text-overflow: ellipsis;
 								}
 
 								button.editor-button-closefile {
