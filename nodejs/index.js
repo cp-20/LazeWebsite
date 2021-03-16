@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
 
 io.sockets.on('connection', socket => {
   var address = socket.handshake.address;
-  console.log('New connection from ' + JSON.stringify(address));
+  console.log('New connection from ' + JSON.stringify(address) + socket.id);
   socket.on('compile', async input => {
     // コンパイル
     exec('echo \"' + input + '\" > test.lang');
