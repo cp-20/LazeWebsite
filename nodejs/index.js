@@ -149,10 +149,10 @@ io.sockets.on('connection', socket => {
     socket.on('disconnect', async input => {
       if(users.get(socket.id) == 'guest')
       {
-        fs.rmdir(usersDirectory.get(socket.id), (err, stdout, stderr) => {
+        fs.rmdir(usersDirectory.get(socket.id), (err) => {
           if(err)
           {
-            console.log(stderr);
+            console.log('could not remove directory');
           }
         });        
       }
