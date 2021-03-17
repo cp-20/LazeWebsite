@@ -44,7 +44,7 @@ function readDirectory(path, folderName)
     
     tempfiles.forEach(file => {
       console.log(file);
-      result.folder.push(file[1]);
+      result.folder.push(file);
     }); 
   })
   return result;
