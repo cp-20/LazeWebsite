@@ -37,6 +37,7 @@ async function readDirectory(path, socket, result)
         else if(element.isDirectory()){
           // console.log('a');
           let val = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []});
+          console.log(val);
           folders.set(element.name, val);
         }
       })
