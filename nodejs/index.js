@@ -35,7 +35,7 @@ function readDirectory(path, socket, result)
           files.set(element.name, {type: 'file', name: element.name});
         }
         else if(element.isDirectory()){
-          console.log('a');
+          // console.log('a');
           folders.set(element.name, readDirectory(path + '/' + element.name, element.name));
         }
       })
@@ -137,7 +137,7 @@ io.sockets.on('connection', socket => {
   socket.on('loadProject', async input => 
   {
     let result = {type: 'folder', name: input.projectName, folder: []};
-    console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
+    // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
     socket.emit('loadedProject', {
       value: readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result),
       style: 'log'
