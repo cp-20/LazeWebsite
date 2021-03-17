@@ -49,6 +49,7 @@ function readDirectory(path, socket, result)
       }); 
     }
   })
+  console.log(result);
   return result;
 }
 
