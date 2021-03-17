@@ -61,10 +61,10 @@ int main(int argc, char **argv)
     char *fullFname = checked_malloc(sizeof fname + sizeof directory);
     char * fullTempFname = checked_malloc(sizeof tempFileName + sizeof directory);
     strcat(fullFname, directory);
-    strcat(fullFname, '/');
+    strcat(fullFname, "/");
     strcat(fullFname, fname);
     strcat(fullTempFname, directory);
-    strcat(fullTempFname, '/');
+    strcat(fullTempFname, "/");
     strcat(fullTempFname, tempFileName);
     FILE *temp = fopen(fullTempFname, "w");
     fclose(temp);
