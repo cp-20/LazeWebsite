@@ -17,7 +17,7 @@ let usersDirectory = new Map();
 //ディレクトリー読むための再帰関数
 function readDirectory(path, folderName, socket)
 {
-  let result = {type: 'folder', name: folderName, folder: ['a']};
+  let result = {type: 'folder', name: folderName, folder: []};
   fs.readdir(path, {withFileTypes: true},(err, content)=>{
     if(err)
     {
@@ -46,7 +46,7 @@ function readDirectory(path, folderName, socket)
       let tempfiles = new Map([...files].sort((a, b) => a[0] > b[0]));
       tempfiles.forEach(file => {
         console.log(file);
-        result.folder.push(file);
+        console.log(result.folder.push(file));
         result.folder.push('a');
       }); 
     }
