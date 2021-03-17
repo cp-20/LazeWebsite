@@ -35,6 +35,7 @@ socket.on('saved', result => {
 
 // ログ出力
 function logOutput(value, style='log') {
+	console.log(`${style}：${value}`);
 	const outputArea = document.getElementById('editor-output');
 
 	let output = document.createElement('div');
