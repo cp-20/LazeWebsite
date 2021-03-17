@@ -139,9 +139,11 @@ io.sockets.on('connection', socket => {
   {
     let result = {type: 'folder', name: input.projectName, folder: []};
     // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
-    socket.emit('loadedProject', {
-      value: readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result),
-      style: 'log'
+    readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result).then((val) => {
+      socket.emit('loadedProject', {
+        value: val,
+        style: 'log'
+      });
     });
   });
   //Projectを作る
