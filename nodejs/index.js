@@ -35,6 +35,7 @@ function readDirectory(path, socket, result)
           files.set(element.name, {type: 'file', name: element.name});
         }
         else if(element.isDirectory()){
+          console.log('a');
           folders.set(element.name, readDirectory(path + '/' + element.name, element.name));
         }
       })
