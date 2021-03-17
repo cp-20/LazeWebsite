@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const express = require('express');
 const { exec } = require('child_process');
 const app = express();
@@ -23,6 +25,7 @@ io.sockets.on('connection', socket => {
     exec('echo \"' + input.value + '\" > ' + input.filename);
     exec('./compiler ' + input.filename, (err, stdout, stderr) =>
     {
+	console.log(stdout);
       // 出力
         console.log(stdout);
         if(err) {
