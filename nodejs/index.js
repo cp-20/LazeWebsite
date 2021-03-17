@@ -158,6 +158,10 @@ io.sockets.on('connection', socket => {
   })
 });
 
+io.sockets.on('disconnect', socket => {
+  console.log('a');
+})
+
 http.listen(port, () => {
     console.log(`Compiler Server listening at http://rootlang.ddns.net`);
   });
