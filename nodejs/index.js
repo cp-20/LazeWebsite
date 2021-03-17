@@ -24,7 +24,7 @@ io.sockets.on('connection', socket => {
     exec('./compiler ' + input.filename, (err, stdout, stderr) =>
     {
       // 出力
-        console.log(stdout);
+        console.log(err, stdout, stderr);
         if(err) {
           socket.emit('output', {
             value: stderr,
