@@ -191,9 +191,9 @@ socket.on('output', result => logOutput(result.value, result.style));
 			}else {
 				// セーブ
 				const filename = selectedTab.getElementsByTagName('span')[0].innerText;
-				const projectname = document.querySelector('div#file-explorer > ul').className;
+				const projectName = document.querySelector('div#file-explorer > ul').className;
 				socket.emit('save', {
-					projectname: projectname,
+					projectName: projectName,
 					filename: filename,
 					value: value
 				});
@@ -234,46 +234,52 @@ socket.on('output', result => logOutput(result.value, result.style));
 		
 	}
 
-	// ファイルツリー
-	{
-		socket.on('loadedProject', result => {
-			parseDir(result);
-
-			// ログ
-			logOutput('Project loaded');
-			
-			function parseDir(dir) {
-				const tree = (root, dir, nest=0) => {
-					// プロジェクト名
-					root.className = dir.name;
-
-					dir.forEach(subdir => {
-						let file = document.createElement('li');
-						file.innerText = subdir.name;
-						file.style.paddingLeft = `${nest * 20 + 30}px`;
-						file.classList.add('ui-dir');
-						if (subdir.type === 'folder') {
-							file.classList.add('ui-folder');
-							file.onclick = function() {
-								this.classList.toggle('opened');
-							}
-						}
-						if (subdir.type === 'file') file.classList.add('ui-file');
-						root.appendChild(file);
-						
-						if (subdir.type === 'folder') {
-							let folder = document.createElement('ul');
-							folder.classList.add('ui-folder-root');
-							root.appendChild(folder);
-							tree(folder, subdir.value, nest + 1);
-						}
-					});
-				}
-				const root = document.querySelector('#file-explorer > ul');
-				root.innerHTML = '';
-				root.className = '';
-				tree(root, dir.value);
-			}
+	// プロジェクトロード
+	document.getElementById('editor-button-load-project').onclick = loadProject;
+	function loadProject() {
+		socket.emit('loadProject', {
+			projectName: 'test'
 		});
 	}
+
+	// ロード完了 → ファイルツリーに反映
+	socket.on('loadedProject', result => {
+		parseDir(result);
+
+		// ログ
+		logOutput('Project loaded');
+		
+		function parseDir(dir) {
+			const tree = (root, dir, nest=0) => {
+				// プロジェクト名
+				root.className = dir.name;
+
+				dir.forEach(subdir => {
+					let file = document.createElement('li');
+					file.innerText = subdir.name;
+					file.style.paddingLeft = `${nest * 20 + 30}px`;
+					file.classList.add('ui-dir');
+					if (subdir.type === 'folder') {
+						file.classList.add('ui-folder');
+						file.onclick = function() {
+							this.classList.toggle('opened');
+						}
+					}
+					if (subdir.type === 'file') file.classList.add('ui-file');
+					root.appendChild(file);
+					
+					if (subdir.type === 'folder') {
+						let folder = document.createElement('ul');
+						folder.classList.add('ui-folder-root');
+						root.appendChild(folder);
+						tree(folder, subdir.value, nest + 1);
+					}
+				});
+			}
+			const root = document.querySelector('#file-explorer > ul');
+			root.innerHTML = '';
+			root.className = '';
+			tree(root, dir.value);
+		}
+	});
 }
