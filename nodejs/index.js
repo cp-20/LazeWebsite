@@ -17,7 +17,7 @@ let usersDirectory = new Map();
 //ディレクトリー読むための再帰関数
 async function readDirectory(path, socket, result)
 {
-  fs.readdir(path, {withFileTypes: true},(err, content)=>{
+  return fs.readdir(path, {withFileTypes: true},(err, content)=>{
     if(err)
     {
       socket.emit('loadedProject', {
@@ -36,9 +36,9 @@ async function readDirectory(path, socket, result)
         }
         else if(element.isDirectory()){
           // console.log('a');
-          let val = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []});
-          console.log(val);
-          folders.set(element.name, val);
+          // let val = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []});
+          // console.log(val);
+          folders.set(element.name, await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}));
         }
       })
       let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
