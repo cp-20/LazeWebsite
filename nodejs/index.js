@@ -57,8 +57,8 @@ io.sockets.on('connection', socket => {
   usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
   socket.on('compile', async input => {
     // コンパイル
-    exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + input.filename);
-    exec('./compiler ' + input.filename + ' ' + usersDirectory.get(socket.id), (err, stdout, stderr) =>
+    exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + ' ' + input.filename);
+    exec('./compiler ' + input.filename + ' ' + usersDirectory.get(socket.id) + '/', (err, stdout, stderr) =>
     {
       // 出力
         console.log(err, stdout, stderr);
