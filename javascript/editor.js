@@ -208,3 +208,20 @@ function enterSave() {
 function renameFile(index) {
 	
 }
+
+// ファイルツリー
+{
+	function parseDir(root, dir) {
+		const tree = dir => {
+			dir.forEach(subdir => {
+				if (subdir.type === 'folder') {
+
+				}else {
+					tree(subdir.value);
+				}
+			})
+		}
+		const root = document.querySelector('#file-explorer > ul.root');
+		tree(dir.root);
+	}
+}
