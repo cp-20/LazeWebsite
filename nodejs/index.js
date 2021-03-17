@@ -150,10 +150,7 @@ io.sockets.on('connection', socket => {
       if(users.get(socket.id) == 'guest')
       {
         fs.rmdir(usersDirectory.get(socket.id), (err) => {
-          if(err)
-          {
-            console.log(usersDirectory.get(socket.id));
-          }
+          console.log(usersDirectory.get(socket.id));
         });        
       }
     })
