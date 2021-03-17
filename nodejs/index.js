@@ -15,9 +15,9 @@ let users = new Map();
 let usersDirectory = new Map();
 
 //ディレクトリー読むための再帰関数
-function readDirectory(path)
+function readDirectory(path, folderName)
 {
-  let result = {type: 'folder', folder: []};
+  let result = {type: 'folder', name: folderName, folder: []};
   fs.readDir(path, {withFileTypes: true},(err, content)=>{
     if(err)
     {
@@ -26,13 +26,27 @@ function readDirectory(path)
         style: err
       });
     }
+    let files = new Map();
+    let folders = new Map();
     content.forEach(element => {
       if(element.isFile()){
-        result.root.push({type: 'file', name: element.name});
+        files.set(element.name, {type: 'file', name: element.name});
       }
       else if(element.isDirectory()){
-        result.root.push(readDirectory(path + '/' + element.name));
+        folders.set(element.name, readDirectory(path + '/' + element.name, element.name));
       }
+    })
+    let tempfiles = new Map([...files].sort((a, b) => 
+      a[0] > b[0]
+    ));
+    tempfiles.forEach(element => {
+      result.folder.push(element[1]);
+    });
+    let tempfolders = new Map([...folders].sort((a, b) => 
+      a[0] > b[0]
+    ));
+    tempfolder.forEach(element => {
+      result.folder.push(element[1]);
     })
   })
   return result;
