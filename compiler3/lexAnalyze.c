@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "util.h"
 #include "errormsg.h"
 #include "symbol.h"
@@ -48,47 +47,23 @@ int main(int argc, char **argv)
     // yydebug = 1;
     string fname, directory;
     int tok;
-    if(argc != 2 && argc != 3)
+    if(argc != 2)
     {
-        fprintf(stderr, "usage: ./a.out filename\n       ./a.out filename directory\n       argument count: %d\n", argc);
+        fprintf(stderr, "usage: ./a.out filename\n");
         exit(1);
     }
-
     fname = argv[1];
-    printf("%s", fname);
-    char *tempFileName = checked_malloc(sizeof (fname) + sizeof(char) + sizeof(char));
-    strcpy(tempFileName, ".");
+    char *tempFileName = checked_malloc(sizeof fname + sizeof(char));
+    strcat(tempFileName, ".");
     strcat(tempFileName, fname);
-    if(argc == 3)
-    {
-        directory = argv[2];
+    FILE *temp = fopen(tempFileName, "w");
+    fclose(temp);
+    EM_reset(tempFileName);
+    while(!toByte(fname, tempFileName));
+    fprintf(stdout, "\n");
+    // parse(tempFileName);
+    parseTest(tempFileName);
 
-        char *fullFname = checked_malloc(sizeof (fname) + sizeof (directory) + sizeof(char));
-        char * fullTempFname = checked_malloc(sizeof (tempFileName) + sizeof (directory) + sizeof(char));
-        strcpy(fullFname, directory);
-        strcat(fullFname, "/");
-        strcat(fullFname, fname);
-        strcpy(fullTempFname, directory);
-        strcat(fullTempFname, "/");
-        strcat(fullTempFname, tempFileName);
-        FILE *temp = fopen(fullTempFname, "w");
-        fclose(temp);
-        EM_reset(fullTempFname);
-        while(!toByte(fullFname, fullTempFname));
-        fprintf(stdout, "\n");
-        // parse(tempFileName);
-        parseTest(fullTempFname);
-    }
-    else
-    {
-        FILE *temp = fopen(tempFileName, "w");
-        fclose(temp);
-        EM_reset(tempFileName);
-        while(!toByte(fname, tempFileName));
-        fprintf(stdout, "\n");
-        // parse(tempFileName);
-        parseTest(tempFileName);
-    }
     // for(;;)
     // {
     //     tok = yylex();
