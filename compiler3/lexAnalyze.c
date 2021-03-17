@@ -48,7 +48,7 @@ int main(int argc, char **argv)
     // yydebug = 1;
     string fname, directory;
     int tok;
-    if(argc != 2 || argc != 3)
+    if(argc != 2 && argc != 3)
     {
         fprintf(stderr, "usage: ./a.out filename\n       ./a.out filename directory\n       argument count: %d", argc);
         exit(1);
