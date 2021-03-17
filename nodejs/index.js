@@ -18,7 +18,7 @@ let usersDirectory = new Map();
 function readDirectory(path, folderName)
 {
   let result = {type: 'folder', name: folderName, folder: []};
-  fs.readDir(path, {withFileTypes: true},(err, content)=>{
+  fs.readdir(path, {withFileTypes: true},(err, content)=>{
     if(err)
     {
       socket.emit('loadedProject', {
