@@ -18,7 +18,7 @@ let usersDirectory = new Map();
 function readDirectory(path, folderName)
 {
   let result = {type: 'folder', name: folderName, folder: []};
-  fs.readDir(path, {withFileTypes: true},(err, content)=>{
+  fs.readdir(path, {withFileTypes: true},(err, content)=>{
     if(err)
     {
       socket.emit('loadedProject', {
@@ -45,7 +45,7 @@ function readDirectory(path, folderName)
     let tempfolders = new Map([...folders].sort((a, b) => 
       a[0] > b[0]
     ));
-    tempfolder.forEach(element => {
+    tempfolders.forEach(element => {
       result.folder.push(element[1]);
     })
   })
@@ -104,7 +104,7 @@ io.sockets.on('connection', socket => {
       })
     }
     else{
-      exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.filename, (err, stdout, stderr) => {
+      exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.projectName + '/' + input.filename, (err, stdout, stderr) => {
         if(err) {
           socket.emit('saved', {
             value: stderr + ' : Save not complete.',
@@ -134,9 +134,9 @@ io.sockets.on('connection', socket => {
   //すでに作られたProjectをロードする
   socket.on('loadProject', async input => 
   {
-    console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName));
+    console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, input.projectName));
     socket.emit('loadedProject', {
-      value: readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName),
+      value: readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, input.projectName),
       style: 'log'
     });
   });
