@@ -62,8 +62,8 @@ int main(int argc, char **argv)
     {
         directory = argv[2];
 
-        char *fullFname = checked_malloc(strlen(fname) + strlen(directory) + 1);
-        char * fullTempFname = checked_malloc(strlen(tempFileName) + strlen(directory) + 1);
+        char *fullFname = checked_malloc(sizeof (fname) + sizeof (directory) + 1);
+        char * fullTempFname = checked_malloc(sizeof (tempFileName) + sizeof (directory) + 1);
         strcat(fullFname, directory);
         strcat(fullFname, "/");
         strcat(fullFname, fname);
