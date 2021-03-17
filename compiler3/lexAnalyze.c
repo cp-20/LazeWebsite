@@ -53,27 +53,41 @@ int main(int argc, char **argv)
         fprintf(stderr, "usage: ./a.out filename\n       ./a.out filename directory\n       argument count: %d\n", argc);
         exit(1);
     }
+
     fname = argv[1];
-    directory = argv[2];
     char *tempFileName = checked_malloc(sizeof fname + sizeof(char));
     strcat(tempFileName, ".");
     strcat(tempFileName, fname);
-    char *fullFname = checked_malloc(sizeof fname + sizeof directory);
-    char * fullTempFname = checked_malloc(sizeof tempFileName + sizeof directory);
-    strcat(fullFname, directory);
-    strcat(fullFname, "/");
-    strcat(fullFname, fname);
-    strcat(fullTempFname, directory);
-    strcat(fullTempFname, "/");
-    strcat(fullTempFname, tempFileName);
-    FILE *temp = fopen(fullTempFname, "w");
-    fclose(temp);
-    EM_reset(fullTempFname);
-    while(!toByte(fullFname, fullTempFname));
-    fprintf(stdout, "\n");
-    // parse(tempFileName);
-    parseTest(fullTempFname);
+    if(argc == 3)
+    {
+        directory = argv[2];
 
+        char *fullFname = checked_malloc(strlen(fname) + strlen(directory) + 1);
+        char * fullTempFname = checked_malloc(strlen(tempFileName) + strlen(directory) + 1);
+        strcat(fullFname, directory);
+        strcat(fullFname, "/");
+        strcat(fullFname, fname);
+        strcat(fullTempFname, directory);
+        strcat(fullTempFname, "/");
+        strcat(fullTempFname, tempFileName);
+        FILE *temp = fopen(fullTempFname, "w");
+        fclose(temp);
+        EM_reset(fullTempFname);
+        while(!toByte(fullFname, fullTempFname));
+        fprintf(stdout, "\n");
+        // parse(tempFileName);
+        parseTest(fullTempFname);
+    }
+    else
+    {
+        FILE *temp = fopen(tempFileName, "w");
+        fclose(temp);
+        EM_reset(tempFileName);
+        while(!toByte(fname, tempFileName));
+        fprintf(stdout, "\n");
+        // parse(tempFileName);
+        parseTest(tempFileName);
+    }
     // for(;;)
     // {
     //     tok = yylex();
