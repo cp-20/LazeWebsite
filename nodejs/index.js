@@ -50,9 +50,8 @@ function readDirectory(path, socket, result)
       }); 
     }
     console.log(result);
-  })
-  
-  return result;
+    return result;
+  }).then((val) => {return val;})
 }
 
 app.use('/', express.static('/home/pi/compilerserver/Compiler/'));
