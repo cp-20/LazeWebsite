@@ -45,24 +45,27 @@ int main(int argc, char **argv)
 {
     // setlocale(LC_CTYPE, "C.UTF-16");
     // yydebug = 1;
-    string fname;
+    string fname, directory;
     int tok;
-    if(argc != 2)
+    if(argc != 2 || argc != 3)
     {
-        fprintf(stderr, "usage: ./a.out filename\n");
+        fprintf(stderr, "usage: ./a.out filename\n       ./a.out filename directory");
         exit(1);
     }
     fname = argv[1];
+    directory = argv[2];
     char *tempFileName = checked_malloc(sizeof fname + sizeof(char));
     strcat(tempFileName, ".");
     strcat(tempFileName, fname);
-    FILE *temp = fopen(tempFileName, "w");
+    char *fullFname = checked_malloc(sizeof fname + sizeof directory);
+    char * fullTempFname = checked_malloc(sizeof tempFileName + sizeof directory);
+    FILE *temp = fopen(fullTempFname, "w");
     fclose(temp);
-    EM_reset(tempFileName);
-    while(!toByte(fname, tempFileName));
+    EM_reset(fullTempFname);
+    while(!toByte(fullFname, fullTempFname));
     fprintf(stdout, "\n");
     // parse(tempFileName);
-    parseTest(tempFileName);
+    parseTest(fullTempFname);
 
     // for(;;)
     // {

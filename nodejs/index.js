@@ -2,6 +2,7 @@
 
 const express = require('express');
 const { exec } = require('child_process');
+const fs = require('fs');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
@@ -9,6 +10,7 @@ const port = 80;
 
 //socket.idをkey、アカウント名をvalueとしたmap
 let users = new Map();
+let usersDirectory = new Map();
 
 app.use('/', express.static('/home/pi/compilerserver/Compiler/'));
 app.get('/', (req, res) => {
@@ -74,6 +76,21 @@ io.sockets.on('connection', socket => {
         return;
       });
     }
+    //loginシステム
+    socket.on('login', async input => 
+    {
+      //usersのvalueをアカウント名にする
+      users.set(socket.id, input.accountName);
+    })
+    //すでに作られたProjectをロードする
+    socket.on('loadProject', async input => 
+    {
+
+    })
+    //Projectを作る
+    sockets.on('createProject', async input => {
+
+    })
   })
 });
 
