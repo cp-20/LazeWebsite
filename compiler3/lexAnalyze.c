@@ -55,7 +55,7 @@ int main(int argc, char **argv)
     }
 
     fname = argv[1];
-    printf("%d", sizeof(fname));
+    printf("%s", fname);
     char *tempFileName = checked_malloc(sizeof (fname) + sizeof(char) + sizeof(char));
     strcpy(tempFileName, ".");
     strcat(tempFileName, fname);
