@@ -62,17 +62,14 @@ function logPopup(value, style='info') {
 // ログ出力
 socket.on('output', result => logOutput(result.value, result.style));
 
-// コンパイル
-document.getElementById('editor-button-compile').onclick = compile;
-function compile() {
-	const value = editor.getValue();
-	const tabGroup = document.getElementById('editor-tab-group');
-	const selectedTab = tabGroup.getElementsByClassName('selected')[0];
-	const filename = selectedTab.getElementsByTagName('span')[0].innerText;
-	socket.emit('compile', {
-		filename: filename,
-		value: value
-	});
+// アカウント関係
+{
+	document.getElementById('editor-button-login').onclick = login;
+	function login() {
+		socket.emit('login', {
+			accountName: 'thedude6583'
+		});
+	}
 }
 
 // ファイル操作
@@ -146,6 +143,19 @@ function compile() {
 		}
 	}
 
+	// コンパイル
+	document.getElementById('editor-button-compile').onclick = compile;
+	function compile() {
+		const value = editor.getValue();
+		const tabGroup = document.getElementById('editor-tab-group');
+		const selectedTab = tabGroup.getElementsByClassName('selected')[0];
+		const filename = selectedTab.getElementsByTagName('span')[0].innerText;
+		socket.emit('compile', {
+			filename: filename,
+			value: value
+		});
+	}
+
 	// セーブ
 	{
 		// 未保存
@@ -181,7 +191,9 @@ function compile() {
 			}else {
 				// セーブ
 				const filename = selectedTab.getElementsByTagName('span')[0].innerText;
+				const projectname = document.querySelector('div#file-explorer > ul').className;
 				socket.emit('save', {
+					projectname: projectname,
 					filename: filename,
 					value: value
 				});
@@ -221,6 +233,7 @@ function compile() {
 		}
 		
 	}
+
 	// ファイルツリー
 	{
 		socket.on('loadedProject', result => {
@@ -231,8 +244,10 @@ function compile() {
 			
 			function parseDir(dir) {
 				const tree = (root, dir, nest=0) => {
+					// プロジェクト名
+					root.className = dir.name;
+
 					dir.forEach(subdir => {
-						// 
 						let file = document.createElement('li');
 						file.innerText = subdir.name;
 						file.style.paddingLeft = `${nest * 20 + 30}px`;
@@ -254,7 +269,9 @@ function compile() {
 						}
 					});
 				}
-				const root = document.querySelector('#file-explorer > ul.root');
+				const root = document.querySelector('#file-explorer > ul');
+				root.innerHTML = '';
+				root.className = '';
 				tree(root, dir.value);
 			}
 		});
