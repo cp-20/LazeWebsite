@@ -30,7 +30,7 @@ async function readDirectory(path, socket, result)
 
       let files = new Map();
       let folders = new Map();
-      content.forEach(element => {
+      content.forEach(async element => {
         if(element.isFile()){
           files.set(element.name, {type: 'file', name: element.name});
         }
