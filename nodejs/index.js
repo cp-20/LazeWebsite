@@ -43,7 +43,7 @@ function readDirectory(path, folderName)
     let tempfiles = new Map([...files].sort((a, b) => a[0] > b[0]));
     
     tempfiles.forEach(file => {
-      console.log(file[1]);
+      console.log(file);
       result.folder.push(file[1]);
     }); 
   })
