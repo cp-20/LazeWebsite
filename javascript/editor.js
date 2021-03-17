@@ -239,7 +239,8 @@ socket.on('output', result => logOutput(result.value, result.style));
 
 	// ロード完了 → ファイルツリーに反映
 	socket.on('loadedProject', result => {
-		parseDir(result);
+		console.log(result);
+		parseDir(result.value);
 
 		// ログ
 		logOutput('Project loaded');
@@ -249,7 +250,7 @@ socket.on('output', result => logOutput(result.value, result.style));
 				// プロジェクト名
 				root.className = dir.name;
 
-				dir.forEach(subdir => {
+				dir.value.forEach(subdir => {
 					let file = document.createElement('li');
 					file.innerText = subdir.name;
 					file.style.paddingLeft = `${nest * 20 + 30}px`;
@@ -274,7 +275,7 @@ socket.on('output', result => logOutput(result.value, result.style));
 			const root = document.querySelector('#file-explorer > ul');
 			root.innerHTML = '';
 			root.className = '';
-			tree(root, dir.value);
+			tree(root, dir);
 		}
 	});
 }
