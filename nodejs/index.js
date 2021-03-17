@@ -54,11 +54,11 @@ io.sockets.on('connection', socket => {
       console.log('could not create ' + accountsDir + 'guest/' + socket.id);
     }
   });
-  usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id + '/');
+  usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
   socket.on('compile', async input => {
     // コンパイル
-    exec('echo \"' + input.value + '\" > ' + input.filename + ' ' + usersDirectory.get(socket.id));
-    exec('./compiler ' + usersDirectory.get(socket.id) + input.filename, (err, stdout, stderr) =>
+    exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + input.filename);
+    exec('./compiler ' + input.filename + ' ' + usersDirectory.get(socket.id), (err, stdout, stderr) =>
     {
       // 出力
         console.log(err, stdout, stderr);
@@ -90,7 +90,7 @@ io.sockets.on('connection', socket => {
       })
     }
     else{
-      exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + input.filename, (err, stdout, stderr) => {
+      exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.filename, (err, stdout, stderr) => {
         if(err) {
           socket.emit('saved', {
             value: stderr + ' : Save not complete.',
@@ -114,20 +114,20 @@ io.sockets.on('connection', socket => {
     {
       //usersのvalueをアカウント名にする
       users.set(socket.id, input.accountName);
-      usersDirectory.set(socket.id, accountsDir + input.accountName + '/');
+      usersDirectory.set(socket.id, accountsDir + input.accountName);
     })
     //すでに作られたProjectをロードする
     socket.on('loadProject', async input => 
     {
-      console.log(readDirectory(usersDirectory.get(socket.id) + input.projectName));
+      console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName));
       socket.emit('loadedProject', {
-        value: readDirectory(usersDirectory.get(socket.id) + input.projectName),
+        value: readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName),
         style: 'log'
       });
     })
     //Projectを作る
     socket.on('createProject', async input => {
-      fs.mkdir(usersDirectory.get(socket.id) + input.projectName, (err) => {
+      fs.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, (err) => {
         if(err)
         {
           socket.emit('createdProject', {
