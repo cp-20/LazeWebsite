@@ -54,10 +54,10 @@ io.sockets.on('connection', socket => {
       console.log('could not create ' + accountsDir + 'guest/' + socket.id);
     }
   });
-  usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
+  usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id + '/');
   socket.on('compile', async input => {
     // コンパイル
-    exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + input.filename);
+    exec('echo \"' + input.value + '\" > ' + input.filename + ' ' + usersDirectory.get(socket.id));
     exec('./compiler ' + usersDirectory.get(socket.id) + input.filename, (err, stdout, stderr) =>
     {
       // 出力
