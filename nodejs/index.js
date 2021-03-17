@@ -15,9 +15,8 @@ let users = new Map();
 let usersDirectory = new Map();
 
 //ディレクトリー読むための再帰関数
-function readDirectory(path, folderName, socket)
+function readDirectory(path, socket, result)
 {
-  let result = {type: 'folder', name: folderName, folder: []};
   fs.readdir(path, {withFileTypes: true},(err, content)=>{
     if(err)
     {
@@ -136,9 +135,10 @@ io.sockets.on('connection', socket => {
   //すでに作られたProjectをロードする
   socket.on('loadProject', async input => 
   {
-    console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, input.projectName, socket));
+    let result = {type: 'folder', name: input.projectName, folder: []};
+    console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
     socket.emit('loadedProject', {
-      value: readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, input.projectName, socket),
+      value: readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result),
       style: 'log'
     });
   });
