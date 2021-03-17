@@ -57,7 +57,6 @@ int main(int argc, char **argv)
     string tempFileName = concat(".", fname);
     if(argc == 3)
     {
-
         string fullFname = concat(directory, fname);
         string fullTempFname = concat(directory, tempFileName);
         FILE *temp = fopen(fullTempFname, "w");

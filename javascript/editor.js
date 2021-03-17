@@ -33,6 +33,15 @@ socket.on('saved', result => {
 	logPopup(result.value, result.style);
 });
 
+socket.on('createdProject', result => {
+	logOutput(result.value, result.style);
+	logPopup(result.value, result.style);
+})
+
+socket.on('loadedProject', result => {
+	//ここにparseするプログラム
+})
+
 // ログ出力
 function logOutput(value, style='log') {
 	console.log(`${style}：${value}`);

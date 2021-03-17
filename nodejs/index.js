@@ -8,9 +8,35 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port = 80;
 
+const accountsDir = '/media/usb/compilerserver/accounts/';
+
 //socket.idをkey、アカウント名をvalueとしたmap
 let users = new Map();
 let usersDirectory = new Map();
+
+//ディレクトリー読むための再帰関数
+function readDirectory(path)
+{
+  let result = {type: 'folder', folder: []};
+  fs.readDir(path, {withFileTypes: true},(err, content)=>{
+    if(err)
+    {
+      socket.emit('loadedProject', {
+        value: 'Could not load folder ' + path,
+        style: err
+      });
+    }
+    content.forEach(element => {
+      if(element.isFile()){
+        result.root.push({type: 'file', name: element.name});
+      }
+      else if(element.isDirectory()){
+        result.root.push(readDirectory(path + '/' + element.name));
+      }
+    })
+  })
+  return result;
+}
 
 app.use('/', express.static('/home/pi/compilerserver/Compiler/'));
 app.get('/', (req, res) => {
@@ -22,10 +48,12 @@ io.sockets.on('connection', socket => {
   console.log('New connection from ' + JSON.stringify(address) + socket.id);
   //defaultはguestとして入る
   users.set(socket.id, "guest");
+  fs.mkdir(accountsDir + 'guest/' + socket.id);
+  usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
   socket.on('compile', async input => {
     // コンパイル
-    exec('echo \"' + input.value + '\" > ' + input.filename);
-    exec('./compiler ' + input.filename, (err, stdout, stderr) =>
+    exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + input.filename);
+    exec('./compiler ' + usersDirectory.get(socket.id) + input.filename, (err, stdout, stderr) =>
     {
       // 出力
         console.log(err, stdout, stderr);
@@ -57,7 +85,7 @@ io.sockets.on('connection', socket => {
       })
     }
     else{
-      exec('echo \"' + input.value + '\" > /media/usb/compilerserver/accounts/' + users.get(socket.id) + '/' + input.filename, (err, stdout, stderr) => {
+      exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + input.filename, (err, stdout, stderr) => {
         if(err) {
           socket.emit('saved', {
             value: stderr + ' : Save not complete.',
@@ -81,15 +109,43 @@ io.sockets.on('connection', socket => {
     {
       //usersのvalueをアカウント名にする
       users.set(socket.id, input.accountName);
+      usersDirectory.set(socket.id, accountsDir + input.accountName + '/');
     })
     //すでに作られたProjectをロードする
     socket.on('loadProject', async input => 
     {
-
+      console.log(readDirectory(usersDirectory.get(socket.id) + input.projectName));
+      socket.emit('loadedProject', {
+        value: readDirectory(usersDirectory.get(socket.id) + input.projectName),
+        style: 'log'
+      });
     })
     //Projectを作る
-    sockets.on('createProject', async input => {
+    socket.on('createProject', async input => {
+      fs.mkdir(usersDirectory.get(socket.id) + input.projectName, (err) => {
+        if(err)
+        {
+          socket.emit('createdProject', {
+            value: 'Could not create project '+ input.projectName,
+            style: 'err'
+          })
+        }
+        else
+        {
+          socket.emit('createdProject', {
+            value: 'Created project ' + input.projectName,
+            style: 'log'
+          })
+        }
+      });
 
+    })
+    //disconnectしたとき
+    socket.on('disconnect', async input => {
+      if(users.get(socket.id) == 'guest')
+      {
+        fs.rmdir(usersDirectory.get(socket.id));        
+      }
     })
   })
 });
