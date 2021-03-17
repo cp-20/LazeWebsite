@@ -239,7 +239,8 @@ socket.on('output', result => logOutput(result.value, result.style));
 
 	// ロード完了 → ファイルツリーに反映
 	socket.on('loadedProject', result => {
-		parseDir(result);
+		console.log(result);
+		parseDir(result.value);
 
 		// ログ
 		logOutput('Project loaded');
