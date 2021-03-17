@@ -55,7 +55,7 @@ int main(int argc, char **argv)
     }
 
     fname = argv[1];
-    char *tempFileName = checked_malloc(sizeof fname + sizeof(char) + sizeof(char));
+    char *tempFileName = checked_malloc(sizeof (fname) + sizeof(char) + sizeof(char));
     strcat(tempFileName, ".");
     strcat(tempFileName, fname);
     if(argc == 3)
