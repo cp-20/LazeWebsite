@@ -146,7 +146,7 @@ io.sockets.on('connection', socket => {
 
     })
     //disconnectしたとき
-    socket.on('disconnecting', () => {
+    socket.on('disconnect', () => {
       console.log("a");
       if(users.get(socket.id) == 'guest')
       {
