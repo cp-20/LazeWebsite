@@ -48,7 +48,12 @@ io.sockets.on('connection', socket => {
   console.log('New connection from ' + JSON.stringify(address) + socket.id);
   //defaultはguestとして入る
   users.set(socket.id, "guest");
-  fs.mkdir(accountsDir + 'guest/' + socket.id);
+  fs.mkdir(accountsDir + 'guest/' + socket.id, (err) => {
+    if(err)
+    {
+      console.log('could not create ' + accountsDir + 'guest/' + socket.id);
+    }
+  });
   usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
   socket.on('compile', async input => {
     // コンパイル
