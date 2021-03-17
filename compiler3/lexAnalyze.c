@@ -53,7 +53,7 @@ int main(int argc, char **argv)
         exit(1);
     }
     fname = argv[1];
-    printf("%s", fname);
+    directory = argv[2];
     string tempFileName = concat(".", fname);
     if(argc == 3)
     {
