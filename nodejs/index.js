@@ -104,7 +104,7 @@ io.sockets.on('connection', socket => {
       })
     }
     else{
-      exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.filename, (err, stdout, stderr) => {
+      exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.projectName + '/' + input.filename, (err, stdout, stderr) => {
         if(err) {
           socket.emit('saved', {
             value: stderr + ' : Save not complete.',
