@@ -17,7 +17,7 @@ let usersDirectory = new Map();
 //ディレクトリー読むための再帰関数
 async function readDirectory(path, socket, result)
 {
-  await fs.readdir(path, {withFileTypes: true},(err, content)=>{
+  fs.readdir(path, {withFileTypes: true},(err, content)=>{
     if(err)
     {
       socket.emit('loadedProject', {
@@ -51,7 +51,7 @@ async function readDirectory(path, socket, result)
     }
     console.log(result);
     return result;
-  }).then((val) => {return val;})
+  });
 }
 
 app.use('/', express.static('/home/pi/compilerserver/Compiler/'));
