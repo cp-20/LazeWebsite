@@ -53,9 +53,7 @@ int main(int argc, char **argv)
         exit(1);
     }
     fname = argv[1];
-    char *tempFileName = checked_malloc(sizeof fname + sizeof(char));
-    strcat(tempFileName, ".");
-    strcat(tempFileName, fname);
+    char *tempFileName = concat(".", fname);
     FILE *temp = fopen(tempFileName, "w");
     fclose(temp);
     EM_reset(tempFileName);
