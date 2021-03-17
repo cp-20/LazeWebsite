@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 
     fname = argv[1];
     char *tempFileName = checked_malloc(sizeof (fname) + sizeof(char) + sizeof(char));
-    strcat(tempFileName, ".");
+    strcpy(tempFileName, ".");
     strcat(tempFileName, fname);
     if(argc == 3)
     {
@@ -64,10 +64,10 @@ int main(int argc, char **argv)
 
         char *fullFname = checked_malloc(sizeof (fname) + sizeof (directory) + sizeof(char));
         char * fullTempFname = checked_malloc(sizeof (tempFileName) + sizeof (directory) + sizeof(char));
-        strcat(fullFname, directory);
+        strcpy(fullFname, directory);
         strcat(fullFname, "/");
         strcat(fullFname, fname);
-        strcat(fullTempFname, directory);
+        strcpy(fullTempFname, directory);
         strcat(fullTempFname, "/");
         strcat(fullTempFname, tempFileName);
         FILE *temp = fopen(fullTempFname, "w");
