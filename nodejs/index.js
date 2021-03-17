@@ -149,7 +149,12 @@ io.sockets.on('connection', socket => {
     socket.on('disconnect', async input => {
       if(users.get(socket.id) == 'guest')
       {
-        fs.rmdir(usersDirectory.get(socket.id));        
+        fs.rmdir(usersDirectory.get(socket.id), (err, stdout, stderr) => {
+          if(err)
+          {
+            console.log(stderr);
+          }
+        });        
       }
     })
   })
