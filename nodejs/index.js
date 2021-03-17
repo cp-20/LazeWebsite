@@ -36,16 +36,13 @@ function readDirectory(path, folderName)
         folders.set(element.name, readDirectory(path + '/' + element.name, element.name));
       }
     })
-    console.log(files);
-    let tempfiles = new Map([...files].sort((a, b) => 
-      a[0] > b[0]
-    ));
+    
+    let tempfiles = new Map([...files].sort((a, b) => a[0] > b[0]));
+    console.log(tempfiles);
     tempfiles.forEach(file => {
       result.folder.push(file[1]);
     });
-    let tempfolders = new Map([...folders].sort((a, b) => 
-      a[0] > b[0]
-    ));
+    let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
     tempfolders.forEach(folder => {
       result.folder.push(folder[1]);
     })
