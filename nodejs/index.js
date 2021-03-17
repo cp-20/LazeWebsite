@@ -108,55 +108,58 @@ io.sockets.on('connection', socket => {
         }
         return;
       });
-    }
-    //loginシステム
-    socket.on('login', async input => 
-    {
-      //usersのvalueをアカウント名にする
-      users.set(socket.id, input.accountName);
-      usersDirectory.set(socket.id, accountsDir + input.accountName);
-    })
-    //すでに作られたProjectをロードする
-    socket.on('loadProject', async input => 
-    {
-      console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName));
-      socket.emit('loadedProject', {
-        value: readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName),
-        style: 'log'
-      });
-    })
-    //Projectを作る
-    socket.on('createProject', async input => {
-      fs.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, (err) => {
-        if(err)
-        {
-          socket.emit('createdProject', {
-            value: 'Could not create project '+ input.projectName,
-            style: 'err'
-          })
-        }
-        else
-        {
-          socket.emit('createdProject', {
-            value: 'Created project ' + input.projectName,
-            style: 'log'
-          })
-        }
-      });
-
-    })
-    //disconnectしたとき
-    socket.on('disconnect', async input => {
-      console.log(users.get(socket.id));
-      if(users.get(socket.id) == 'guest')
+    };
+  });
+  //loginシステム
+  socket.on('login', async input => 
+  {
+    //usersのvalueをアカウント名にする
+    users.set(socket.id, input.accountName);
+    usersDirectory.set(socket.id, accountsDir + input.accountName);
+  });
+  //すでに作られたProjectをロードする
+  socket.on('loadProject', async input => 
+  {
+    console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName));
+    socket.emit('loadedProject', {
+      value: readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName),
+      style: 'log'
+    });
+  });
+  //Projectを作る
+  socket.on('createProject', async input => {
+    fs.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, (err) => {
+      if(err)
       {
-        fs.rmdir(usersDirectory.get(socket.id), (err) => {
-          console.log(usersDirectory.get(socket.id));
-        });        
+        socket.emit('createdProject', {
+          value: 'Could not create project '+ input.projectName,
+          style: 'err'
+        })
       }
-    })
+      else
+      {
+        socket.emit('createdProject', {
+          value: 'Created project ' + input.projectName,
+          style: 'log'
+        })
+      }
+    });
+  })
+  //disconnectしたとき
+  socket.on('disconnect', () => {
+    console.log("a");
+    if(users.get(socket.id) == 'guest')
+    {
+      fs.rmdir(usersDirectory.get(socket.id), (err) => {
+        console.log(usersDirectory.get(socket.id));
+      });        
+    }
   })
 });
+
+io.sockets.on('disconnect', socket => {
+  console.log('a');
+})
 
 http.listen(port, () => {
     console.log(`Compiler Server listening at http://rootlang.ddns.net`);
