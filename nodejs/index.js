@@ -27,7 +27,6 @@ io.sockets.on('connection', socket => {
     {
 	console.log(stdout);
       // 出力
-        console.log(stdout);
         if(err) {
           socket.emit('output', {
             value: stderr,
