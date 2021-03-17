@@ -55,15 +55,15 @@ int main(int argc, char **argv)
     }
 
     fname = argv[1];
-    char *tempFileName = checked_malloc(sizeof fname + sizeof(char) + 1);
+    char *tempFileName = checked_malloc(sizeof fname + sizeof(char) + sizeof(char));
     strcat(tempFileName, ".");
     strcat(tempFileName, fname);
     if(argc == 3)
     {
         directory = argv[2];
 
-        char *fullFname = checked_malloc(sizeof (fname) + sizeof (directory) + 1);
-        char * fullTempFname = checked_malloc(sizeof (tempFileName) + sizeof (directory) + 1);
+        char *fullFname = checked_malloc(sizeof (fname) + sizeof (directory) + sizeof(char));
+        char * fullTempFname = checked_malloc(sizeof (tempFileName) + sizeof (directory) + sizeof(char));
         strcat(fullFname, directory);
         strcat(fullFname, "/");
         strcat(fullFname, fname);
