@@ -36,7 +36,9 @@ async function readDirectory(path, socket, result)
         }
         else if(element.isDirectory()){
           // console.log('a');
-          folders.set(element.name, readDirectory(path + '/' + element.name, element.name, {type: 'folder', name: element.name, folder: []}));
+          readDirectory(path + '/' + element.name, element.name, {type: 'folder', name: element.name, folder: []}).then((val) => {
+            folders.set(element.name, val);
+          })
         }
       })
       let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
