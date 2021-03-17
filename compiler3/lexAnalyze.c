@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     int tok;
     if(argc != 2 && argc != 3)
     {
-        fprintf(stderr, "usage: ./a.out filename\n");
+        fprintf(stderr, "usage: ./a.out filename\n      ./a.out filename directory\nargument count: %d\n", argc);
         exit(1);
     }
     fname = argv[1];
