@@ -4,6 +4,7 @@ const socket = io.connect('');
 // 編集内容
 let editContents = {}
 
+// エディタ
 const editor = CodeMirror(function(elt) {
 	const editor = document.getElementById('editor-editbox');
 	editor.parentNode.replaceChild(elt, editor);
@@ -19,28 +20,14 @@ const editor = CodeMirror(function(elt) {
 });
 editor.setOption('styleActiveLine', {nonEmpty: false});
 
-// 未保存
-editor.on('change', function() {
-	const tabGroup = document.getElementById('editor-tab-group');
-	const selectedTab = tabGroup.getElementsByClassName('selected')[0];
-	if (!selectedTab.classList.contains('unsave')) selectedTab.classList.add('unsave')
-});
-socket.on('saved', result => {
-	// ログ
-	logOutput(result.value, result.style);
-
-	// ポップアップ
-	logPopup(result.value, result.style);
-});
-
 socket.on('createdProject', result => {
 	logOutput(result.value, result.style);
 	logPopup(result.value, result.style);
-})
+});
 
 socket.on('loadedProject', result => {
 	//ここにparseするプログラム
-})
+});
 
 // ログ出力
 function logOutput(value, style='log') {
@@ -72,7 +59,7 @@ function logPopup(value, style='info') {
 	outputArea.prepend(output);
 }
 
-// 出力ウィンドウ
+// ログ出力
 socket.on('output', result => logOutput(result.value, result.style));
 
 // コンパイル
@@ -88,149 +75,188 @@ function compile() {
 	});
 }
 
-// セーブ
-document.getElementById('editor-button-save').onclick = save;
-function save() {
-	const tabGroup = document.getElementById('editor-tab-group');
-	const selectedTab = tabGroup.getElementsByClassName('selected')[0];
-	const value = editor.getValue();
-	if (selectedTab.classList.contains('untitled')) {
-		// ウィンドウを開く
-		const overlay = document.getElementById('overlay');
-		overlay.classList.add('setname');
+// ファイル操作
+{
+	// 新規ファイル
+	document.getElementById('editor-button-newfile').onclick = newFile;
+	function newFile() {
+		// ユニークID生成関数
+		const uniqueID = () => {
+			return Date.now().toString(16) + Math.floor(1000 * Math.random()).toString(16);
+		}
 
-		// 諸変数
-		overlay.dataset.changeIndex = selectedTab.dataset.index;
-		overlay.dataset.mode = 'save';
-		document.getElementById('setname-name').value = '';
-	}else {
-		// セーブ
-		const filename = selectedTab.getElementsByTagName('span')[0].innerText;
-		socket.emit('save', {
-			filename: filename,
-			value: value
+		const tabGroup = document.getElementById('editor-tab-group');
+		const index = tabGroup.children.length;
+		const newfile = document.createElement('div');
+		newfile.classList.add('editor-tab');
+		newfile.classList.add('untitled');
+		newfile.dataset.index = index;
+		newfile.innerHTML = `<span>無題</span><button class="editor-button-closefile"><img src="assets/icons/cross.svg"></button>`;
+		newfile.id = uniqueID();
+		editContents[newfile.id] = '';
+		newfile.getElementsByTagName('button')[0].onclick = function(e) {
+			e.stopPropagation();
+			closeFile(parseInt(this.parentNode.dataset.index));
+		}
+		newfile.addEventListener('click', function() {
+			selectFile(parseInt(this.dataset.index));
 		});
+		newfile.addEventListener('contextmenu', function(e) {
+			e.preventDefault();
+		});
+		tabGroup.appendChild(newfile);
+		selectFile(index);
 	}
-}
+	newFile();
 
-// ファイル選択
-function selectFile(index) {
-	const tabGroup = document.getElementById('editor-tab-group');
-	const selectedTab = tabGroup.getElementsByClassName('selected');
-	for (let i = 0; i < selectedTab.length; i++) {
-		editContents[selectedTab[i].id] = editor.getValue();
-		selectedTab[i].classList.remove('selected');
+	// ファイル選択
+	function selectFile(index) {
+		const tabGroup = document.getElementById('editor-tab-group');
+		const selectedTab = tabGroup.getElementsByClassName('selected');
+		for (let i = 0; i < selectedTab.length; i++) {
+			editContents[selectedTab[i].id] = editor.getValue();
+			selectedTab[i].classList.remove('selected');
+		}
+		tabGroup.children[index].classList.add('selected');
+		editor.setValue(editContents[tabGroup.children[index].id]);
 	}
-	tabGroup.children[index].classList.add('selected');
-	editor.setValue(editContents[tabGroup.children[index].id]);
-}
 
-// ファイルを閉じる
-function closeFile(index) {
-	const tabGroup = document.getElementById('editor-tab-group');
-	const closeingFile = tabGroup.children[index];
-	if (closeingFile.classList.contains('selected')) {
-		console.log(tabGroup.children.length);
-		if (index == tabGroup.children.length - 1) {
-			if (index > 0) {
-				selectFile(index - 1);
+	// ファイルを閉じる
+	function closeFile(index) {
+		const tabGroup = document.getElementById('editor-tab-group');
+		const closeingFile = tabGroup.children[index];
+		if (closeingFile.classList.contains('selected')) {
+			console.log(tabGroup.children.length);
+			if (index == tabGroup.children.length - 1) {
+				if (index > 0) {
+					selectFile(index - 1);
+				}
+			}else {
+				selectFile(index + 1);
 			}
-		}else {
-			selectFile(index + 1);
+		}
+		closeingFile.classList.add('closefile');
+		closeingFile.getElementsByTagName('button')[0].remove();
+		closeingFile.addEventListener('animationend', function() { this.remove(); });
+		
+		// 後ろのindexをずらす
+		const tabs = tabGroup.children;
+		for (let i = index; i < tabs.length; i++) {
+			tabs[i].dataset.index = tabs[i].dataset.index - 1;
 		}
 	}
-	closeingFile.classList.add('closefile');
-	closeingFile.getElementsByTagName('button')[0].remove();
-	closeingFile.addEventListener('animationend', function() { this.remove(); });
-	
-	// 後ろのindexをずらす
-	const tabs = tabGroup.children;
-	for (let i = index; i < tabs.length; i++) {
-		tabs[i].dataset.index = tabs[i].dataset.index - 1;
-	}
-}
 
-// 新規ファイル
-document.getElementById('editor-button-newfile').onclick = newFile;
-function newFile() {
-	// ユニークID生成関数
-	const uniqueID = () => {
-    return Date.now().toString(16) + Math.floor(1000 * Math.random()).toString(16);
-	}
+	// セーブ
+	{
+		// 未保存
+		editor.on('change', function() {
+			const tabGroup = document.getElementById('editor-tab-group');
+			const selectedTab = tabGroup.getElementsByClassName('selected')[0];
+			if (!selectedTab.classList.contains('unsave')) selectedTab.classList.add('unsave')
+		});
+		// 保存済み
+		socket.on('saved', result => {
+			// ログ
+			logOutput(result.value, result.style);
 
-	const tabGroup = document.getElementById('editor-tab-group');
-	const index = tabGroup.children.length;
-	const newfile = document.createElement('div');
-	newfile.classList.add('editor-tab');
-	newfile.classList.add('untitled');
-	newfile.dataset.index = index;
-	newfile.innerHTML = `<span>無題</span><button class="editor-button-closefile"><img src="assets/icons/cross.svg"></button>`;
-	newfile.id = uniqueID();
-	editContents[newfile.id] = '';
-	newfile.getElementsByTagName('button')[0].onclick = function(e) {
-		e.stopPropagation();
-		closeFile(parseInt(this.parentNode.dataset.index));
-	}
-	newfile.addEventListener('click', function() {
-		selectFile(parseInt(this.dataset.index));
-	});
-	newfile.addEventListener('contextmenu', function(e) {
-		e.preventDefault();
-	});
-	tabGroup.appendChild(newfile);
-	selectFile(index);
-}
-newFile();
+			// ポップアップ
+			logPopup(result.value, result.style);
+		});
 
-// ファイル名変更 キャンセル
-document.getElementById('setname-cancel').onclick = cancelSave;
-function cancelSave() {
-	// ウィンドウを閉じる
-	const overlay = document.getElementById('overlay');
-	overlay.classList.remove('setname');
-}
-// ファイル名変更 保存
-document.getElementById('setname-enter').onclick = enterSave;
-function enterSave() {
-	const overlay = document.getElementById('overlay');
-	const tabGroup = document.getElementById('editor-tab-group');
-	const value = document.getElementById('setname-name').value;
+		// セーブ
+		document.getElementById('editor-button-save').onclick = save;
+		function save() {
+			const tabGroup = document.getElementById('editor-tab-group');
+			const selectedTab = tabGroup.getElementsByClassName('selected')[0];
+			const value = editor.getValue();
+			if (selectedTab.classList.contains('untitled')) {
+				// ウィンドウを開く
+				const overlay = document.getElementById('overlay');
+				overlay.classList.add('setname');
 
-	// 名前変更
-	const changeTab = tabGroup.children[overlay.dataset.changeIndex];
-	changeTab.getElementsByTagName('span')[0].innerText = value;
-	if (changeTab.classList.contains('untitled')) changeTab.classList.remove('untitled');
-	
-	if (overlay.dataset.mode == 'save') {
-		// 保存
-		save();
-	}else {
-		// 名前の変更
+				// 諸変数
+				overlay.dataset.changeIndex = selectedTab.dataset.index;
+				overlay.dataset.mode = 'save';
+				document.getElementById('setname-name').value = '';
+			}else {
+				// セーブ
+				const filename = selectedTab.getElementsByTagName('span')[0].innerText;
+				socket.emit('save', {
+					filename: filename,
+					value: value
+				});
+			}
+		}
+
+		// ファイル名変更 キャンセル
+		document.getElementById('setname-cancel').onclick = cancelSave;
+		function cancelSave() {
+			// ウィンドウを閉じる
+			const overlay = document.getElementById('overlay');
+			overlay.classList.remove('setname');
+		}
+		// ファイル名変更 保存
+		document.getElementById('setname-enter').onclick = enterSave;
+		function enterSave() {
+			const overlay = document.getElementById('overlay');
+			const tabGroup = document.getElementById('editor-tab-group');
+			const value = document.getElementById('setname-name').value;
+			
+			// 名前変更
+			const changeTab = tabGroup.children[overlay.dataset.changeIndex];
+			changeTab.getElementsByTagName('span')[0].innerText = value;
+			if (changeTab.classList.contains('untitled')) changeTab.classList.remove('untitled');
+			
+			if (overlay.dataset.mode == 'save') {
+				// 保存
+				save();
+			}else {
+				// 名前の変更
+				
+			}
+			overlay.dataset.mode = '';
+			
+			// ウィンドウを閉じる
+			overlay.classList.remove('setname');
+		}
 		
 	}
-	overlay.dataset.mode = '';
+	// ファイルツリー
+	{
+		socket.on('loadedProject', result => {
+			parseDir(result);
 
-	// ウィンドウを閉じる
-	overlay.classList.remove('setname');
-}
-
-function renameFile(index) {
-	
-}
-
-// ファイルツリー
-{
-	function parseDir(root, dir) {
-		const tree = dir => {
-			dir.forEach(subdir => {
-				if (subdir.type === 'folder') {
-
-				}else {
-					tree(subdir.value);
+			// ログ
+			logOutput('Project loaded');
+			
+			function parseDir(dir) {
+				const tree = (root, dir, nest=0) => {
+					dir.forEach(subdir => {
+						// 
+						let file = document.createElement('li');
+						file.innerText = subdir.name;
+						file.style.paddingLeft = `${nest * 20 + 30}px`;
+						file.classList.add('ui-dir');
+						if (subdir.type === 'folder') {
+							file.classList.add('ui-folder');
+							file.onclick = function() {
+								this.classList.toggle('opened');
+							}
+						}
+						if (subdir.type === 'file') file.classList.add('ui-file');
+						root.appendChild(file);
+						
+						if (subdir.type === 'folder') {
+							let folder = document.createElement('ul');
+							folder.classList.add('ui-folder-root');
+							root.appendChild(folder);
+							tree(folder, subdir.value, nest + 1);
+						}
+					});
 				}
-			})
-		}
-		const root = document.querySelector('#file-explorer > ul.root');
-		tree(dir.root);
+				const root = document.querySelector('#file-explorer > ul.root');
+				tree(root, dir.value);
+			}
+		});
 	}
 }

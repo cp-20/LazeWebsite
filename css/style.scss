@@ -1,6 +1,6 @@
 $color: (
 	// background
-	main-background: rgb(235, 235, 235),
+	main-background: #ddd,
 	editor-background: white,
 	// text color
 	main-text: rgb(31, 31, 31),
@@ -92,11 +92,19 @@ html {
 
 			// エクスプローラー
 			div.explorer {
-				width: 400px;
+				min-width: 100px;
+				width: 200px;
+				resize: horizontal;
+				overflow: auto;
+
 				margin-right: 30px;
+
+				background-color: whitesmoke;
 
 				// ボタン類
 				div.explorer-buttons {
+					height: 50px;
+
 					div.explorer-button-newfile {
 
 					}
@@ -107,14 +115,59 @@ html {
 
 				// ファイルエクスプローラー
 				div#file-explorer {
+					height: calc(100% - 50px);
 					
+					ul {
+						margin: 0;
+						padding: 0;
+
+						li.ui-dir {
+							list-style: none;
+							user-select: none;
+
+							box-sizing: border-box;
+							max-width: 300px;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+							overflow-x: hidden;
+
+							&.ui-folder {
+								&::before {
+									content: '';
+
+									display: inline-block;
+									width: 16px;
+									height: 16px;
+
+									position: absolute;
+									margin-left: -20px;
+									margin-top: 4px;
+								}
+
+								&:not(.opened) {
+									&::before { background-image: url('../assets/icons/folder-close.svg'); }
+
+									& + ul { display: none; }
+								}
+								&.opened {
+										&::before { background-image: url('../assets/icons/folder-open.svg'); }
+
+									& + ul { display: block; }
+								}
+							}
+
+							&:hover {
+								background-color: rgba(black, 0.05);
+							}
+						}
+					}
 				}
 			}
 
 			// エディタ
 			div.editor {
 				margin: 20px 0 10px 0;
-				width: calc(100% - 150px);
+				flex: 1;
 				display: flex;
 				flex-direction: row;
 
