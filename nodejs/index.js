@@ -147,7 +147,7 @@ io.sockets.on('connection', socket => {
     })
     //disconnectしたとき
     socket.on('disconnecting', () => {
-      console.log(socket.id);
+      console.log("a");
       if(users.get(socket.id) == 'guest')
       {
         fs.rmdir(usersDirectory.get(socket.id), (err) => {
