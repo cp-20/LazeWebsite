@@ -24,6 +24,7 @@ io.sockets.on('connection', socket => {
     exec('./compiler ' + input.filename, (err, stdout, stderr) =>
     {
       // 出力
+        console.log(stdout);
         if(err) {
           socket.emit('output', {
             value: stderr,
@@ -38,6 +39,7 @@ io.sockets.on('connection', socket => {
         return;
     }
     );
+    exec('sudo rm -f ' + input.filename + ' .' + input.filename);
 
   })
   socket.on('save', async input => {

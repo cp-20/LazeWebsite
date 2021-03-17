@@ -762,7 +762,7 @@ YY_DECL
 			yyin = stdin;
 
 		if ( ! yyout )
-			yyout = stdout;
+			yyout = stderr;
 
 		if ( ! YY_CURRENT_BUFFER ) {
 			yyensure_buffer_stack ();
@@ -1869,7 +1869,7 @@ YY_BUFFER_STATE yy_scan_bytes  (const char * yybytes, int  _yybytes_len )
 
 static void yynoreturn yy_fatal_error (const char* msg )
 {
-			fprintf( stdout, "%s\n", msg );
+			fprintf( stderr, "%s\n", msg );
 	exit( YY_EXIT_FAILURE );
 }
 
@@ -1986,7 +1986,7 @@ static int yy_init_globals (void)
 /* Defined in main.c */
 #ifdef YY_STDINIT
     yyin = stdin;
-    yyout = stdout;
+    yyout = stderr;
 #else
     yyin = NULL;
     yyout = NULL;
