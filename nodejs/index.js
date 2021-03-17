@@ -45,7 +45,7 @@ function readDirectory(path, folderName)
     let tempfolders = new Map([...folders].sort((a, b) => 
       a[0] > b[0]
     ));
-    tempfolder.forEach(element => {
+    tempfolders.forEach(element => {
       result.folder.push(element[1]);
     })
   })
@@ -134,9 +134,9 @@ io.sockets.on('connection', socket => {
   //すでに作られたProjectをロードする
   socket.on('loadProject', async input => 
   {
-    console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName));
+    console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, input.projectName));
     socket.emit('loadedProject', {
-      value: readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName),
+      value: readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, input.projectName),
       style: 'log'
     });
   });
