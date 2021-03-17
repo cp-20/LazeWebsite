@@ -24,6 +24,7 @@ typedef char bool;
 
 void *checked_malloc(int);
 string String(char *);
+string concat(char *, char *);
 
 typedef struct U_boolList_ *U_boolList;
 struct U_boolList_ {bool head; U_boolList tail;};

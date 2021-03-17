@@ -45,24 +45,38 @@ int main(int argc, char **argv)
 {
     // setlocale(LC_CTYPE, "C.UTF-16");
     // yydebug = 1;
-    string fname;
+    string fname, directory;
     int tok;
-    if(argc != 2)
+    if(argc != 2 && argc != 3)
     {
-        fprintf(stderr, "usage: ./a.out filename\n");
+        fprintf(stderr, "usage: ./a.out filename\n      ./a.out filename directory\nargument count: %d\n", argc);
         exit(1);
     }
     fname = argv[1];
-    char *tempFileName = checked_malloc(sizeof fname + sizeof(char));
-    strcat(tempFileName, ".");
-    strcat(tempFileName, fname);
-    FILE *temp = fopen(tempFileName, "w");
-    fclose(temp);
-    EM_reset(tempFileName);
-    while(!toByte(fname, tempFileName));
-    fprintf(stdout, "\n");
-    // parse(tempFileName);
-    parseTest(tempFileName);
+    directory = argv[2];
+    string tempFileName = concat(".", fname);
+    if(argc == 3)
+    {
+        string fullFname = concat(directory, fname);
+        string fullTempFname = concat(directory, tempFileName);
+        FILE *temp = fopen(fullTempFname, "w");
+        fclose(temp);
+        EM_reset(fullTempFname);
+        while(!toByte(fullFname, fullTempFname));
+        fprintf(stdout, "\n");
+        // parse(tempFileName);
+        parseTest(fullTempFname);
+    }
+    else
+    {
+        FILE *temp = fopen(tempFileName, "w");
+        fclose(temp);
+        EM_reset(tempFileName);
+        while(!toByte(fname, tempFileName));
+        fprintf(stdout, "\n");
+        // parse(tempFileName);
+        parseTest(tempFileName);
+    }
 
     // for(;;)
     // {

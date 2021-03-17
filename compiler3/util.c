@@ -21,6 +21,14 @@ string String(char *s)
     return p;
 }
 
+string concat(char *str1, char *str2)
+{
+    string result = checked_malloc((strlen(str1) + strlen(str2) + 1) * sizeof(char));
+    strcpy(result, str1);
+    strcat(result, str2);
+    return result;
+}
+
 U_boolList U_BoolList(bool head, U_boolList tail)
 {
     U_boolList list = checked_malloc(sizeof(*list));
