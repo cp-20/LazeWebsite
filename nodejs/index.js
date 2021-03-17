@@ -26,26 +26,30 @@ function readDirectory(path, folderName, socket)
         style: err
       });
     }
-    let files = new Map();
-    let folders = new Map();
-    content.forEach(element => {
-      if(element.isFile()){
-        files.set(element.name, {type: 'file', name: element.name});
-      }
-      else if(element.isDirectory()){
-        folders.set(element.name, readDirectory(path + '/' + element.name, element.name));
-      }
-    })
-    let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
-    tempfolders.forEach(folder => {
-      result.folder.push(folder);
-    })
-    let tempfiles = new Map([...files].sort((a, b) => a[0] > b[0]));
-    tempfiles.forEach(file => {
-      console.log(file);
-      result.folder.push(file);
-      result.folder.push('a');
-    }); 
+    else
+    {
+
+      let files = new Map();
+      let folders = new Map();
+      content.forEach(element => {
+        if(element.isFile()){
+          files.set(element.name, {type: 'file', name: element.name});
+        }
+        else if(element.isDirectory()){
+          folders.set(element.name, readDirectory(path + '/' + element.name, element.name));
+        }
+      })
+      let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
+      tempfolders.forEach(folder => {
+        result.folder.push(folder);
+      })
+      let tempfiles = new Map([...files].sort((a, b) => a[0] > b[0]));
+      tempfiles.forEach(file => {
+        console.log(file);
+        result.folder.push(file);
+        result.folder.push('a');
+      }); 
+    }
   })
   return result;
 }
