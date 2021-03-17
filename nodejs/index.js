@@ -49,8 +49,9 @@ function readDirectory(path, socket, result)
         console.log(result.folder.push(file));
       }); 
     }
+    console.log(result);
   })
-  console.log(result);
+  
   return result;
 }
 
