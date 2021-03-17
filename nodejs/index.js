@@ -15,9 +15,8 @@ let users = new Map();
 let usersDirectory = new Map();
 
 //ディレクトリー読むための再帰関数
-function readDirectory(path, folderName)
+async function readDirectory(path, socket, result)
 {
-  let result = {type: 'folder', name: folderName, folder: []};
   fs.readdir(path, {withFileTypes: true},(err, content)=>{
     if(err)
     {
@@ -26,31 +25,33 @@ function readDirectory(path, folderName)
         style: err
       });
     }
-    let files = new Map();
-    let folders = new Map();
-    content.forEach(element => {
-      if(element.isFile()){
-        files.set(element.name, {type: 'file', name: element.name});
-      }
-      else if(element.isDirectory()){
-        folders.set(element.name, readDirectory(path + '/' + element.name, element.name));
-      }
-    })
-    console.log(files);
-    let tempfiles = new Map([...files].sort((a, b) => 
-      a[0] > b[0]
-    ));
-    tempfiles.forEach(file => {
-      result.folder.push(file[1]);
-    });
-    let tempfolders = new Map([...folders].sort((a, b) => 
-      a[0] > b[0]
-    ));
-    tempfolders.forEach(folder => {
-      result.folder.push(folder[1]);
-    })
-  })
-  return result;
+    else
+    {
+
+      let files = new Map();
+      let folders = new Map();
+      content.forEach(element => {
+        if(element.isFile()){
+          files.set(element.name, {type: 'file', name: element.name});
+        }
+        else if(element.isDirectory()){
+          // console.log('a');
+          folders.set(element.name, readDirectory(path + '/' + element.name, element.name));
+        }
+      })
+      let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
+      tempfolders.forEach(folder => {
+        result.folder.push(folder);
+      })
+      let tempfiles = new Map([...files].sort((a, b) => a[0] > b[0]));
+      tempfiles.forEach(file => {
+        console.log(file);
+        console.log(result.folder.push(file));
+      }); 
+    }
+    console.log(result);
+    return result;
+  });
 }
 
 app.use('/', express.static('/home/pi/compilerserver/Compiler/'));
@@ -135,10 +136,13 @@ io.sockets.on('connection', socket => {
   //すでに作られたProjectをロードする
   socket.on('loadProject', async input => 
   {
-    console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, input.projectName));
-    socket.emit('loadedProject', {
-      value: readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, input.projectName),
-      style: 'log'
+    let result = {type: 'folder', name: input.projectName, folder: []};
+    // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
+    readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result).then((val) => {
+      socket.emit('loadedProject', {
+        value: val,
+        style: 'log'
+      });
     });
   });
   //Projectを作る
