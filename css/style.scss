@@ -1,6 +1,6 @@
 $color: (
 	// background
-	main-background: rgb(235, 235, 235),
+	main-background: #ddd,
 	editor-background: white,
 	// text color
 	main-text: rgb(31, 31, 31),
@@ -77,6 +77,8 @@ html {
 
 			// タブ
 			div.tab {
+				display: none;
+
 				width: 150px;
 
 				div.tab-content {
@@ -90,11 +92,19 @@ html {
 
 			// エクスプローラー
 			div.explorer {
-				display: none;
-				width: 150px;
+				min-width: 100px;
+				width: 200px;
+				resize: horizontal;
+				overflow: auto;
+
+				margin-right: 30px;
+
+				background-color: whitesmoke;
 
 				// ボタン類
 				div.explorer-buttons {
+					height: 50px;
+
 					div.explorer-button-newfile {
 
 					}
@@ -105,14 +115,59 @@ html {
 
 				// ファイルエクスプローラー
 				div#file-explorer {
+					height: calc(100% - 50px);
+					
+					ul {
+						margin: 0;
+						padding: 0;
 
+						li.ui-dir {
+							list-style: none;
+							user-select: none;
+
+							box-sizing: border-box;
+							max-width: 300px;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+							overflow-x: hidden;
+
+							&.ui-folder {
+								&::before {
+									content: '';
+
+									display: inline-block;
+									width: 16px;
+									height: 16px;
+
+									position: absolute;
+									margin-left: -20px;
+									margin-top: 4px;
+								}
+
+								&:not(.opened) {
+									&::before { background-image: url('../assets/icons/folder-close.svg'); }
+
+									& + ul { display: none; }
+								}
+								&.opened {
+										&::before { background-image: url('../assets/icons/folder-open.svg'); }
+
+									& + ul { display: block; }
+								}
+							}
+
+							&:hover {
+								background-color: rgba(black, 0.05);
+							}
+						}
+					}
 				}
 			}
 
 			// エディタ
 			div.editor {
 				margin: 20px 0 10px 0;
-				width: calc(100% - 150px);
+				flex: 1;
 				display: flex;
 				flex-direction: row;
 
@@ -459,6 +514,8 @@ html {
 			top: 10px;
 			right: 10px;
 
+			pointer-events: none;
+
 			div.popup {
 				display: flex;
 				align-items: center;
@@ -518,6 +575,18 @@ html {
 					}
 
 					animation: popup-end2 .5s forwards;
+
+					&::after {
+						@keyframes popup-progress-end2 {
+							0% {
+								margin-top: 37px;
+							}
+							100% {
+								margin-top: -3px;
+							}
+						}
+						animation: popup-progress-end2 .5s;
+					}
 				}
 
 				span {
@@ -534,6 +603,7 @@ html {
 					background-color: transparent;
 					outline: 0;
 					border: none;
+					pointer-events: all;
 
 					cursor: pointer;
 
@@ -553,13 +623,21 @@ html {
 
 					background-color: rgba(black, 0.5);
 					
-					animation: popup-progress 5s .5s linear forwards;
+					animation: popup-progress 5s .5s linear forwards, popup-progress-end .5s 5.5s;
 					@keyframes popup-progress {
 						0% {
 							width: 0;
 						}
 						100% {
 							width: 100%;
+						}
+					}
+					@keyframes popup-progress-end {
+						0% {
+							margin-top: 37px;
+						}
+						100% {
+							margin-top: -3px;
 						}
 					}
 				}
