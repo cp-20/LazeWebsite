@@ -46,7 +46,6 @@ function readDirectory(path, socket, result)
       tempfiles.forEach(file => {
         console.log(file);
         console.log(result.folder.push(file));
-        result.folder.push('a');
       }); 
     }
   })
