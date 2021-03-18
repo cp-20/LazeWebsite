@@ -176,6 +176,7 @@ io.sockets.on('connection', socket => {
       let output = '';
       console.log(users);
       users.forEach(element => {
+        console.log('a');
         output = output.concat(output, element);
         output = output.concat(output, '<br>');
       });
