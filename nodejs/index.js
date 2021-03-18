@@ -17,7 +17,7 @@ let usersDirectory = new Map();
 //ディレクトリー読むための再帰関数
 async function readDirectory(path, socket, result)
 {
-  fs.readdir(path, {withFileTypes: true},(err, content)=>{
+  return fs.readdir(path, {withFileTypes: true},(err, content)=>{
     if(err)
     {
       socket.emit('loadedProject', {
@@ -30,23 +30,24 @@ async function readDirectory(path, socket, result)
 
       let files = new Map();
       let folders = new Map();
-      content.forEach(element => {
+      content.forEach(async element => {
         if(element.isFile()){
           files.set(element.name, {type: 'file', name: element.name});
         }
         else if(element.isDirectory()){
           // console.log('a');
-          let val = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []});
-          folders.set(element.name, val);
+          // let val = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []});
+          console.log(await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}));
+          folders.set(element.name, await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}));
         }
       })
       let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
       tempfolders.forEach(folder => {
+        console.log(folder);
         result.folder.push(folder);
       })
       let tempfiles = new Map([...files].sort((a, b) => a[0] > b[0]));
       tempfiles.forEach(file => {
-        console.log(file);
         console.log(result.folder.push(file));
       }); 
     }
