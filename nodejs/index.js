@@ -3,7 +3,6 @@
 const express = require('express');
 const { exec } = require('child_process');
 const fs = require('fs');
-const readline = require('readline');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
@@ -62,46 +61,6 @@ async function readDirectory(path, socket, result, callback)
     });
   })
 }
-
-const readStream = fs.createReadStream('commands');
-const writeStream = fs.createWriteStream('commands');
-
-const rl = readline.createInterface({
-  input: readStream,
-  output: writeStream,
-  crlfDelay: Infinity,
-  prompt: '>'
-});
-
-rl.prompt();
-
-rl.on('line', (line) => {
-  console.log('test');
-  let words = line.split(' ');
-  if(words[0] == '>')
-  {
-    if(words[1] == 'stop')
-    {
-      console.log('a');
-      exec('cd /media/usb/compilerserver/accounts/guest && rm -r ./*');
-      exec('sudo systemctl stop compilerserver');
-    }
-    else if(words[1] == 'restart')
-    {
-      exec('cd /media/usb/compilerserver/accounts/guest && rm -r ./*');
-      exec('sudo systemctl restart compilerserver');
-    }
-    else if(words[1] == 'list')
-    {
-      if(words[2] == 'online')
-      {
-        console.log(JSON.stringify(io.sockets.handshake.address));
-      }
-    }
-  }
-  rl.prompt();
-});
-
 
 app.use('/', express.static('/home/pi/compilerserver/Compiler/'));
 app.get('/', (req, res) => {
@@ -179,9 +138,24 @@ io.sockets.on('connection', socket => {
   socket.on('login', async input => 
   {
     //usersのvalueをアカウント名にする
+    let temp = users.get(socket.id);
     users.set(socket.id, input.accountName);
     usersDirectory.set(socket.id, accountsDir + input.accountName);
+    if(login.accountName == 'admin')
+    {
+      app.get('/', (req, res) => {
+        res.sendFile('/home/pi/compilerserver/Compiler/html/admin.html');
+      });
+      socket.emit('originalUsername', {
+        originalName: temp
+      })
+    }
   });
+
+  socket.on('adminLogout', async input => {
+    users.set(socket.id, input.originalName);
+    usersDirectory.set(socket.id, accountsDir + input.originalName);
+  })
   //すでに作られたProjectをロードする
   socket.on('loadProject', async input => 
   {
