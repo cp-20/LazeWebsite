@@ -31,7 +31,7 @@ async function readDirectory(path, socket, result, callback)
     {
       let files = new Map();
       let folders = new Map();
-      let fn = async function processContent(element) {
+      let fn = function processContent(element) {
         if(element.isFile())
         {
           files.set(element.name, {type: 'file', name : element.name});
@@ -48,7 +48,6 @@ async function readDirectory(path, socket, result, callback)
         }
       }
       let temp = await Promise.all(content.map(fn));
-      console.log(100);
       console.log(temp, 51);
       console.log(folders, 52);
       let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
