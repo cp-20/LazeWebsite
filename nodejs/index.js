@@ -194,19 +194,16 @@ io.sockets.on('connection', socket => {
   })
   //disconnectしたとき
   socket.on('disconnect', () => {
-    console.log("a");
+    // console.log("a");
     if(users.get(socket.id) == 'guest')
     {
       fs.rmdir(usersDirectory.get(socket.id), (err) => {
-        console.log(usersDirectory.get(socket.id));
+        if(err)
+          console.log(usersDirectory.get(socket.id));
       });        
     }
   })
 });
-
-io.sockets.on('disconnect', socket => {
-  console.log('a');
-})
 
 http.listen(port, () => {
     console.log(`Compiler Server listening at http://rootlang.ddns.net`);
