@@ -10,7 +10,11 @@ const port = 80;
 
 const accountsDir = '/media/usb/compilerserver/accounts/';
 
-fs.mkdir(accountsDir + 'guest');
+fs.mkdir(accountsDir + 'guest', (err) => {
+  if(err){
+    console.log(err);
+  }
+});
 //socket.idをkey、アカウント名をvalueとしたmap
 let users = new Map();
 let usersDirectory = new Map();
