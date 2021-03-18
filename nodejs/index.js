@@ -29,14 +29,13 @@ async function readDirectory(path, socket, result, callback)
     {
       let files = new Map();
       let folders = new Map();
-      content.forEach(async element => {
-        if(element.isFile()){
-          files.set(element.name, {type: 'file', name: element.name});
+      let fn = async function processContent(element) {
+        if(element.isFile())
+        {
+          files.set(element.name, {type: 'file', name : element.name});
         }
-        else if(element.isDirectory()){
-          // console.log('a');
-          // let val = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []});
-          // console.log(await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}));
+        else if(element.isDirectory())
+        {
           readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}, (val) => {
             console.log(val, 'a');
             folders.set(element.name, val);
@@ -44,7 +43,25 @@ async function readDirectory(path, socket, result, callback)
             return val;
           });
         }
-      })
+      }
+      let temp = Promise.all(content.map(fn));
+      console.log(temp);
+      // content.forEach(async element => {
+      //   if(element.isFile()){
+      //     files.set(element.name, {type: 'file', name: element.name});
+      //   }
+      //   else if(element.isDirectory()){
+      //     // console.log('a');
+      //     // let val = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []});
+      //     // console.log(await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}));
+      //     readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}, (val) => {
+      //       console.log(val, 'a');
+      //       folders.set(element.name, val);
+      //       // console.log(folders);
+      //       return val;
+      //     });
+      //   }
+      // })
       console.log(folders);
       let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
       tempfolders.forEach(folder => {
