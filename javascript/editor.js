@@ -311,7 +311,7 @@ function adminLogoutBtnClicked()
 socket.on('adminOutEmit', (input) => {
 	console.log('gg');
 	console.log(input.value);
-    document.getElementById('adminOutput').innerHTML = 'help';
+    document.getElementById('adminOutput').innerHTML = input.value;
 });
 
 
