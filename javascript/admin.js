@@ -25,5 +25,6 @@ socket.on('originalUsername', (input) => {
 });
 
 socket.on('requestAdminPage', () => {
+    console.log('got');
     fetch('/adminpage', {method: "GET"});
 });
