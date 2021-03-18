@@ -149,6 +149,7 @@ io.sockets.on('connection', socket => {
         originalName: temp
       });
       app.get('/adminpage', (req, res) => {
+        console.log('a');
         res.sendFile('/home/pi/compilerserver/Compiler/html/admin.html');
       })
     }
