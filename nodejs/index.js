@@ -21,7 +21,7 @@ async function readDirectory(path, socket, result, callback)
     fs.readdir(path, {withFileTypes: true},async (err, content)=>{
     if(err)
     {
-      console.log('a', 24);
+      console.log('couldnt load project', 24);
       socket.emit('loadedProject', {
         value: 'Could not load folder ' + path,
         style: err
@@ -29,6 +29,7 @@ async function readDirectory(path, socket, result, callback)
     }
     else
     {
+      console.log(100);
       let files = new Map();
       let folders = new Map();
       let fn = async function processContent(element) {
@@ -48,24 +49,8 @@ async function readDirectory(path, socket, result, callback)
         }
       }
       let temp = await Promise.all(content.map(fn));
-      console.log(temp, 49);
-      // content.forEach(async element => {
-      //   if(element.isFile()){
-      //     files.set(element.name, {type: 'file', name: element.name});
-      //   }
-      //   else if(element.isDirectory()){
-      //     // console.log('a');
-      //     // let val = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []});
-      //     // console.log(await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}));
-      //     readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}, (val) => {
-      //       console.log(val, 'a');
-      //       folders.set(element.name, val);
-      //       // console.log(folders);
-      //       return val;
-      //     });
-      //   }
-      // })
-      console.log(folders, 65);
+      console.log(temp, 51);
+      console.log(folders, 52);
       let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
       tempfolders.forEach(folder => {
         console.log(folder);
@@ -76,7 +61,7 @@ async function readDirectory(path, socket, result, callback)
         console.log(result.folder.push(file));
       }); 
     }
-    console.log(result, 78);
+    console.log(result, 63);
     return callback(result);
   });})
 }
