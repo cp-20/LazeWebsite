@@ -15,7 +15,7 @@ let users = new Map();
 let usersDirectory = new Map();
 
 //ディレクトリー読むための再帰関数
-async function readDirectory(path, socket, result)
+async function readDirectory(path, socket, result, callback)
 {
   fs.readdir(path, {withFileTypes: true},(err, content)=>{
     if(err)
@@ -37,7 +37,9 @@ async function readDirectory(path, socket, result)
           // console.log('a');
           // let val = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []});
           console.log(await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}));
-          folders.set(element.name, await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}));
+          const temp = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}, (val) => {
+            folders.set(element.name, val);
+          });
         }
       })
       let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
@@ -51,7 +53,7 @@ async function readDirectory(path, socket, result)
       }); 
     }
     // console.log(result);
-    return result;
+    return callback(result);
   });
 }
 
