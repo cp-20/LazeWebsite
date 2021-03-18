@@ -181,7 +181,7 @@ io.sockets.on('connection', socket => {
     {
       fs.rmdir(usersDirectory.get(socket.id), (err) => {
         if(err)
-          console.log(usersDirectory.get(socket.id));
+          console.log('./' + usersDirectory.get(socket.id));
       });        
     }
   })
