@@ -39,18 +39,13 @@ async function readDirectory(path, socket, result, callback)
           }
           else if(element.isDirectory())
           {
-            console.log(42);
             return readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}, (val) => {
-              console.log(val, 42);
               folders.set(element.name, val);
-              // console.log(folders);
-              return val;
+             return val;
             });
           }
         }
         let temp = await Promise.all(content.map(fn));
-        console.log(temp, 51);
-        console.log(folders, 52);
         let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
         tempfolders.forEach(folder => {
           console.log(folder);
@@ -61,7 +56,6 @@ async function readDirectory(path, socket, result, callback)
           console.log(result.folder.push(file));
         }); 
       }
-      console.log(result, 63);
       resolve(result);
       return callback(result);
     });
@@ -160,7 +154,7 @@ io.sockets.on('connection', socket => {
       });
     });
   });
-  
+
   //Projectを作る
   socket.on('createProject', async input => {
     fs.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, (err) => {
