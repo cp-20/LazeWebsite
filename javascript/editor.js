@@ -295,7 +295,9 @@ function adminExecuteBtnClicked()
         command: document.getElementById('command').value
     })
 }
-
+socket.on('originalUsername', (input) => {
+    oName = input.originalName;
+});
 function adminLogoutBtnClicked()
 {
 	let temp = oName;
@@ -309,6 +311,4 @@ socket.on('adminExecuted', (result) => {
     document.getElementById('output').innerHTML = result.value;
 });
 
-socket.on('originalUsername', (input) => {
-    oName = input.originalName;
-});
+
