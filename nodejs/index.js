@@ -2,6 +2,7 @@
 
 const express = require('express');
 const { exec } = require('child_process');
+const rimraf = require("rimraf");
 const fs = require('fs');
 const app = express();
 const http = require('http').Server(app);
@@ -160,17 +161,13 @@ io.sockets.on('connection', socket => {
     console.log(words[0]);
     if(words[0] == 'stop')
     {
-      fs.rmdir('/media/usb/compilerserver/accounts/guest', {recursive: true}, (err) => {
-        if(err)
-          console.log(err);
+      rimraf('/media/usb/compilerserver/accounts/guest', () => {
         exec('sudo systemctl stop compilerserver');
       });   
     }
     else if(words[0] == 'restart')
     {
-      fs.rmdir('/media/usb/compilerserver/accounts/guest', {recursive: true}, (err) => {
-        if(err)
-          console.log(err);
+      rimraf('/media/usb/compilerserver/accounts/guest', () => {
         exec('sudo systemctl restart compilerserver');
       }); 
     }
