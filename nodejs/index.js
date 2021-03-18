@@ -72,6 +72,7 @@ io.sockets.on('connection', socket => {
   console.log('New connection from ' + JSON.stringify(address) + socket.id);
   //defaultはguestとして入る
   users.set(socket.id, "guest");
+  fs.mkdir(accountsDir + 'guest');
   fs.mkdir(accountsDir + 'guest/' + socket.id, (err) => {
     if(err)
     {
@@ -155,17 +156,17 @@ io.sockets.on('connection', socket => {
     console.log(words[0]);
     if(words[0] == 'stop')
     {
-      exec('cd /media/usb/compilerserver/accounts/guest && rm -r ./*', (err) => {
+      exec('rm -r /media/usb/compilerserver/accounts/guest', (err) => {
         if(err)
         {
           console.log(err);
         }
+        exec('sudo systemctl stop compilerserver');
       })
-      exec('sudo systemctl stop compilerserver');
     }
     else if(words[0] == 'restart')
     {
-      exec('cd /media/usb/compilerserver/accounts/guest && rm -r ./*');
+      exec('rm -r /media/usb/compilerserver/accounts/guest');
       exec('sudo systemctl restart compilerserver');
     }
     else if(words[0] == 'list')
