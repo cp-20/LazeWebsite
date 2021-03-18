@@ -3,6 +3,7 @@
 const express = require('express');
 const { exec } = require('child_process');
 const fs = require('fs');
+const readline = require('readline');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
@@ -61,6 +62,44 @@ async function readDirectory(path, socket, result, callback)
     });
   })
 }
+
+const readStream = fs.createReadStream('commands');
+const writeStream = fs.createWriteStream('commands');
+
+const rl = readline.createInterface({
+  input: readStream,
+  output: writeStream,
+  crlfDelay: Infinity,
+  prompt: '>'
+});
+
+rl.prompt();
+
+rl.on('line', (line) => {
+  let words = line.split(' ');
+  if(words[0] == '>')
+  {
+    if(words[1] == 'stop')
+    {
+      exec('cd /media/usb/compilerserver/accounts/guest && rm -r ./*');
+      exec('sudo systemctl stop compilerserver');
+    }
+    else if(words[1] == 'restart')
+    {
+      exec('cd /media/usb/compilerserver/accounts/guest && rm -r ./*');
+      exec('sudo systemctl restart compilerserver');
+    }
+    else if(words[1] == 'list')
+    {
+      if(words[2] == 'online')
+      {
+        console.log(JSON.stringify(io.sockets.handshake.address));
+      }
+    }
+  }
+  rl.prompt();
+});
+
 
 app.use('/', express.static('/home/pi/compilerserver/Compiler/'));
 app.get('/', (req, res) => {
