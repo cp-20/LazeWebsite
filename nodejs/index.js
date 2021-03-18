@@ -160,18 +160,19 @@ io.sockets.on('connection', socket => {
     console.log(words[0]);
     if(words[0] == 'stop')
     {
-      exec('rm -r /media/usb/compilerserver/accounts/guest', (err) => {
+      fs.rmdir('/media/usb/compilerserver/accounts/guest', (err) => {
         if(err)
-        {
           console.log(err);
-        }
         exec('sudo systemctl stop compilerserver');
-      })
+      });   
     }
     else if(words[0] == 'restart')
     {
-      exec('rm -r /media/usb/compilerserver/accounts/guest');
-      exec('sudo systemctl restart compilerserver');
+      fs.rmdir('/media/usb/compilerserver/accounts/guest', (err) => {
+        if(err)
+          console.log(err);
+        exec('sudo systemctl restart compilerserver');
+      }); 
     }
     else if(words[0] == 'list')
     {
