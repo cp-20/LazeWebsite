@@ -44,7 +44,7 @@ async function readDirectory(path, socket, result, callback)
           });
         }
       }
-      let temp = Promise.all(content.map(fn));
+      let temp = await Promise.all(content.map(fn));
       console.log(temp);
       // content.forEach(async element => {
       //   if(element.isFile()){
