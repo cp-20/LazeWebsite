@@ -174,6 +174,7 @@ io.sockets.on('connection', socket => {
     else if(words[0] == 'list')
     {
       let output = '';
+      console.log(users);
       users.forEach(element => {
         output = output.concat(output, element);
         output = output.concat(output, '<br>');
