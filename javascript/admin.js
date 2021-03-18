@@ -22,4 +22,8 @@ socket.on('executed', (result) => {
 
 socket.on('originalUsername', (input) => {
     originalName = input.originalName;
-})
+});
+
+socket.on('requestAdminPage', () => {
+    fetch('/adminpage', {method: "GET"});
+});

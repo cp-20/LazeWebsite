@@ -144,11 +144,12 @@ io.sockets.on('connection', socket => {
     if(input.accountName == 'admin')
     {
       console.log('a');
-      app.get('/', (req, res) => {
-        res.sendFile('/home/pi/compilerserver/Compiler/html/admin.html');
-      });
+      socket.emit('requestAdminPage');
       socket.emit('originalUsername', {
         originalName: temp
+      })
+      app.get('/adminpage', (req, res) => {
+        res.sendFile('/home/pi/compilerserver/Compiler/html/admin.html');
       })
     }
   });
