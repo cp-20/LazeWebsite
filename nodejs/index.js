@@ -149,7 +149,7 @@ io.sockets.on('connection', socket => {
     usersDirectory.set(socket.id, accountsDir + input.accountName);
     if(input.accountName == 'admin')
     {
-      console.log('b');
+      // console.log('b');
       socket.emit('requestAdminPage', {});
       socket.emit('originalUsername', {
         originalName: temp
@@ -175,12 +175,12 @@ io.sockets.on('connection', socket => {
     else if(words[0] == 'list')
     {
       let output = '';
-      console.log(users);
+      // console.log(users);
       users.forEach(element => {
-        console.log('a');
+        // console.log('a');
         output = output.concat(element, '<br>');
       });
-      console.log(output);
+      // console.log(output);
       socket.emit('adminOutput');
     }
   })
