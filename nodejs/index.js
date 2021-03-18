@@ -155,7 +155,12 @@ io.sockets.on('connection', socket => {
     console.log(words[0]);
     if(words[0] == 'stop')
     {
-      exec('cd /media/usb/compilerserver/accounts/guest && rm -r ./*')
+      exec('cd /media/usb/compilerserver/accounts/guest && rm -r ./*', (err) => {
+        if(err)
+        {
+          console.log(err);
+        }
+      })
       .then(() => {exec('sudo systemctl stop compilerserver');})
     }
     else if(words[0] == 'restart')
