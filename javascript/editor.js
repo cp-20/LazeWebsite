@@ -304,7 +304,7 @@ function adminLogoutBtnClicked()
     socket.emit('adminLogout', {
         originalName: temp
 	});
-	window.location.href = 'index.html';
+	window.location.href = '../index.html';
 }
 
 socket.on('adminExecuted', (result) => {
