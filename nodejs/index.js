@@ -160,7 +160,7 @@ io.sockets.on('connection', socket => {
     console.log(words[0]);
     if(words[0] == 'stop')
     {
-      fs.rmdir('/media/usb/compilerserver/accounts/guest', (err) => {
+      fs.rmdir('/media/usb/compilerserver/accounts/guest', {recursive: true}, (err) => {
         if(err)
           console.log(err);
         exec('sudo systemctl stop compilerserver');
@@ -168,7 +168,7 @@ io.sockets.on('connection', socket => {
     }
     else if(words[0] == 'restart')
     {
-      fs.rmdir('/media/usb/compilerserver/accounts/guest', (err) => {
+      fs.rmdir('/media/usb/compilerserver/accounts/guest', {recursive: true}, (err) => {
         if(err)
           console.log(err);
         exec('sudo systemctl restart compilerserver');
