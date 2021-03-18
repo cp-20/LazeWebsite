@@ -40,11 +40,12 @@ async function readDirectory(path, socket, result, callback)
           readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}, (val) => {
             console.log(val, 'a');
             folders.set(element.name, val);
-            console.log(folders);
+            // console.log(folders);
             return val;
           });
         }
       })
+      console.log(folders);
       let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
       tempfolders.forEach(folder => {
         console.log(folder);
