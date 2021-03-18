@@ -41,6 +41,7 @@ async function readDirectory(path, socket, result, callback)
             console.log(val);
             folders.set(element.name, val);
           });
+          console.log(temp);
         }
       })
       let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
