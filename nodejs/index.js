@@ -173,7 +173,14 @@ io.sockets.on('connection', socket => {
     }
     else if(words[0] == 'list')
     {
-
+      let output = '';
+      users.forEach(element => {
+        output = output.concat(output, element);
+        output = output.concat(output, '\n');
+      });
+      socket.emit('adminExecuted', {
+        value: output
+      })
     }
   })
   socket.on('adminLogout', async input => {
