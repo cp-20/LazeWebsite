@@ -141,7 +141,7 @@ io.sockets.on('connection', socket => {
     let temp = users.get(socket.id);
     users.set(socket.id, input.accountName);
     usersDirectory.set(socket.id, accountsDir + input.accountName);
-    if(login.accountName == 'admin')
+    if(input.accountName == 'admin')
     {
       app.get('/', (req, res) => {
         res.sendFile('/home/pi/compilerserver/Compiler/html/admin.html');
