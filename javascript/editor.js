@@ -289,14 +289,14 @@ socket.on('requestAdminPage', () => {
 
 let originalName = '';
 
-function executeBtnClicked()
+function adminExecuteBtnClicked()
 {
     socket.emit('exec', {
         command: document.getElementById('command').value
     })
 }
 
-function logoutBtnClicked()
+function adminLogoutBtnClicked()
 {
     socket.emit('adminLogout', {
         originalName: originalName
