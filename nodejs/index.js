@@ -29,12 +29,12 @@ async function readDirectory(path, socket, result, callback)
     }
     else
     {
-      console.log(100);
       let files = new Map();
       let folders = new Map();
       let fn = async function processContent(element) {
         if(element.isFile())
         {
+          console.log(100);
           files.set(element.name, {type: 'file', name : element.name});
           return {type: 'file', name : element.name};
         }
