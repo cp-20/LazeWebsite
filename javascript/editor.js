@@ -298,8 +298,9 @@ function adminExecuteBtnClicked()
 
 function adminLogoutBtnClicked()
 {
+	let temp = oName;
     socket.emit('adminLogout', {
-        originalName: oName
+        originalName: temp
 	});
 	window.location.href = 'index.html';
 }
