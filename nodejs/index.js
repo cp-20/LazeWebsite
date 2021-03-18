@@ -152,6 +152,7 @@ io.sockets.on('connection', socket => {
   });
   socket.on('adminexec', (input) => {
     let words = input.command.slice(' ');
+    console.log(input.command);
     if(words[0] == 'stop')
     {
       exec('cd /media/usb/compilerserver/accounts/guest && rm -r ./*');
