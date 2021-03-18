@@ -81,6 +81,7 @@ rl.on('line', (line) => {
   {
     if(words[1] == 'stop')
     {
+      console.log('a');
       exec('cd /media/usb/compilerserver/accounts/guest && rm -r ./*');
       exec('sudo systemctl stop compilerserver');
     }
