@@ -291,7 +291,7 @@ var oName = '';
 
 function adminExecuteBtnClicked()
 {
-    socket.emit('exec', {
+    socket.emit('admminexec', {
         command: document.getElementById('command').value
     })
 }

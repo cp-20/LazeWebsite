@@ -150,7 +150,23 @@ io.sockets.on('connection', socket => {
       });
     }
   });
+  socket.on('adminexec', (input) => {
+    let words = input.command.slice(' ');
+    if(words[0] == 'stop')
+    {
+      exec('cd /media/usb/compilerserver/accounts/guest && rm -r ./*');
+      exec('sudo systemctl stop compilerserver');
+    }
+    else if(words[0] == 'restart')
+    {
+      exec('cd /media/usb/compilerserver/accounts/guest && rm -r ./*');
+      exec('sudo systemctl restart compilerserver');
+    }
+    else if(words[0] == 'list')
+    {
 
+    }
+  })
   socket.on('adminLogout', async input => {
     users.set(socket.id, input.originalName);
     usersDirectory.set(socket.id, accountsDir + input.originalName);
