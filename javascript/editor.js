@@ -308,10 +308,10 @@ function adminLogoutBtnClicked()
 	window.location.href = '../index.html';
 }
 
-socket.on('adminExecuted', (result) => {
+socket.on('adminExecuted', (input) => {
 	console.log('b');
-	console.log(result.value);
-    document.getElementById('adminOutput').innerHTML = result.value;
+	console.log(input.value);
+    document.getElementById('adminOutput').innerHTML = input.value;
 });
 
 

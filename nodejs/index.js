@@ -183,7 +183,7 @@ io.sockets.on('connection', socket => {
       console.log(output);
       socket.emit('adminExecuted', {
         value: output
-      })
+      });
     }
   })
   socket.on('adminLogout', async input => {
