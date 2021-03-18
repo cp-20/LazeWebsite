@@ -37,12 +37,12 @@ async function readDirectory(path, socket, result, callback)
           // console.log('a');
           // let val = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []});
           // console.log(await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}));
-          const temp = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}, (val) => {
+          readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}, (val) => {
             console.log(val, 'a');
             folders.set(element.name, val);
-            return (val);
+            console.log(folders);
+            return val;
           });
-          console.log(temp, 'b');
         }
       })
       let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
