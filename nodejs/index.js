@@ -161,7 +161,7 @@ io.sockets.on('connection', socket => {
           console.log(err);
         }
       })
-      .then(() => {exec('sudo systemctl stop compilerserver');})
+      exec('sudo systemctl stop compilerserver');
     }
     else if(words[0] == 'restart')
     {
