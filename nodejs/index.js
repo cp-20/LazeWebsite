@@ -27,7 +27,6 @@ async function readDirectory(path, socket, result)
     }
     else
     {
-
       let files = new Map();
       let folders = new Map();
       content.forEach(async element => {
@@ -51,7 +50,7 @@ async function readDirectory(path, socket, result)
         console.log(result.folder.push(file));
       }); 
     }
-    console.log(result);
+    // console.log(result);
     return result;
   });
 }
@@ -141,6 +140,7 @@ io.sockets.on('connection', socket => {
     let result = {type: 'folder', name: input.projectName, folder: []};
     // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
     readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result).then((val) => {
+      console.log(val);
       socket.emit('loadedProject', {
         value: val,
         style: 'log'
