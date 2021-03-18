@@ -44,7 +44,32 @@
 		<div class="editor">
 			<!-- メイン -->
 			<div class="editor-main">
-				<!-- ボタン類 -->
+				<!-- 設定 -->
+				<div class="editor-settings">
+					<div class="editor-setting editor-setting-account">
+						<button id="editor-setting-account">
+							<img src="assets/icons/guest.svg" id="avatar-image" alt="">
+						</button>
+
+						<div id="editor-setting-account-menu" class="guest">
+							<div class="account-menu">
+								<span id="account-name">ゲスト</span><span>としてログイン中</span>
+							</div>
+							<div class="account-menu">
+								<span></span>
+							</div>
+							<div class="border-line"></div>
+							<div class="account-menu">
+								<span>設定</span>
+							</div>
+							<div class="account-menu">
+								<span>サインアウト</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- ボタン -->
 				<div class="editor-buttons">
 					<div class="editor-button-area ui-button">
 						<button class="editor-button" id="editor-button-compile">
@@ -57,13 +82,8 @@
 						</button>
 					</div>
 					<div class="editor-button-area ui-button">
-						<button class="editor-button" id="editor-button-login">
-							<img src="assets/icons/key.svg" alt="">
-						</button>
-					</div>
-					<div class="editor-button-area ui-button">
 						<button class="editor-button" id="editor-button-load-project">
-							<img src="assets/icons/save.svg" alt="">
+							<img src="assets/icons/load.svg" alt="">
 						</button>
 					</div>
 				</div>

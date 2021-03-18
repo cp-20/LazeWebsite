@@ -50,7 +50,7 @@ html {
 				
 				pointer-events: none;
 				
-				background-color: rgba(black, 0.5);
+				background-color: rgba(black, .5);
 				border-radius: 2px;
 				
 				transition: all .1s;
@@ -76,12 +76,12 @@ html {
 			height: 100%;
 
 			// タブ
-			div.tab {
+			.tab {
 				display: none;
 
 				width: 150px;
 
-				div.tab-content {
+				.tab-content {
 					display: flex;
 					align-items: center;
 					height: 50px;
@@ -91,7 +91,7 @@ html {
 			}
 
 			// エクスプローラー
-			div.explorer {
+			.explorer {
 				min-width: 100px;
 				width: 200px;
 				resize: horizontal;
@@ -102,26 +102,26 @@ html {
 				background-color: whitesmoke;
 
 				// ボタン類
-				div.explorer-buttons {
+				.explorer-buttons {
 					height: 50px;
 
-					div.explorer-button-newfile {
+					.explorer-button-newfile {
 
 					}
-					div.explorer-button-newfolder {
+					.explorer-button-newfolder {
 
 					}
 				}
 
 				// ファイルエクスプローラー
-				div#file-explorer {
+				#file-explorer {
 					height: calc(100% - 50px);
 					
 					ul {
 						margin: 0;
 						padding: 0;
 
-						li.ui-dir {
+						.ui-dir {
 							list-style: none;
 							user-select: none;
 
@@ -145,19 +145,19 @@ html {
 								}
 
 								&:not(.opened) {
-									&::before { background-image: url('../assets/icons/folder-close.svg'); }
+									&::before { background-image: url('../assets/icons/folder-.svg'); }
 
 									& + ul { display: none; }
 								}
 								&.opened {
-										&::before { background-image: url('../assets/icons/folder-open.svg'); }
+										&::before { background-image: url('../assets/icons/folder-.svg'); }
 
 									& + ul { display: block; }
 								}
 							}
 
 							&:hover {
-								background-color: rgba(black, 0.05);
+								background-color: rgba(black, .05);
 							}
 						}
 					}
@@ -165,33 +165,127 @@ html {
 			}
 
 			// エディタ
-			div.editor {
+			.editor {
 				margin: 20px 0 10px 0;
 				flex: 1;
 				display: flex;
 				flex-direction: row;
 
 				// エディタ本体
-				div.editor-main {
+				.editor-main {
 					display: flex;
 					flex-direction: column;
 					width: 100%;
 
-					// ボタン類
-					div.editor-buttons {
+					// 設定
+					.editor-settings {
+						display: flex;
+
+						margin-right: 20px;
+
+						z-index: 4;
+
+						.editor-setting:first-of-type {
+							margin-left: auto;
+						}
+
+						.editor-setting {
+							#editor-setting-account {
+								display: flex;
+								justify-content: center;
+								align-items: center;
+								
+								width: 40px;
+								height: 40px;
+								outline: 0;
+								border: none;
+								border-radius: 50%;
+
+								cursor: pointer;
+								
+								background-color: map-get($map: $color, $key: button);
+								
+								img {
+									width: 32px;
+									
+									border-radius: 50%;
+								}
+							}
+							
+							#editor-setting-account-menu {
+								position: absolute;
+								right: 10px;
+								margin-top: 10px;
+								width: 160px;
+
+								border-radius: 3px;
+								
+								font-size: 0.8rem;
+								
+								background-color: white;
+								box-shadow: 0 8px 24px rgba(149,157,165,0.2);
+
+								&::before {
+									content: '';
+									display: inline-block;
+									z-index: 5;
+
+									position: absolute;
+									right: 22px;
+									margin-top: -16px;
+
+									border: solid transparent 8px;
+									border-bottom: solid white 8px;
+								}
+								
+								.account-menu {
+									display: flex;
+									flex-wrap: wrap;
+
+									padding: 5px 10px;
+
+									&:hover {
+										background-color: rgba(black, 0.1);
+									}
+
+									#account-name {
+										display: inline-block;
+										max-width: 160px;
+
+										font-weight: bold;
+										white-space: nowrap;
+										overflow: hidden;
+										text-overflow: ellipsis;
+									}
+								}
+								.border-line {
+									width: 100%;
+
+									border-top: solid rgb(226, 226, 226) 1px;
+								}
+							}
+						}
+					}
+
+					// ボタン
+					.editor-buttons {
 						margin-bottom: 30px;
 
-						div.editor-button-area {
+						.editor-button-area {
 							display: inline-block;
 							@include ui-button();
 
-							button#editor-button-compile::before {
+							#editor-button-compile::before {
 								content: 'コンパイル & 実行';
 								width: 120px;
 							}
-							button#editor-button-save::before {
+							#editor-button-save::before {
 								content: '保存';
 								width: 40px;
+							}
+							#editor-button-load-project::before {
+								content: 'プロジェクトをロード';
+								width: 140px;
 							}
 
 							button img {
@@ -201,13 +295,13 @@ html {
 					}
 
 					// タブ
-					div.editor-tabs {
+					.editor-tabs {
 						display: flex;
 						flex-direction: row;
 
 						height: 30px;
 
-						div#editor-tab-group {
+						#editor-tab-group {
 							display: flex;
 							flex-direction: row;
 
@@ -226,7 +320,7 @@ html {
 								box-shadow: none;
 							}
 
-							div.editor-tab {
+							.editor-tab {
 								display: flex;
 								align-items: center;
 
@@ -274,7 +368,7 @@ html {
 									content: '*';
 								}
 
-								button.editor-button-closefile {
+								.editor-button-closefile {
 									display: flex;
 									align-items: center;
 									justify-content: center;
@@ -313,19 +407,19 @@ html {
 									background-color: rgb(241, 241, 241);
 								}
 								&.selected + div::before {
-									display: none;
+									display: none!important;
 								}
 							}
 						}
 
-						div.editor-tab-button {
+						.editor-tab-button {
 							display: flex;
 							justify-content: center;
 							align-items: center;
 	
 							width: 30px;
 
-							button#editor-button-newfile {
+							#editor-button-newfile {
 								display: flex;
 								justify-content: center;
 								align-items: center;
@@ -344,7 +438,7 @@ html {
 								transition: background-color .3s;
 
 								&:hover {
-									background-color: rgb(219, 219, 219);
+									background-color: rgba(black, .07);
 								}
 								
 								img {
@@ -355,7 +449,7 @@ html {
 					}
 					
 					// エディタ本体
-					div.CodeMirror {
+					.CodeMirror {
 						width: 100%;
 						height: 100%;
 						left: -30px;
@@ -365,32 +459,32 @@ html {
 
 						cursor: text;
 
-						div.CodeMirror-lines {
+						.CodeMirror-lines {
 							padding: 0;
 
-							div.CodeMirror-cursor {
+							.CodeMirror-cursor {
 								height: 20px!important;
 								border-left: solid 2px rgb(43, 43, 43);
 							}
 
-							div.CodeMirror-code {
+							.CodeMirror-code {
 								div {
 									height: 20px;
 									line-height: 20px;
 								}
 							}
 						}
-						div.CodeMirror-linenumber {
+						.CodeMirror-linenumber {
 							color: lighten(map-get($map: $color, $key: main-text), 20%);
 						}
-						div.CodeMirror-gutters {
+						.CodeMirror-gutters {
 							background-color: map-get($map: $color, $key: main-background);
 							cursor: default;
 						}
 					}
 
 					// 出力
-					div.editor-output {
+					.editor-output {
 						width: calc(100% - 30px);
 						height: 200px;
 
@@ -399,7 +493,7 @@ html {
 							height: 20px;
 						}
 
-						div#editor-output {
+						#editor-output {
 							display: flex;
 							flex-direction: column-reverse;
 
@@ -415,7 +509,7 @@ html {
 								align-items: center;
 								padding: 3px 10px;
 
-								span.output-timestamp {
+								.output-timestamp {
 									margin-left: auto;
 									color: rgb(175, 175, 175);
 								}
@@ -423,19 +517,19 @@ html {
 								&:hover {
 									background-color: whitesmoke;
 
-									span.output-timestamp { color: rgb(102, 102, 102); }
+									.output-timestamp { color: rgb(102, 102, 102); }
 								}
 							}
-							div.err { color: rgb(216, 0, 0); }
-							div.log { color: rgb(59, 59, 59); }
-							div.info { color: rgb(0, 168, 0); }
+							.err { color: rgb(216, 0, 0); }
+							.log { color: rgb(59, 59, 59); }
+							.info { color: rgb(0, 168, 0); }
 						}
 					}
 				}
 			}
 		}
 
-		div#overlay {
+		#overlay {
 			z-index: 10;
 			display: flex;
 			justify-content: center;
@@ -447,7 +541,7 @@ html {
 			width: 100%;
 			height: 100%;
 
-			background-color: rgba(black, 0.4);
+			background-color: rgba(black, .4);
 
 			visibility: hidden;
 			opacity: 0;
@@ -457,12 +551,12 @@ html {
 				visibility: visible;
 				opacity: 1;
 
-				&.setname div.editor-setname-area {
+				&.setname .editor-setname-area {
 					visibility: visible;
 				}
 			}
 			
-			div.editor-setname-area {
+			.editor-setname-area {
 				visibility: hidden;
 
 				padding: 10px;
@@ -487,11 +581,11 @@ html {
 					background-color: rgb(254, 254, 254);
 				}
 
-				div.select-buttons {
+				.select-buttons {
 					display: flex;
 					margin: 30px 0 5px 0;
 
-					div.ui-button {
+					.ui-button {
 						&.cancel { @include ui-button(); }
 						&.enter { @include ui-button(map-get($map: $color, $key: accent)); }
 							
@@ -507,7 +601,7 @@ html {
 			}
 		}
 
-		div#popup-message {
+		#popup-message {
 			position: fixed;
 			width: 300px;
 			height: 100%;
@@ -516,21 +610,21 @@ html {
 
 			pointer-events: none;
 
-			div.popup {
+			.popup {
 				display: flex;
 				align-items: center;
 
 				width: 300px;
 				height: 40px;
 
-				background-color: rgba(black, 0.5);
+				background-color: rgba(black, .5);
 				color: whitesmoke;
 
 				&.err {
-					background-color: rgba(rgb(184, 12, 0), 0.7);
+					background-color: rgba(rgb(184, 12, 0), .7);
 
 					&::after {
-						background-color: rgba(rgb(153, 10, 0), 0.9);
+						background-color: rgba(rgb(153, 10, 0), .9);
 					}
 				}
 
@@ -558,7 +652,7 @@ html {
 						margin-bottom: 0;
 					}
 				}
-				animation: popup .5s forwards, popup-end .5s 5.5s;
+				animation: popup .5s forwards, popup-end .5s .5s;
 
 				&.close {
 					@keyframes popup-end2 {
@@ -621,9 +715,9 @@ html {
 					margin-top: 37px;
 					height: 3px;
 
-					background-color: rgba(black, 0.5);
+					background-color: rgba(black, .5);
 					
-					animation: popup-progress 5s .5s linear forwards, popup-progress-end .5s 5.5s;
+					animation: popup-progress 5s .5s linear forwards, popup-progress-end .5s .5s;
 					@keyframes popup-progress {
 						0% {
 							width: 0;

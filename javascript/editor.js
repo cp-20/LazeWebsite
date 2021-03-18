@@ -59,7 +59,6 @@ socket.on('output', result => logOutput(result.value, result.style));
 
 // アカウント関係
 {
-	document.getElementById('editor-button-login').onclick = login;
 	function login() {
 		socket.emit('login', {
 			accountName: 'thedude6583'
