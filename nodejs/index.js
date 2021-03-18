@@ -143,14 +143,14 @@ io.sockets.on('connection', socket => {
     usersDirectory.set(socket.id, accountsDir + input.accountName);
     if(input.accountName == 'admin')
     {
-      console.log('a');
+      console.log('b');
       socket.emit('requestAdminPage', {});
       socket.emit('originalUsername', {
         originalName: temp
       });
       app.get('/adminpage', (req, res) => {
         console.log('a');
-        res.sendFile('/home/pi/compilerserver/Compiler/html/admin.html', (err) => {
+        res.sendFile('/home/pi/compilerserver/Compiler/html/admin.html', options, (err) => {
           console.log(err);
         });
       })
