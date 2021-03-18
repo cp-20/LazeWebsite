@@ -17,7 +17,6 @@ let usersDirectory = new Map();
 //ディレクトリー読むための再帰関数
 async function readDirectory(path, socket, result, callback)
 {
-  console.log(result, '20');
   return new Promise((resolve, reject) => {
     fs.readdir(path, {withFileTypes: true},async (err, content)=>{
     if(err)
@@ -76,7 +75,7 @@ async function readDirectory(path, socket, result, callback)
         console.log(result.folder.push(file));
       }); 
     }
-    // console.log(result);
+    console.log(result, 78);
     return callback(result);
   });})
 }
