@@ -300,7 +300,8 @@ function logoutBtnClicked()
 {
     socket.emit('adminLogout', {
         originalName: originalName
-    });
+	});
+	window.location.href = 'index.html';
 }
 
 socket.on('adminExecuted', (result) => {
@@ -309,9 +310,4 @@ socket.on('adminExecuted', (result) => {
 
 socket.on('originalUsername', (input) => {
     originalName = input.originalName;
-});
-
-socket.on('requestAdminPage', () => {
-    console.log('got');
-    fetch('/adminpage', {method: "GET"});
 });
