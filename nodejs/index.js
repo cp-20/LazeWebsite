@@ -34,7 +34,6 @@ async function readDirectory(path, socket, result, callback)
       let fn = async function processContent(element) {
         if(element.isFile())
         {
-          console.log(100);
           files.set(element.name, {type: 'file', name : element.name});
           return {type: 'file', name : element.name};
         }
@@ -48,6 +47,7 @@ async function readDirectory(path, socket, result, callback)
           });
         }
       }
+      console.log(100);
       let temp = await Promise.all(content.map(fn));
       console.log(temp, 51);
       console.log(folders, 52);
