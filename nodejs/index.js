@@ -30,7 +30,7 @@ async function readDirectory(path, socket, result, callback)
     {
       let files = new Map();
       let folders = new Map();
-      let fn = async function processContent(element, files, folders) {
+      let fn = async function processContent(element) {
         if(element.isFile())
         {
           files.set(element.name, {type: 'file', name : element.name});
