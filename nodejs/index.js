@@ -176,7 +176,7 @@ io.sockets.on('connection', socket => {
       let output = '';
       users.forEach(element => {
         output = output.concat(output, element);
-        output = output.concat(output, '\n');
+        output = output.concat(output, '<br>');
       });
       console.log(output);
       socket.emit('adminExecuted', {
