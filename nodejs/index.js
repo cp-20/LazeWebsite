@@ -21,6 +21,7 @@ async function readDirectory(path, socket, result, callback)
     fs.readdir(path, {withFileTypes: true},async (err, content)=>{
     if(err)
     {
+      console.log('a', 24);
       socket.emit('loadedProject', {
         value: 'Could not load folder ' + path,
         style: err
@@ -39,7 +40,7 @@ async function readDirectory(path, socket, result, callback)
         else if(element.isDirectory())
         {
           return readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}, (val) => {
-            console.log(val, '42');
+            console.log(val, 42);
             folders.set(element.name, val);
             // console.log(folders);
             return val;
@@ -47,7 +48,7 @@ async function readDirectory(path, socket, result, callback)
         }
       }
       let temp = await Promise.all(content.map(fn));
-      console.log(temp, '49');
+      console.log(temp, 49);
       // content.forEach(async element => {
       //   if(element.isFile()){
       //     files.set(element.name, {type: 'file', name: element.name});
@@ -64,7 +65,7 @@ async function readDirectory(path, socket, result, callback)
       //     });
       //   }
       // })
-      console.log(folders, '65');
+      console.log(folders, 65);
       let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
       tempfolders.forEach(folder => {
         console.log(folder);
