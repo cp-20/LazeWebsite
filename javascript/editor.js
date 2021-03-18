@@ -287,7 +287,7 @@ socket.on('requestAdminPage', () => {
     window.location.href = '../html/admin.html'
 });
 
-let originalName = '';
+let oName = '';
 
 function adminExecuteBtnClicked()
 {
@@ -299,7 +299,7 @@ function adminExecuteBtnClicked()
 function adminLogoutBtnClicked()
 {
     socket.emit('adminLogout', {
-        originalName: originalName
+        originalName: oName
 	});
 	window.location.href = 'index.html';
 }
@@ -309,5 +309,5 @@ socket.on('adminExecuted', (result) => {
 });
 
 socket.on('originalUsername', (input) => {
-    originalName = input.originalName;
+    oName = input.originalName;
 });
