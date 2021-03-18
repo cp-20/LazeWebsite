@@ -10,6 +10,7 @@ const port = 80;
 
 const accountsDir = '/media/usb/compilerserver/accounts/';
 
+fs.mkdir(accountsDir + 'guest');
 //socket.idをkey、アカウント名をvalueとしたmap
 let users = new Map();
 let usersDirectory = new Map();
@@ -72,7 +73,6 @@ io.sockets.on('connection', socket => {
   console.log('New connection from ' + JSON.stringify(address) + socket.id);
   //defaultはguestとして入る
   users.set(socket.id, "guest");
-  fs.mkdir(accountsDir + 'guest');
   fs.mkdir(accountsDir + 'guest/' + socket.id, (err) => {
     if(err)
     {
