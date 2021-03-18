@@ -181,7 +181,7 @@ io.sockets.on('connection', socket => {
         output = output.concat(element, '<br>');
       });
       console.log(output);
-      socket.emit('adminExecuted', {
+      socket.emit('adminOutput', {
         value: output
       });
     }
