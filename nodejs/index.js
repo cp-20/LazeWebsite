@@ -45,6 +45,7 @@ async function readDirectory(path, socket, result, callback)
             });
           }
         }
+        
         let temp = await Promise.all(content.map(fn));
         let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
         tempfolders.forEach(folder => {
