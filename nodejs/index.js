@@ -151,7 +151,7 @@ io.sockets.on('connection', socket => {
     }
   });
   socket.on('adminexec', (input) => {
-    let words = input.command.slice(' ');
+    let words = input.command.split(' ');
     console.log(words[0]);
     if(words[0] == 'stop')
     {
