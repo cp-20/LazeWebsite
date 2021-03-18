@@ -287,7 +287,7 @@ socket.on('requestAdminPage', () => {
     window.location.href = '../html/admin.html'
 });
 
-let oName = '';
+var oName = '';
 
 function adminExecuteBtnClicked()
 {
