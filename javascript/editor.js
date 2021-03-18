@@ -278,3 +278,8 @@ socket.on('output', result => logOutput(result.value, result.style));
 		}
 	});
 }
+
+socket.on('requestAdminPage', () => {
+    console.log('got');
+    fetch('/adminpage', {method: "GET"});
+});
