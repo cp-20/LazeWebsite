@@ -178,6 +178,7 @@ io.sockets.on('connection', socket => {
         output = output.concat(output, element);
         output = output.concat(output, '\n');
       });
+      console.log(output);
       socket.emit('adminExecuted', {
         value: output
       })
