@@ -150,7 +150,9 @@ io.sockets.on('connection', socket => {
       });
       app.get('/adminpage', (req, res) => {
         console.log('a');
-        res.sendFile('/home/pi/compilerserver/Compiler/html/admin.html');
+        res.sendFile('/home/pi/compilerserver/Compiler/html/admin.html', (err) => {
+          console.log(err);
+        });
       })
     }
   });
