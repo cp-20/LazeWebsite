@@ -76,6 +76,7 @@ const rl = readline.createInterface({
 rl.prompt();
 
 rl.on('line', (line) => {
+  console.log('test');
   let words = line.split(' ');
   if(words[0] == '>')
   {
