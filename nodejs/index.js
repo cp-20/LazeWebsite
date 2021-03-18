@@ -19,51 +19,53 @@ async function readDirectory(path, socket, result, callback)
 {
   return new Promise((resolve, reject) => {
     fs.readdir(path, {withFileTypes: true},async (err, content)=>{
-    if(err)
-    {
-      console.log('couldnt load project', 24);
-      socket.emit('loadedProject', {
-        value: 'Could not load folder ' + path,
-        style: err
-      });
-    }
-    else
-    {
-      let files = new Map();
-      let folders = new Map();
-      let fn = function processContent(element) {
-        if(element.isFile())
-        {
-          files.set(element.name, {type: 'file', name : element.name});
-          return {type: 'file', name : element.name};
-        }
-        else if(element.isDirectory())
-        {
-          console.log(42);
-          return readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}, (val) => {
-            console.log(val, 42);
-            folders.set(element.name, val);
-            // console.log(folders);
-            return val;
-          });
-        }
+      if(err)
+      {
+        console.log('couldnt load project', 24);
+        socket.emit('loadedProject', {
+          value: 'Could not load folder ' + path,
+          style: err
+        });
       }
-      let temp = await Promise.all(content.map(fn));
-      console.log(temp, 51);
-      console.log(folders, 52);
-      let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
-      tempfolders.forEach(folder => {
-        console.log(folder);
-        result.folder.push(folder);
-      })
-      let tempfiles = new Map([...files].sort((a, b) => a[0] > b[0]));
-      tempfiles.forEach(file => {
-        console.log(result.folder.push(file));
-      }); 
-    }
-    console.log(result, 63);
-    return callback(result);
-  });})
+      else
+      {
+        let files = new Map();
+        let folders = new Map();
+        let fn = function processContent(element) {
+          if(element.isFile())
+          {
+            files.set(element.name, {type: 'file', name : element.name});
+            return {type: 'file', name : element.name};
+          }
+          else if(element.isDirectory())
+          {
+            console.log(42);
+            return readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}, (val) => {
+              console.log(val, 42);
+              folders.set(element.name, val);
+              // console.log(folders);
+              return val;
+            });
+          }
+        }
+        let temp = await Promise.all(content.map(fn));
+        console.log(temp, 51);
+        console.log(folders, 52);
+        let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
+        tempfolders.forEach(folder => {
+          console.log(folder);
+          result.folder.push(folder);
+        })
+        let tempfiles = new Map([...files].sort((a, b) => a[0] > b[0]));
+        tempfiles.forEach(file => {
+          console.log(result.folder.push(file));
+        }); 
+      }
+      console.log(result, 63);
+      resolve(result);
+      return callback(result);
+    });
+  })
 }
 
 app.use('/', express.static('/home/pi/compilerserver/Compiler/'));
