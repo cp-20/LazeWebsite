@@ -309,6 +309,7 @@ function adminLogoutBtnClicked()
 }
 
 socket.on('adminExecuted', (result) => {
+	console.log('b');
 	console.log(result.value);
     document.getElementById('adminOutput').innerHTML = result.value;
 });
