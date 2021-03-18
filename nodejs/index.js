@@ -30,19 +30,19 @@ async function readDirectory(path, socket, result, callback)
     {
       let files = new Map();
       let folders = new Map();
-      let fn = async function processContent(element) {
+      let fn = async function processContent(element, files, folders) {
         if(element.isFile())
         {
           files.set(element.name, {type: 'file', name : element.name});
-          return 'finished';
+          return {type: 'file', name : element.name};
         }
         else if(element.isDirectory())
         {
           return readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}, (val) => {
-            console.log(val, '40');
+            console.log(val, '42');
             folders.set(element.name, val);
             // console.log(folders);
-            return 'finished';
+            return val;
           });
         }
       }
@@ -165,7 +165,7 @@ io.sockets.on('connection', socket => {
     let result = {type: 'folder', name: input.projectName, folder: []};
     // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
     readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result, (val) => {
-      console.log(val);
+      console.log(val, '168');
       socket.emit('loadedProject', {
         value: val,
         style: 'log'
