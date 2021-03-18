@@ -177,8 +177,7 @@ io.sockets.on('connection', socket => {
       console.log(users);
       users.forEach(element => {
         console.log('a');
-        output = output.concat(output, element);
-        output = output.concat(output, '<br>');
+        output = output.concat(element, '<br>');
       });
       console.log(output);
       socket.emit('adminExecuted', {
@@ -231,7 +230,8 @@ io.sockets.on('connection', socket => {
       fs.rmdir(usersDirectory.get(socket.id), (err) => {
         if(err)
           console.log('./' + usersDirectory.get(socket.id));
-      });        
+      });    
+      users.delete(socket.id);    
     }
   })
 });
