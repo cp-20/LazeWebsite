@@ -292,7 +292,7 @@ var oName = '';
 function adminExecuteBtnClicked()
 {
 	console.log(document.getElementById('adminCommand').value);
-    socket.emit('admminexec', {
+    socket.emit('adminexec', {
         command: document.getElementById('adminCommand').value
     });
 }
