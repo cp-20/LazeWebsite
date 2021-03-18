@@ -170,7 +170,7 @@ io.sockets.on('connection', socket => {
         value: val,
         style: 'log'
       });
-    });
+    }).then((value) => {console.log(value);});
   });
   //Projectを作る
   socket.on('createProject', async input => {
