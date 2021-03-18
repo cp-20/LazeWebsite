@@ -36,7 +36,7 @@ async function readDirectory(path, socket, result, callback)
         else if(element.isDirectory()){
           // console.log('a');
           // let val = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []});
-          console.log(await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}));
+          // console.log(await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}));
           const temp = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}, (val) => {
             folders.set(element.name, val);
           });
@@ -141,7 +141,7 @@ io.sockets.on('connection', socket => {
   {
     let result = {type: 'folder', name: input.projectName, folder: []};
     // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
-    readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result).then((val) => {
+    readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result, (val) => {
       console.log(val);
       socket.emit('loadedProject', {
         value: val,
