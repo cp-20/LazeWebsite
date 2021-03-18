@@ -3,7 +3,7 @@
 		polyline {
 			fill: none;
 			stroke-width: 6px;
-			stroke: darkslategray;
+			stroke: #333;
 		}
 	</style>
 	<polyline points="8,20 32,44 56,20" />
