@@ -1,0 +1,52 @@
+$color-accent: rgb(34, 148, 201);
+$color-lines: rgb(141, 141, 141);
+$color-bg: rgb(216, 216, 216);
+
+// ボタン
+button.btn-primary {
+	background-color: $color-accent;
+	color: white;
+}
+button.btn-secondary {
+	background-color: $color-lines;
+	border: solid darken($color-lines, 10%) 2px;
+	color: white;
+
+	&:hover {
+		background-color: darken($color-lines, 10%);
+		border: solid darken($color-lines, 20%) 2px;
+	}
+	&:active {
+		background-color: darken($color-lines, 10%);
+		border: solid darken($color-lines, 20%) 2px;
+	}
+}
+
+// ドロップダウン
+ul.dropdown-menu {
+	border: none;
+	background-color: rgb(253, 253, 253);
+	box-shadow: 0 8px 24px rgba(149,157,165,0.2);
+	padding: 2px 0 5px 0;
+
+	.dropdown-header {
+		color: inherit;
+	}
+
+	.dropdown-item {
+		padding: 0;
+
+		&:hover {
+			background-color: $color-accent;
+			color: whitesmoke;
+		}
+
+		.dropdown-content {
+			padding: 3px 10px;
+			display: inline-block;
+			width: 100%;
+			color: inherit;
+			text-decoration: inherit;
+		}
+	}
+}
