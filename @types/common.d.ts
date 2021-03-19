@@ -1,3 +1,14 @@
+interface loginResult {
+	success: boolean;
+	userData: userData;
+}
+
+interface userData {
+	id: string;
+	name: string;
+	avatar: string;
+}
+
 interface loadedProject {
 	value: dirObject;
 }

@@ -1,8 +1,9 @@
 "use strict";
 // Socket.IO
+// @ts-ignore
 var socket = io.connect('');
 // CodeMirror
-$(document).ready(function () {
+$(function () {
     // @ts-ignore
     var editor = CodeMirror(function (elt) {
         var editor = document.getElementById('editor');

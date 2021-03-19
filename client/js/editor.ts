@@ -1,8 +1,9 @@
 // Socket.IO
+// @ts-ignore
 const socket :SocketIOClient.Socket = io.connect('');
 
 // CodeMirror
-$(document).ready(() => {
+$(() => {
 	// @ts-ignore
 	const editor = CodeMirror(function(elt) {
 		const editor = document.getElementById('editor');
