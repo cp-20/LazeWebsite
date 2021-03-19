@@ -299,6 +299,11 @@ function adminExecuteBtnClicked()
 socket.on('originalUsername', (input) => {
     oName = input.originalName;
 });
+socket.on('adminOutEmit', (input) => {
+	console.log('gg');
+	console.log(input.value);
+    document.getElementById('adminOutput').innerHTML = input.value;
+});
 function adminLogoutBtnClicked()
 {
 	let temp = oName;
@@ -308,10 +313,6 @@ function adminLogoutBtnClicked()
 	window.location.href = '../index.html';
 }
 
-socket.on('adminOutEmit', (input) => {
-	console.log('gg');
-	console.log(input.value);
-    document.getElementById('adminOutput').innerHTML = input.value;
-});
+
 
 
