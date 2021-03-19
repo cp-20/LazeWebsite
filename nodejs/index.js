@@ -143,6 +143,7 @@ io.sockets.on('connection', socket => {
   //loginシステム
   socket.on('login', async input => 
   {
+    console.log(socket.id);
     //usersのvalueをアカウント名にする
     let temp = users.get(socket.id);
     users.set(socket.id, input.accountName);
@@ -159,7 +160,7 @@ io.sockets.on('connection', socket => {
   socket.on('adminexec', (input) => 
   {
     let words = input.command.split(' ');
-    console.log(words[0]);
+    console.log(socket.id);
     if(words[0] == 'stop')
     {
       rimraf('/media/usb/compilerserver/accounts/guest', () => {
