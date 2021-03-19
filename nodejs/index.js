@@ -182,7 +182,7 @@ io.sockets.on('connection', socket => {
         output = output.concat(element, '<br>');
       });
       // console.log(output);
-      socket.emit('adminOutEmit', {
+      io.to(socket.id).emit('adminOutEmit', {
         value: output
       });
     }
