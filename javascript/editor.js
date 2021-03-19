@@ -297,6 +297,7 @@ function adminExecuteBtnClicked()
     });
 }
 socket.on('originalUsername', (input) => {
+	console.log(input.originalName);
     oName = input.originalName;
 });
 socket.on('adminOutEmit', (input) => {
