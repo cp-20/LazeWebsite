@@ -112,26 +112,35 @@ io.sockets.on('connection', (socket:any) => {
     usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
     socket.on('compile', async (input: compileData) => {
       // コンパイル
-      exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.filename);
-      exec('./compiler ' + input.filename + ' ' + usersDirectory.get(socket.id) + '/', (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) =>
-      {
-        // 出力
+      exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.filename, (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) => {
+        if(err)
+        {
+          socket.emit('output', {
+            value: stderr,
+            style: 'err'
+          })
+        }
+        exec('./compiler ' + input.filename + ' ' + usersDirectory.get(socket.id) + '/', (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) =>
+        {
+          // 出力
           console.log(err, stdout, stderr);
           if(err) {
             socket.emit('output', {
               value: stderr,
               style: 'err'
             });
+            exec('sudo rm -f ' + input.filename + ' .' + input.filename);
           }else {
             socket.emit('output', {
               value: stdout,
               style: 'log'
-            })
+            });
+            exec('sudo rm -f ' + input.filename + ' .' + input.filename);
           }
           return;
-      }
-      );
-      exec('sudo rm -f ' + input.filename + ' .' + input.filename);
+        });
+      });
+      
   
     })
     socket.on('save', async (input: saveData) => {
