@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -36,29 +35,57 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from) {
-    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
-        to[j] = from[i];
-    return to;
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var express = require('express');
+var express_1 = __importDefault(require("express"));
+var fs_1 = __importDefault(require("fs"));
+var http_1 = __importDefault(require("http"));
+var path = require('path');
 var exec = require('child_process').exec;
-var fs = require('fs');
-var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var app = express_1.default();
+var server = new http_1.default.Server(app);
+var io = require('socket.io')(http_1.default);
 var port = 80;
-var accountsDir = '/media/usb/compilerserver/accounts/';
-//socket.idをkey、アカウント名をvalueとしたmap
+var accountsDir = '/media/usb/compilerserver/accounts';
+var rootDir = path.resolve(__dirname, '../../');
+//request時に実行するmiddleware function
+function authenticate(req, res, next) {
+    console.log('Request URL: ', req.originalUrl);
+    next();
+}
+app.use(express_1.default.static(rootDir));
+app.use(authenticate);
+app.get('/', function (req, res) {
+    res.sendFile('client/index.html', { root: rootDir });
+});
+app.get('/login', function (req, res) {
+    res.sendFile('client/login.html', { root: rootDir });
+});
+app.get('/editor', function (req, res) {
+    res.sendFile('client/editor.html', { root: rootDir });
+});
+app.get('/docs', function (req, res) {
+    res.sendFile('client/docs.html', { root: rootDir });
+});
+app.get('/admin', function (req, res) {
+    res.sendFile('client/admin.html', { root: rootDir });
+});
 var users = new Map();
 var usersDirectory = new Map();
-//ディレクトリー読むための再帰関数
 function readDirectory(path, socket, result) {
     return __awaiter(this, void 0, void 0, function () {
         var _this = this;
         return __generator(this, function (_a) {
-            return [2 /*return*/, fs.readdir(path, { withFileTypes: true }, function (err, content) {
+            return [2 /*return*/, fs_1.default.readdir(path, { withFileTypes: true }, function (err, content) {
                     if (err) {
                         socket.emit('loadedProject', {
                             value: 'Could not load folder ' + path,
@@ -96,12 +123,12 @@ function readDirectory(path, socket, result) {
                                 }
                             });
                         }); });
-                        var tempfolders = new Map(__spreadArray([], folders_1).sort(function (a, b) { return a[0] > b[0]; }));
+                        var tempfolders = new Map(__spreadArrays(folders_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
                         tempfolders.forEach(function (folder) {
                             console.log(folder);
                             result.folder.push(folder);
                         });
-                        var tempfiles = new Map(__spreadArray([], files_1).sort(function (a, b) { return a[0] > b[0]; }));
+                        var tempfiles = new Map(__spreadArrays(files_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
                         tempfiles.forEach(function (file) {
                             console.log(result.folder.push(file));
                         });
@@ -112,136 +139,3 @@ function readDirectory(path, socket, result) {
         });
     });
 }
-app.use('/', express.static('/home/pi/compilerserver/Compiler/'));
-app.get('/', function (req, res) {
-    res.sendFile('/home/pi/compilerserver/Compiler/index.html');
-});
-io.sockets.on('connection', function (socket) {
-    var address = socket.handshake.address;
-    console.log('New connection from ' + JSON.stringify(address) + socket.id);
-    //defaultはguestとして入る
-    users.set(socket.id, "guest");
-    fs.mkdir(accountsDir + 'guest/' + socket.id, function (err) {
-        if (err) {
-            console.log('could not create ' + accountsDir + 'guest/' + socket.id);
-        }
-    });
-    usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
-    socket.on('compile', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            // コンパイル
-            exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.filename);
-            exec('./compiler ' + input.filename + ' ' + usersDirectory.get(socket.id) + '/', function (err, stdout, stderr) {
-                // 出力
-                console.log(err, stdout, stderr);
-                if (err) {
-                    socket.emit('output', {
-                        value: stderr,
-                        style: 'err'
-                    });
-                }
-                else {
-                    socket.emit('output', {
-                        value: stdout,
-                        style: 'log'
-                    });
-                }
-                return;
-            });
-            exec('sudo rm -f ' + input.filename + ' .' + input.filename);
-            return [2 /*return*/];
-        });
-    }); });
-    socket.on('save', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            //ファイルにセーブ
-            if (users.get(socket.id) == 'guest') {
-                socket.emit('saved', {
-                    value: 'If you want to save a file, please create an account.',
-                    style: 'err',
-                    success: false
-                });
-            }
-            else {
-                exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.projectName + '/' + input.filename, function (err, stdout, stderr) {
-                    if (err) {
-                        socket.emit('saved', {
-                            value: stderr + ' : Save not complete.',
-                            style: 'err',
-                            success: false
-                        });
-                    }
-                    else {
-                        socket.emit('saved', {
-                            value: 'Save complete.',
-                            style: 'info',
-                            success: true
-                        });
-                    }
-                    return;
-                });
-            }
-            ;
-            return [2 /*return*/];
-        });
-    }); });
-    //loginシステム
-    socket.on('login', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            //usersのvalueをアカウント名にする
-            users.set(socket.id, input.accountName);
-            usersDirectory.set(socket.id, accountsDir + input.accountName);
-            return [2 /*return*/];
-        });
-    }); });
-    //すでに作られたProjectをロードする
-    socket.on('loadProject', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-        var result;
-        return __generator(this, function (_a) {
-            result = { type: 'folder', name: input.projectName, folder: [] };
-            // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
-            readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result).then(function (val) {
-                socket.emit('loadedProject', {
-                    value: val,
-                    style: 'log'
-                });
-            });
-            return [2 /*return*/];
-        });
-    }); });
-    //Projectを作る
-    socket.on('createProject', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            fs.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, function (err) {
-                if (err) {
-                    socket.emit('createdProject', {
-                        value: 'Could not create project ' + input.projectName,
-                        style: 'err'
-                    });
-                }
-                else {
-                    socket.emit('createdProject', {
-                        value: 'Created project ' + input.projectName,
-                        style: 'log'
-                    });
-                }
-            });
-            return [2 /*return*/];
-        });
-    }); });
-    //disconnectしたとき
-    socket.on('disconnect', function () {
-        console.log("a");
-        if (users.get(socket.id) == 'guest') {
-            fs.rmdir(usersDirectory.get(socket.id), function (err) {
-                console.log(usersDirectory.get(socket.id));
-            });
-        }
-    });
-});
-io.sockets.on('disconnect', function (socket) {
-    console.log('a');
-});
-http.listen(port, function () {
-    console.log("Compiler Server listening at http://rootlang.ddns.net");
-});

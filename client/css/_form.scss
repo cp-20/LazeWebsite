@@ -1,0 +1,54 @@
+@mixin error {
+	background-color: #fdd;
+	border: solid #f99 1px;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+
+	.form-group {
+		margin: 10px 0 15px 0;
+
+		&::after {
+			display: block;
+		}
+
+		&.required label::after {
+			content: '*';
+			color: #c00;
+			margin-left: 5px;
+		}
+
+		&.invalid {
+			label, .feedback {
+				color: #c00;
+			}
+			input {
+				border: solid #c00 1px;
+			}
+		}
+		&.valid {
+			.feedback {
+				color: #0c0;
+			}
+		}
+
+		input::placeholder {
+			color: rgb(187, 187, 187);
+		}
+
+		.note {
+			margin-left: 5px;
+		}
+	}
+	
+	button {
+		margin: 10px 0 10px 0;
+	}
+
+	.suggestions {
+		display: inline-block;
+		margin: 0 auto;
+	}
+}

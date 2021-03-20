@@ -1,5 +1,4 @@
 // Socket.IO
-// @ts-ignore
 const socket :SocketIOClient.Socket = io.connect('');
 
 // CodeMirror
@@ -140,7 +139,7 @@ function loadProject() {
 }
 
 // ファイルのロード
-function loadFile {
+function loadFile() {
 	socket.emit('loadProject', {
 		projectName: 'test'
 	});

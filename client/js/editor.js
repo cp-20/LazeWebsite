@@ -1,6 +1,5 @@
 "use strict";
 // Socket.IO
-// @ts-ignore
 var socket = io.connect('');
 // CodeMirror
 $(function () {
