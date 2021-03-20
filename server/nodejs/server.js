@@ -62,12 +62,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var fs_1 = __importDefault(require("fs"));
-var http_1 = __importDefault(require("http"));
 var path = require('path');
 var exec = require('child_process').exec;
 var app = express_1.default();
-var server = new http_1.default.Server(app);
-var io = require('socket.io')(http_1.default);
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 var port = 80;
 var accountsDir = '/media/usb/compilerserver/accounts';
 var rootDir = path.resolve(__dirname, '../../client');
@@ -277,6 +276,6 @@ io.sockets.on('connection', function (socket) {
         }
     });
 });
-server.listen(port, function () {
+http.listen(port, function () {
     console.log('Server at http://rootlang.ddns.net');
 });

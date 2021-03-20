@@ -4,12 +4,11 @@ import { ExpressionStatement } from "typescript";
 
 import express from 'express';
 import fs from 'fs';
-import http from 'http';
 import { Stream } from "stream";
 const path = require('path');
 const {exec} = require('child_process');
 const app: express.Express = express();
-const server: http.Server = new http.Server(app);
+const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port : number = 80;
 
@@ -220,6 +219,6 @@ io.sockets.on('connection', (socket:any) => {
     })
   });
   
-  server.listen(port, () => {
+  http.listen(port, () => {
     console.log('Server at http://rootlang.ddns.net');
   })
