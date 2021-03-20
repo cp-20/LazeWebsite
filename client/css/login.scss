@@ -1,12 +1,12 @@
 @import 'common';
+@import 'form';
 
 body {
 	background-color: $color-bg;
 }
 
-
 main {
-	width: 350px;
+	max-width: 600px;
 	margin: 0 auto;
 
 	.title {
@@ -21,9 +21,8 @@ main {
 		display: none;
 		padding: 10px;
 		margin-bottom: 20px;
-		background-color: #fdd;
-		border: solid #f99 1px;
 		border-radius: 5px;
+		@include error;
 
 		p {
 			display: flex;
@@ -42,23 +41,5 @@ main {
 		border: solid rgb(224, 224, 224) 1px;
 		border-radius: 5px;
 		padding: 20px;
-	}
-}
-
-form {
-	display: flex;
-	flex-direction: column;
-
-	.form-group {
-		margin: 10px 0 10px 0;
-	}
-	
-	button {
-		margin: 10px 0 10px 0;
-	}
-
-	.suggestions {
-		display: inline-block;
-		margin: 0 auto;
 	}
 }

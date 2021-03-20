@@ -1,5 +1,4 @@
 // Socket.IO
-// @ts-ignore
 const socket :SocketIOClient.Socket = io.connect('');
 
 // CodeMirror

@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Login - Laze</title>
+	<title>サインアップ - Laze</title>
 	
 	<!-- ファビコン -->
 	<link rel="shortcut icon" href="assets/icons/favicon.svg" type="image/x-icon">
@@ -17,12 +17,12 @@
 
 	<!-- My Code -->
 	<link rel="stylesheet" href="css/login.css">
-	<script src="js/login.js"></script>
+	<script src="js/register.js"></script>
 </head>
 <body>
 	<main>
 		<div class="title">
-			<h2>Lazeにログイン</h2>
+			<h2>アカウント作成</h2>
 		</div>
 
 		<div class="err">
@@ -33,23 +33,42 @@
 		</div>
 
 		<div class="login-field">
-			<form id="login-field" action="/login">
-				<div class="form-group required">
-					<label for="login-id">ユーザー名またはEメールアドレス</label>
-					<input type="email" class="form-control" id="login-id" placeholder="Username or Email address" required>
+			<form id="login-field">
+				<div class="form-group required valid">
+					<label for="id">ユーザー名</label>
+					<input type="text" class="form-control" id="id" placeholder="Username" required>
+					<span class="feedback"></span>
+				</div>
+
+				<div class="form-group">
+					<label for="username">表示名</label>
+					<input type="text" class="form-control" id="username" placeholder="Display name">
 				</div>
 
 				<div class="form-group required">
-					<label for="login-password">パスワード</label>
-					<input type="password" class="form-control" id="login-password" placeholder="Password" required>
+					<label for="email">Eメールアドレス</label>
+					<input type="email" class="form-control" id="email" placeholder="Email address" required>
+					<span class="feedback"></span>
 				</div>
 
-				<button type="button" class="btn btn-primary w-100">ログイン</button>
+				<div class="form-group required">
+					<label for="password">パスワード</label>
+					<input type="password" class="form-control" id="password" placeholder="Password" required>
+					<small class="note">8文字以上でかつ大文字、数字を一文字以上含んでいる必要があります</small>
+					<span class="feedback"></span>
+				</div>
+				
+				<div class="form-group required">
+					<label for="password-check">パスワードの確認</label>
+					<input type="password" class="form-control" id="password-check" placeholder="Password" required>
+					<span class="feedback"></span>
+				</div>
+
+				<button type="button" class="btn btn-primary w-100">アカウント作成</button>
 
 				<div class="suggestions">
-					<a href="/pass_reset" class="pass-reset">パスワードをお忘れですか？</a>
-					<span>・</span>
-					<a href="/create_account" class="create-account">アカウントを作成</a>
+					<span>アカウントをお持ちの方は</span>
+					<a href="/login" class="create-account">ログイン</a>
 				</div>
 			</form>
 		</div>
@@ -59,8 +78,5 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css">
-
-	<!-- Angular JS -->
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
 </body>
 </html>
