@@ -1,5 +1,10 @@
 @import 'common';
 
+@font-face {
+	font-family: 'My Consolas';
+	src: url('../assets/fonts/Consolas.ttf');
+}
+
 html, body, main.container {
 	max-width: 100%;
 	width: 100%;
@@ -203,7 +208,7 @@ div.explorer {
 			flex: 1;
 			padding-bottom: 5px;
 			overflow: hidden scroll;
-			font-family: 'Consolas', sans-serif;
+			font-family: 'My Consolas', sans-serif;
 
 			&::-webkit-scrollbar {
 				width: 10px;
@@ -390,7 +395,7 @@ div.explorer {
 div.CodeMirror {
 	height: 100%;
 	padding: 0;
-	font-family: 'Consolas', sans-serif;
+	font-family: 'My Consolas', sans-serif;
 	font-size: .9rem;
 	background-color: whitesmoke;
 
