@@ -96,7 +96,7 @@ function logPopup(value :string, style='info') {
 	});
 	
 	output.getElementsByTagName('button')[0].onclick = function() {
-		this.parentNode.classList.add('close');
+		output.getElementsByTagName('button')[0].parentElement?.classList.add('close');
 	}
 	outputArea.prepend(output);
 }
@@ -164,7 +164,7 @@ function parseDir(dir :dirObject) {
 			if (subdir.type === 'folder') {
 				file.classList.add('ui-folder');
 				file.onclick = function() {
-					this.classList.toggle('opened');
+					file.classList.toggle('opened');
 				}
 			}
 			if (subdir.type === 'file') file.classList.add('ui-file');

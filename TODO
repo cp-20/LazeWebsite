@@ -6,6 +6,7 @@ Todo:
   ☐ File Tree
   ☐ 出力ウィンドウで背景が出力の種類で変わるようにしてほしい
   ☐ Login with Google系
+  ☐ 404ページ
 Compiler: 
   ☐ type checking @started(21-03-17 10:51)
   ☐ error symbol for yacc file
