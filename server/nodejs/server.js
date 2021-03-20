@@ -276,3 +276,6 @@ io.sockets.on('connection', function (socket) {
         }
     });
 });
+server.listen(port, function () {
+    console.log('Server at http://rootlang.ddns.net');
+});

@@ -218,3 +218,6 @@ io.sockets.on('connection', (socket:any) => {
     })
   });
   
+  server.listen(port, () => {
+    console.log('Server at http://rootlang.ddns.net');
+  })
