@@ -12,7 +12,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port : number = 80;
 
-const accountsDir: string = '/media/usb/compilerserver/accounts';
+const accountsDir: string = '/media/usb/compilerserver/accounts/';
 const rootDir: string = path.resolve(__dirname, '../../client');
 
 //request時に実行するmiddleware function

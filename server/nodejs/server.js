@@ -68,7 +68,7 @@ var app = express_1.default();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = 80;
-var accountsDir = '/media/usb/compilerserver/accounts';
+var accountsDir = '/media/usb/compilerserver/accounts/';
 var rootDir = path.resolve(__dirname, '../../client');
 //request時に実行するmiddleware function
 function authenticate(req, res, next) {

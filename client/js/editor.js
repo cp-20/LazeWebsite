@@ -93,7 +93,8 @@ function logPopup(value, style) {
             this.remove();
     });
     output.getElementsByTagName('button')[0].onclick = function () {
-        this.parentNode.classList.add('close');
+        var _a;
+        (_a = output.getElementsByTagName('button')[0].parentElement) === null || _a === void 0 ? void 0 : _a.classList.add('close');
     };
     outputArea.prepend(output);
 }
@@ -154,7 +155,7 @@ function parseDir(dir) {
             if (subdir.type === 'folder') {
                 file.classList.add('ui-folder');
                 file.onclick = function () {
-                    this.classList.toggle('opened');
+                    file.classList.toggle('opened');
                 };
             }
             if (subdir.type === 'file')
