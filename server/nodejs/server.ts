@@ -3,6 +3,7 @@ import { ExpressionStatement } from "typescript";
 import express from 'express';
 import fs from 'fs';
 import http from 'http';
+import { Stream } from "stream";
 const path = require('path');
 const {exec} = require('child_process');
 const app: express.Express = express();
@@ -46,44 +47,54 @@ app.get('/admin', (req: express.Request, res: express.Response) => {
 let users: Map<string, string> = new Map();
 let usersDirectory: Map<string, string> = new Map();
 
-async function readDirectory(path: string, socket: any, result: dirObject)
+//ディレクトリー読むための再帰関数
+async function readDirectory(path: string, socket: any, result: dirObject, callback: Function)
 {
-  return fs.readdir(path, {withFileTypes: true},(err, content)=>{
-    if(err)
-    {
-      socket.emit('loadedProject', {
-        value: 'Could not load folder ' + path,
-        style: err
-      });
-    }
-    else
-    {
-      let files = new Map();
-      let folders = new Map();
-      content.forEach(async element => {
-        if(element.isFile()){
-          files.set(element.name, {type: 'file', name: element.name});
+  return new Promise((resolve, reject) => {
+    fs.readdir(path, {withFileTypes: true},async (err: NodeJS.ErrnoException | null, content: fs.Dirent[])=>{
+      if(err)
+      {
+        console.log('couldnt load project', 24);
+        socket.emit('loadedProject', {
+          value: 'Could not load folder ' + path,
+          style: err
+        });
+      }
+      else
+      {
+        let files: Map<string, dirObject> = new Map();
+        let folders: Map<string, dirObject> = new Map();
+        let fn = function processContent(element: fs.Dirent) {
+          if(element.isFile())
+          {
+            files.set(element.name, {type: 'file', name : element.name});
+            return {type: 'file', name : element.name};
+          }
+          else if(element.isDirectory())
+          {
+            return readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, value: []}, (val: dirObject) => {
+              folders.set(element.name, val);
+             return val;
+            });
+          }
         }
-        else if(element.isDirectory()){
-          // console.log('a');
-          // let val = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []});
-          console.log(await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}));
-          folders.set(element.name, await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}));
-        }
-      })
-      let tempfolders = new Map([...folders].sort((a, b) => Number(a[0] > b[0])));
-      tempfolders.forEach(folder => {
-        console.log(folder);
-        result.folder.push(folder);
-      })
-      let tempfiles = new Map([...files].sort((a, b) => Number(a[0] > b[0])));
-      tempfiles.forEach(file => {
-        console.log(result.folder.push(file));
-      }); 
-    }
-    console.log(result);
-    return result;
-  });
+        
+        let temp = await Promise.all(content.map(fn));
+        let tempfolders: Map<string, dirObject> = new Map([...folders].sort((a, b) => Number(a[0] > b[0])));
+        tempfolders.forEach(folder => {
+          if(result.value)
+            result.value.push(folder);
+        })
+        let tempfiles: Map<string, dirObject> = new Map([...files].sort((a, b) => Number(a[0] > b[0])));
+        tempfiles.forEach(file => {
+          if(result.value)
+            result.value.push(file);
+        }); 
+      }
+      resolve(result);
+      return callback(result);
+    });
+  })
 }
 
 io.sockets.on('connection', (socket:any) => {
@@ -98,10 +109,10 @@ io.sockets.on('connection', (socket:any) => {
       }
     });
     usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
-    socket.on('compile', async input => {
+    socket.on('compile', async (input: compileData) => {
       // コンパイル
       exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.filename);
-      exec('./compiler ' + input.filename + ' ' + usersDirectory.get(socket.id) + '/', (err, stdout, stderr) =>
+      exec('./compiler ' + input.filename + ' ' + usersDirectory.get(socket.id) + '/', (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) =>
       {
         // 出力
           console.log(err, stdout, stderr);
@@ -122,7 +133,7 @@ io.sockets.on('connection', (socket:any) => {
       exec('sudo rm -f ' + input.filename + ' .' + input.filename);
   
     })
-    socket.on('save', async input => {
+    socket.on('save', async (input: saveData) => {
       //ファイルにセーブ
       if(users.get(socket.id) == 'guest')
       {
@@ -133,7 +144,8 @@ io.sockets.on('connection', (socket:any) => {
         })
       }
       else{
-        exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.projectName + '/' + input.filename, (err, stdout, stderr) => {
+        exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.projectName + '/' + input.filename, 
+        (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) => {
           if(err) {
             socket.emit('saved', {
               value: stderr + ' : Save not complete.',
@@ -161,11 +173,11 @@ io.sockets.on('connection', (socket:any) => {
       usersDirectory.set(socket.id, accountsDir + input.accountName);
     });
     //すでに作られたProjectをロードする
-    socket.on('loadProject', async input => 
+    socket.on('loadProject', async (input: loadProjectData) => 
     {
-      let result = {type: 'folder', name: input.projectName, folder: []};
+      let result: dirObject = {type: 'folder', name: input.projectName, value: []};
       // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
-      readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result).then((val) => {
+      readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result, () => {}).then((val) => {
         socket.emit('loadedProject', {
           value: val,
           style: 'log'
@@ -173,7 +185,7 @@ io.sockets.on('connection', (socket:any) => {
       });
     });
     //Projectを作る
-    socket.on('createProject', async input => {
+    socket.on('createProject', async (input: createProjectData) => {
       fs.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, (err) => {
         if(err)
         {
@@ -196,9 +208,12 @@ io.sockets.on('connection', (socket:any) => {
       console.log("a");
       if(users.get(socket.id) == 'guest')
       {
-        fs.rmdir(usersDirectory.get(socket.id), (err) => {
-          console.log(usersDirectory.get(socket.id));
-        });        
+        if(usersDirectory.get(socket.id))
+        {
+          fs.rmdir((usersDirectory.get(socket.id)), (err: NodeJS.ErrnoException | null) => {
+            console.log(usersDirectory.get(socket.id));
+          });        
+        }
       }
     })
   });
