@@ -139,7 +139,7 @@ function loadProject() {
 }
 
 // ファイルのロード
-function loadFile {
+function loadFile() {
 	socket.emit('loadProject', {
 		projectName: 'test'
 	});
