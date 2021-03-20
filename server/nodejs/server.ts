@@ -72,12 +72,12 @@ async function readDirectory(path: string, socket: any, result: dirObject)
           folders.set(element.name, await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []}));
         }
       })
-      let tempfolders = new Map([...folders].sort((a, b) => a[0] > b[0]));
+      let tempfolders = new Map([...folders].sort((a, b) => Number(a[0] > b[0])));
       tempfolders.forEach(folder => {
         console.log(folder);
         result.folder.push(folder);
       })
-      let tempfiles = new Map([...files].sort((a, b) => a[0] > b[0]));
+      let tempfiles = new Map([...files].sort((a, b) => Number(a[0] > b[0])));
       tempfiles.forEach(file => {
         console.log(result.folder.push(file));
       }); 
