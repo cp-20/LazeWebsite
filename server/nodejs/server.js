@@ -69,7 +69,7 @@ var server = new http_1.default.Server(app);
 var io = require('socket.io')(http_1.default);
 var port = 80;
 var accountsDir = '/media/usb/compilerserver/accounts';
-var rootDir = path.resolve(__dirname, '../../');
+var rootDir = path.resolve(__dirname, '../../client');
 //request時に実行するmiddleware function
 function authenticate(req, res, next) {
     console.log('Request URL: ', req.originalUrl);
@@ -78,19 +78,19 @@ function authenticate(req, res, next) {
 app.use(express_1.default.static(rootDir));
 app.use(authenticate);
 app.get('/', function (req, res) {
-    res.sendFile('client/index.html', { root: rootDir });
+    res.sendFile('index.html', { root: rootDir });
 });
 app.get('/login', function (req, res) {
-    res.sendFile('client/login.html', { root: rootDir });
+    res.sendFile('login.html', { root: rootDir });
 });
 app.get('/editor', function (req, res) {
-    res.sendFile('client/editor.html', { root: rootDir });
+    res.sendFile('editor.html', { root: rootDir });
 });
 app.get('/docs', function (req, res) {
-    res.sendFile('client/docs.html', { root: rootDir });
+    res.sendFile('docs.html', { root: rootDir });
 });
 app.get('/admin', function (req, res) {
-    res.sendFile('client/admin.html', { root: rootDir });
+    res.sendFile('admin.html', { root: rootDir });
 });
 var users = new Map();
 var usersDirectory = new Map();

@@ -12,7 +12,7 @@ const io = require('socket.io')(http);
 const port : number = 80;
 
 const accountsDir: string = '/media/usb/compilerserver/accounts';
-const rootDir: string = path.resolve(__dirname, '../../');
+const rootDir: string = path.resolve(__dirname, '../../client');
 
 //request時に実行するmiddleware function
 function authenticate(req: express.Request, res: express.Response, next: express.NextFunction)
@@ -25,23 +25,23 @@ app.use(express.static(rootDir));
 app.use(authenticate);
 
 app.get('/', (req: express.Request, res: express.Response) => {
-    res.sendFile('client/index.html', {root: rootDir});
+    res.sendFile('index.html', {root: rootDir});
 })
 
 app.get('/login', (req: express.Request, res: express.Response) => {
-    res.sendFile('client/login.html', {root: rootDir});
+    res.sendFile('login.html', {root: rootDir});
 })
 
 app.get('/editor', (req: express.Request, res: express.Response) => {
-    res.sendFile('client/editor.html', {root: rootDir});
+    res.sendFile('editor.html', {root: rootDir});
 })
 
 app.get('/docs', (req: express.Request, res: express.Response) => {
-    res.sendFile('client/docs.html', {root: rootDir});
+    res.sendFile('docs.html', {root: rootDir});
 })
 
 app.get('/admin', (req: express.Request, res: express.Response) => {
-    res.sendFile('client/admin.html', {root: rootDir});
+    res.sendFile('admin.html', {root: rootDir});
 })
 
 let users: Map<string, string> = new Map();
