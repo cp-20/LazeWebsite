@@ -8,15 +8,15 @@ $(() => {
 			if (form.hasClass('valid')) form.removeClass('valid');
 			if (!form.hasClass('invalid')) form.removeClass('invalid');
 		}
-		console.log(input.next('.feedback'));
-		
-		input.next('.feedback').html(value);
+		input.nextAll('.feedback').html(value);
+		input.nextAll('.feedback').css('display', 'block');
 	};
 	const resetFeedback = (input :JQuery<Element>) => {
 		const form = input.parent();
 		if (form.hasClass('valid')) form.removeClass('valid');
 		if (form.hasClass('invalid')) form.removeClass('invalid');
-		input.next('.feedback').html('');
+		input.nextAll('.feedback').html('');
+		input.nextAll('.feedback').css('display', 'none');
 	};
 	// ユーザー名
 	let idTimer :(NodeJS.Timeout | undefined);

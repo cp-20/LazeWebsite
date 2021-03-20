@@ -14,8 +14,8 @@ $(function () {
             if (!form.hasClass('invalid'))
                 form.removeClass('invalid');
         }
-        console.log(input.next('.feedback'));
-        input.next('.feedback').html(value);
+        input.nextAll('.feedback').html(value);
+        input.nextAll('.feedback').css('display', 'block');
     };
     var resetFeedback = function (input) {
         var form = input.parent();
@@ -23,7 +23,8 @@ $(function () {
             form.removeClass('valid');
         if (form.hasClass('invalid'))
             form.removeClass('invalid');
-        input.next('.feedback').html('');
+        input.nextAll('.feedback').html('');
+        input.nextAll('.feedback').css('display', 'none');
     };
     // ユーザー名
     var idTimer;

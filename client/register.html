@@ -34,7 +34,7 @@
 
 		<div class="login-field">
 			<form id="login-field">
-				<div class="form-group required valid">
+				<div class="form-group required">
 					<label for="id">ユーザー名</label>
 					<input type="text" class="form-control" id="id" placeholder="Username" required>
 					<span class="feedback"></span>
@@ -51,11 +51,11 @@
 					<span class="feedback"></span>
 				</div>
 
-				<div class="form-group required">
+				<div class="form-group required invalid">
 					<label for="password">パスワード</label>
 					<input type="password" class="form-control" id="password" placeholder="Password" required>
-					<small class="note">8文字以上でかつ大文字、数字を一文字以上含んでいる必要があります</small>
-					<span class="feedback"></span>
+					<span class="feedback">ダメです！</span>
+					<small class="note">8文字以上でかつ大文字と数字をそれぞれ1文字以上含んでいる必要があります</small>
 				</div>
 				
 				<div class="form-group required">
@@ -64,7 +64,7 @@
 					<span class="feedback"></span>
 				</div>
 
-				<button type="button" class="btn btn-primary w-100">アカウント作成</button>
+				<button type="submit" class="btn btn-primary w-100">アカウント作成</button>
 
 				<div class="suggestions">
 					<span>アカウントをお持ちの方は</span>

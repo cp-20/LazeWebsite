@@ -21,8 +21,18 @@ form {
 		}
 
 		&.invalid {
-			label, .feedback {
+			label, .feedback  {
 				color: #c00;
+			}
+			.feedback {
+				display: block;
+
+				&::before {
+					border-bottom-color: #f99;
+				}
+				&::after {
+					border-bottom-color: #fdd;
+				}
 			}
 			input {
 				border: solid #c00 1px;
@@ -31,6 +41,7 @@ form {
 		&.valid {
 			.feedback {
 				color: #0c0;
+				display: block;
 			}
 		}
 
@@ -38,7 +49,31 @@ form {
 			color: rgb(187, 187, 187);
 		}
 
+		.feedback {
+			display: none;
+			position: absolute;
+			margin-top: 5px;
+			border-radius: 3px;
+			padding: 0 5px;
+			@include error();
+			@include hover();
+
+			&::before, &::after {
+				content: '';
+				position: absolute;
+				left: 10px;
+				bottom: calc(100% + 1px);
+				border: solid transparent 5px;
+			}
+			&::after {
+				left: 10px;
+				bottom: 100%;
+				border: solid transparent 5px;
+			}
+		}
+
 		.note {
+			display: block;
 			margin-left: 5px;
 		}
 	}
