@@ -35,12 +35,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
 };
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -81,61 +94,188 @@ app.get('/admin', function (req, res) {
 });
 var users = new Map();
 var usersDirectory = new Map();
-function readDirectory(path, socket, result) {
+//ディレクトリー読むための再帰関数
+function readDirectory(path, socket, result, callback) {
     return __awaiter(this, void 0, void 0, function () {
         var _this = this;
         return __generator(this, function (_a) {
-            return [2 /*return*/, fs_1.default.readdir(path, { withFileTypes: true }, function (err, content) {
-                    if (err) {
-                        socket.emit('loadedProject', {
-                            value: 'Could not load folder ' + path,
-                            style: err
+            return [2 /*return*/, new Promise(function (resolve, reject) {
+                    fs_1.default.readdir(path, { withFileTypes: true }, function (err, content) { return __awaiter(_this, void 0, void 0, function () {
+                        var files_1, folders_1, fn, temp, tempfolders, tempfiles;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    if (!err) return [3 /*break*/, 1];
+                                    console.log('couldnt load project', 24);
+                                    socket.emit('loadedProject', {
+                                        value: 'Could not load folder ' + path,
+                                        style: err
+                                    });
+                                    return [3 /*break*/, 3];
+                                case 1:
+                                    files_1 = new Map();
+                                    folders_1 = new Map();
+                                    fn = function processContent(element) {
+                                        if (element.isFile()) {
+                                            files_1.set(element.name, { type: 'file', name: element.name });
+                                            return { type: 'file', name: element.name };
+                                        }
+                                        else if (element.isDirectory()) {
+                                            return readDirectory(path + '/' + element.name, socket, { type: 'folder', name: element.name, value: [] }, function (val) {
+                                                folders_1.set(element.name, val);
+                                                return val;
+                                            });
+                                        }
+                                    };
+                                    return [4 /*yield*/, Promise.all(content.map(fn))];
+                                case 2:
+                                    temp = _a.sent();
+                                    tempfolders = new Map(__spread(folders_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
+                                    tempfolders.forEach(function (folder) {
+                                        if (result.value)
+                                            result.value.push(folder);
+                                    });
+                                    tempfiles = new Map(__spread(files_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
+                                    tempfiles.forEach(function (file) {
+                                        if (result.value)
+                                            result.value.push(file);
+                                    });
+                                    _a.label = 3;
+                                case 3:
+                                    resolve(result);
+                                    return [2 /*return*/, callback(result)];
+                            }
                         });
-                    }
-                    else {
-                        var files_1 = new Map();
-                        var folders_1 = new Map();
-                        content.forEach(function (element) { return __awaiter(_this, void 0, void 0, function () {
-                            var _a, _b, _c, _d, _e;
-                            return __generator(this, function (_f) {
-                                switch (_f.label) {
-                                    case 0:
-                                        if (!element.isFile()) return [3 /*break*/, 1];
-                                        files_1.set(element.name, { type: 'file', name: element.name });
-                                        return [3 /*break*/, 4];
-                                    case 1:
-                                        if (!element.isDirectory()) return [3 /*break*/, 4];
-                                        // console.log('a');
-                                        // let val = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []});
-                                        _b = (_a = console).log;
-                                        return [4 /*yield*/, readDirectory(path + '/' + element.name, socket, { type: 'folder', name: element.name, folder: [] })];
-                                    case 2:
-                                        // console.log('a');
-                                        // let val = await readDirectory(path + '/' + element.name, socket, {type: 'folder', name: element.name, folder: []});
-                                        _b.apply(_a, [_f.sent()]);
-                                        _d = (_c = folders_1).set;
-                                        _e = [element.name];
-                                        return [4 /*yield*/, readDirectory(path + '/' + element.name, socket, { type: 'folder', name: element.name, folder: [] })];
-                                    case 3:
-                                        _d.apply(_c, _e.concat([_f.sent()]));
-                                        _f.label = 4;
-                                    case 4: return [2 /*return*/];
-                                }
-                            });
-                        }); });
-                        var tempfolders = new Map(__spreadArrays(folders_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
-                        tempfolders.forEach(function (folder) {
-                            console.log(folder);
-                            result.folder.push(folder);
-                        });
-                        var tempfiles = new Map(__spreadArrays(files_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
-                        tempfiles.forEach(function (file) {
-                            console.log(result.folder.push(file));
-                        });
-                    }
-                    console.log(result);
-                    return result;
+                    }); });
                 })];
         });
     });
 }
+io.sockets.on('connection', function (socket) {
+    var address = socket.handshake.address;
+    console.log('New connection from ' + JSON.stringify(address) + socket.id);
+    //defaultはguestとして入る
+    users.set(socket.id, "guest");
+    fs_1.default.mkdir(accountsDir + 'guest/' + socket.id, function (err) {
+        if (err) {
+            console.log('could not create ' + accountsDir + 'guest/' + socket.id);
+        }
+    });
+    usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
+    socket.on('compile', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            // コンパイル
+            exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.filename);
+            exec('./compiler ' + input.filename + ' ' + usersDirectory.get(socket.id) + '/', function (err, stdout, stderr) {
+                // 出力
+                console.log(err, stdout, stderr);
+                if (err) {
+                    socket.emit('output', {
+                        value: stderr,
+                        style: 'err'
+                    });
+                }
+                else {
+                    socket.emit('output', {
+                        value: stdout,
+                        style: 'log'
+                    });
+                }
+                return;
+            });
+            exec('sudo rm -f ' + input.filename + ' .' + input.filename);
+            return [2 /*return*/];
+        });
+    }); });
+    socket.on('save', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            //ファイルにセーブ
+            if (users.get(socket.id) == 'guest') {
+                socket.emit('saved', {
+                    value: 'If you want to save a file, please create an account.',
+                    style: 'err',
+                    success: false
+                });
+            }
+            else {
+                exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.projectName + '/' + input.filename, function (err, stdout, stderr) {
+                    if (err) {
+                        socket.emit('saved', {
+                            value: stderr + ' : Save not complete.',
+                            style: 'err',
+                            success: false
+                        });
+                    }
+                    else {
+                        socket.emit('saved', {
+                            value: 'Save complete.',
+                            style: 'info',
+                            success: true
+                        });
+                    }
+                    return;
+                });
+            }
+            ;
+            return [2 /*return*/];
+        });
+    }); });
+    //loginシステム
+    socket.on('login', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            //usersのvalueをアカウント名にする
+            users.set(socket.id, input.accountName);
+            usersDirectory.set(socket.id, accountsDir + input.accountName);
+            return [2 /*return*/];
+        });
+    }); });
+    //すでに作られたProjectをロードする
+    socket.on('loadProject', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            result = { type: 'folder', name: input.projectName, value: [] };
+            // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
+            readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result, function () { }).then(function (val) {
+                socket.emit('loadedProject', {
+                    value: val,
+                    style: 'log'
+                });
+            });
+            return [2 /*return*/];
+        });
+    }); });
+    //Projectを作る
+    socket.on('createProject', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            fs_1.default.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, function (err) {
+                if (err) {
+                    socket.emit('createdProject', {
+                        value: 'Could not create project ' + input.projectName,
+                        style: 'err'
+                    });
+                }
+                else {
+                    socket.emit('createdProject', {
+                        value: 'Created project ' + input.projectName,
+                        style: 'log'
+                    });
+                }
+            });
+            return [2 /*return*/];
+        });
+    }); });
+    //disconnectしたとき
+    socket.on('disconnect', function () {
+        console.log("a");
+        if (users.get(socket.id) == 'guest') {
+            if (usersDirectory.get(socket.id)) {
+                fs_1.default.rmdir((usersDirectory.get(socket.id)), function (err) {
+                    console.log(usersDirectory.get(socket.id));
+                });
+            }
+        }
+    });
+});
+server.listen(port, function () {
+    console.log('Server at http://rootlang.ddns.net');
+});
