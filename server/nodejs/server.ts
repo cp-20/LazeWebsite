@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { ExpressionStatement } from "typescript";
 
 import express from 'express';
