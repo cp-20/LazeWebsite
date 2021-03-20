@@ -98,6 +98,8 @@ function logPopup(value, style) {
     };
     outputArea.prepend(output);
 }
+// ログ出力
+socket.on('output', function (result) { return logConsole(result.value, result.style); });
 // 保存済み
 socket.on('saved', function (result) {
     // ログ

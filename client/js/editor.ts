@@ -101,6 +101,9 @@ function logPopup(value :string, style='info') {
 	outputArea.prepend(output);
 }
 
+// ログ出力
+socket.on('output', (result :{value :string, style: 'log'|'err'|'info'}) => logConsole(result.value, result.style));
+
 // 保存済み
 socket.on('saved', (result :saveResult) => {
 	// ログ
