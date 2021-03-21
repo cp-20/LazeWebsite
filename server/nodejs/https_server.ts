@@ -8,13 +8,15 @@ import { Stream } from "stream";
 const path = require('path');
 const {exec} = require('child_process');
 const app: express.Express = express();
-// const http = require('http');
+const http = require('http');
 const https = require('https');
 const privateKey = fs.readFileSync('privkey.pem', 'utf8');
 const certificate = fs.readFileSync('fullchain.pem', 'utf8');
 
 const credentials = {key: privateKey, cert: certificate};
-// const httpServer = http.createServer(app);
+http.createServer((express()).all("*", function (request, response) {
+  response.redirect(`https://${request.hostname}${request.url}`);
+})).listen(80);
 const httpsServer = https.createServer(credentials, app);
 const io = require('socket.io')(httpsServer);
 const port : number = 443;
@@ -236,7 +238,6 @@ io.sockets.on('connection', (socket:any) => {
     })
   });
   
-  httpsServer.listen(port, (req: express.Request, res: express.Response) => {
-    res.redirect(`https://${req.hostname}${req.url}`);
+  httpsServer.listen(port, () => {
     console.log('Server at https://rootlang.ddns.net');
   })

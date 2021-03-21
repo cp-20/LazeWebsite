@@ -65,12 +65,14 @@ var fs_1 = __importDefault(require("fs"));
 var path = require('path');
 var exec = require('child_process').exec;
 var app = express_1.default();
-// const http = require('http');
+var http = require('http');
 var https = require('https');
 var privateKey = fs_1.default.readFileSync('privkey.pem', 'utf8');
 var certificate = fs_1.default.readFileSync('fullchain.pem', 'utf8');
 var credentials = { key: privateKey, cert: certificate };
-// const httpServer = http.createServer(app);
+http.createServer((express_1.default()).all("*", function (request, response) {
+    response.redirect("https://" + request.hostname + request.url);
+})).listen(80);
 var httpsServer = https.createServer(credentials, app);
 var io = require('socket.io')(httpsServer);
 var port = 443;
@@ -290,7 +292,6 @@ io.sockets.on('connection', function (socket) {
         }
     });
 });
-httpsServer.listen(port, function (req, res) {
-    res.redirect("https://" + req.hostname + req.url);
+httpsServer.listen(port, function () {
     console.log('Server at https://rootlang.ddns.net');
 });
