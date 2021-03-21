@@ -32,6 +32,16 @@ $(() => {
 	$('#btn-save').on('click', () => save(editor));
 	$('#btn-compile').on('click', () => compile(editor));
 
+	// リサイズ可能に
+	$('.explorer').resizable({
+		handleSelector: '.exp-spliter',
+		resizeHeight: false
+	});
+	$('.editor-main').resizable({
+		handleSelector: '.console-spliter',
+		resizeWidth: false
+	});
+
 	// アカウントのステータス更新
 	updateAccount();
 

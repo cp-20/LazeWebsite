@@ -11,13 +11,32 @@ html, body, main.container {
 	height: 100%;
 }
 
+div.spliter {
+	padding: 0;
+	background-color: rgb(202, 202, 202);
+
+	&.h-spliter {
+		width: 4px;
+		height: 100%;
+		cursor: w-resize;
+	}
+	&.v-spliter {
+		width: 100%;
+		height: 4px;
+		cursor: s-resize;
+	}
+}
+
 .side-menu {
 	display: none;
 }
 
 div.explorer {
+	min-width: 100px;
 	width: 250px;
+	max-width: 500px;
 	background-color: whitesmoke;
+	overflow: auto;
 
 	.exp-btns {
 		height: 40px;
@@ -35,7 +54,8 @@ div.explorer {
 				user-select: none;
 
 				box-sizing: border-box;
-				max-width: 300px;
+				width: auto;
+				max-width: 100%;
 				text-overflow: ellipsis;
 				white-space: nowrap;
 				overflow-x: hidden;
@@ -178,17 +198,19 @@ div.explorer {
 	}
 
 	.editor-main {
-		flex-grow: 1;
-		flex-basis: 0;
+		height: calc(100% - 290px);
 		overflow-y: hidden;
+	}
+
+	.console-spliter {
+		width: 100%;
+		height: 2px;
 	}
 
 	.editor-console {
 		display: flex;
 		flex-direction: column;
-		height: 200px;
-		border-top: solid lightgray 2px;
-		border-left: solid lightgray 2px;
+		flex: 1;
 		background-color: rgb(30, 30, 30);
 
 		.console-label {
@@ -435,7 +457,6 @@ div.CodeMirror {
 		left: 0px!important;
 		width: 65px;
 		background-color: whitesmoke;
-		border-left: solid #ccc 2px;
 
 		.CodeMirror-linenumbers {
 			width: 50px!important;
