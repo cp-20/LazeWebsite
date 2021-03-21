@@ -8,9 +8,16 @@ import { Stream } from "stream";
 const path = require('path');
 const {exec} = require('child_process');
 const app: express.Express = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
-const port : number = 80;
+// const http = require('http');
+const https = require('https');
+const privateKey = fs.readFileSync('privkey.pem', 'utf8');
+const certificate = fs.readFileSync('fullchain.pem', 'utf8');
+
+const credentials = {key: privateKey, cert: certificate};
+// const httpServer = http.createServer(app);
+const httpsServer = https.createServer(credentials, app);
+const io = require('socket.io')(httpsServer);
+const port : number = 443;
 
 const accountsDir: string = '/media/usb/compilerserver/accounts/';
 const rootDir: string = path.resolve(__dirname, '../../client');
@@ -229,6 +236,6 @@ io.sockets.on('connection', (socket:any) => {
     })
   });
   
-  http.listen(port, () => {
-    console.log('Server at http://rootlang.ddns.net');
+  httpsServer.listen(port, () => {
+    console.log('Server at https://rootlang.ddns.net');
   })
