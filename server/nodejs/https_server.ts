@@ -236,6 +236,7 @@ io.sockets.on('connection', (socket:any) => {
     })
   });
   
-  httpsServer.listen(port, () => {
+  httpsServer.listen(port, (req: express.Request, res: express.Response) => {
+    res.redirect(`https://${req.hostname}${req.url}`);
     console.log('Server at https://rootlang.ddns.net');
   })

@@ -290,6 +290,7 @@ io.sockets.on('connection', function (socket) {
         }
     });
 });
-httpsServer.listen(port, function () {
+httpsServer.listen(port, function (req, res) {
+    res.redirect("https://" + req.hostname + req.url);
     console.log('Server at https://rootlang.ddns.net');
 });
