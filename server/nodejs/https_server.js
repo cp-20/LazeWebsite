@@ -65,9 +65,12 @@ var fs_1 = __importDefault(require("fs"));
 var path = require('path');
 var exec = require('child_process').exec;
 var app = express_1.default();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var port = 80;
+// const http = require('http');
+var https = require('https');
+// const httpServer = http.createServer(app);
+var httpsServer = https.createServer(app);
+var io = require('socket.io')(httpsServer);
+var port = 443;
 var accountsDir = '/media/usb/compilerserver/accounts/';
 var rootDir = path.resolve(__dirname, '../../client');
 //request時に実行するmiddleware function
@@ -284,6 +287,6 @@ io.sockets.on('connection', function (socket) {
         }
     });
 });
-http.listen(port, function () {
-    console.log('Server at http://rootlang.ddns.net');
+httpsServer.listen(port, function () {
+    console.log('Server at https://rootlang.ddns.net');
 });
