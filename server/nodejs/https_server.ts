@@ -10,8 +10,12 @@ const {exec} = require('child_process');
 const app: express.Express = express();
 // const http = require('http');
 const https = require('https');
+const privateKey = fs.readFileSync('privkey.pem', 'utf8');
+const certificate = fs.readFileSync('fullchain.pem', 'utf8');
+
+const credentials = {key: privateKey, cert: certificate};
 // const httpServer = http.createServer(app);
-const httpsServer = https.createServer(app);
+const httpsServer = https.createServer(credentials, app);
 const io = require('socket.io')(httpsServer);
 const port : number = 443;
 
