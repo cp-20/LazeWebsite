@@ -8,31 +8,35 @@ import { Stream } from "stream";
 const path = require('path');
 const {exec} = require('child_process');
 const app: express.Express = express();
-const http = require('http');
+//https settings
 const https = require('https');
 const privateKey = fs.readFileSync('privkey.pem', 'utf8');
 const certificate = fs.readFileSync('fullchain.pem', 'utf8');
-
 const credentials = {key: privateKey, cert: certificate};
+//http to https auto redirection
+const http = require('http');
 http.createServer((express()).all("*", function (request, response) {
   response.redirect(`https://${request.hostname}${request.url}`);
 })).listen(80);
 const httpsServer = https.createServer(credentials, app);
 const io = require('socket.io')(httpsServer);
 const port : number = 443;
+//passport
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
 const accountsDir: string = '/media/usb/compilerserver/accounts/';
 const rootDir: string = path.resolve(__dirname, '../../client');
 
 //request時に実行するmiddleware function
-function authenticate(req: express.Request, res: express.Response, next: express.NextFunction)
+function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
     console.log('Request URL: ', req.originalUrl);
     next();
 }
 
 app.use(express.static(rootDir));
-app.use(authenticate);
+app.use(everyRequest);
 
 app.get('/', (req: express.Request, res: express.Response) => {
     res.sendFile('index.html', {root: rootDir});
