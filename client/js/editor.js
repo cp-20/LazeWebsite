@@ -31,6 +31,15 @@ $(function () {
     $('#btn-load').on('click', loadProject);
     $('#btn-save').on('click', function () { return save(editor); });
     $('#btn-compile').on('click', function () { return compile(editor); });
+    // リサイズ可能に
+    $('.explorer').resizable({
+        handleSelector: '.exp-spliter',
+        resizeHeight: false
+    });
+    $('.editor-main').resizable({
+        handleSelector: '.console-spliter',
+        resizeWidth: false
+    });
     // アカウントのステータス更新
     updateAccount();
     // ファイルツリー
