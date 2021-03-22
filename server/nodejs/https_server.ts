@@ -51,7 +51,8 @@ function everyRequest(req: express.Request, res: express.Response, next: express
 
 app.use(express.static(rootdirectory));
 app.use(everyRequest);
-app.use(express.urlencoded({extended: false}));
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/', (req: express.Request, res: express.Response) => {
     res.sendFile('index.html', {root: rootdirectory});
