@@ -9,9 +9,10 @@ const path = require('path');
 const {exec} = require('child_process');
 const app: express.Express = express();
 //https settings
+const rootDir: string = path.resolve(__dirname, '../../');
 const https = require('https');
-const privateKey = fs.readFileSync('privkey.pem', 'utf8');
-const certificate = fs.readFileSync('fullchain.pem', 'utf8');
+const privateKey = fs.readFileSync(path.resolve(rootDir, 'privkey.pem'), 'utf8');
+const certificate = fs.readFileSync(path.resolve(rootDir, 'fullchain.pem'), 'utf8');
 const credentials = {key: privateKey, cert: certificate};
 //http to https auto redirection
 const http = require('http');
@@ -21,12 +22,17 @@ http.createServer((express()).all("*", function (request, response) {
 const httpsServer = https.createServer(credentials, app);
 const io = require('socket.io')(httpsServer);
 const port : number = 443;
+//database (mongodb)
+const mongoClient = require('mongodb');
 //passport
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
+passport.use(new LocalStrategy(
+  function
+));
+
 const accountsDir: string = '/media/usb/compilerserver/accounts/';
-const rootDir: string = path.resolve(__dirname, '../../client');
 
 //request時に実行するmiddleware function
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
@@ -35,7 +41,7 @@ function everyRequest(req: express.Request, res: express.Response, next: express
     next();
 }
 
-app.use(express.static(rootDir));
+app.use(express.static(rootDir + '/client'));
 app.use(everyRequest);
 
 app.get('/', (req: express.Request, res: express.Response) => {
