@@ -102,6 +102,7 @@ function everyRequest(req, res, next) {
 }
 app.use(express_1.default.static(rootdirectory));
 app.use(everyRequest);
+app.use(express_1.default.urlencoded({ extended: false }));
 app.get('/', function (req, res) {
     res.sendFile('index.html', { root: rootdirectory });
 });
