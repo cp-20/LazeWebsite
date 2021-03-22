@@ -94,34 +94,35 @@ mongoose_1.default.Promise = global.Promise;
 //   function
 // ));
 var accountsDir = '/media/usb/compilerserver/accounts/';
+var root = path.resolve(rootDir, '/client');
 //request時に実行するmiddleware function
 function everyRequest(req, res, next) {
     console.log('Request URL: ', req.originalUrl);
     next();
 }
-app.use(express_1.default.static(rootDir + '/client'));
+app.use(express_1.default.static(root));
 app.use(everyRequest);
 app.get('/', function (req, res) {
-    res.sendFile('index.html', { root: rootDir });
+    res.sendFile('index.html', { root: root });
 });
 app.get('/login', function (req, res) {
-    res.sendFile('login.html', { root: rootDir });
+    res.sendFile('login.html', { root: root });
 });
 app.get('/editor', function (req, res) {
-    res.sendFile('editor.html', { root: rootDir });
+    res.sendFile('editor.html', { root: root });
 });
 app.get('/docs', function (req, res) {
-    res.sendFile('docs.html', { root: rootDir });
+    res.sendFile('docs.html', { root: root });
 });
 app.get('/admin', function (req, res) {
-    res.sendFile('admin.html', { root: rootDir });
+    res.sendFile('admin.html', { root: root });
 });
 app.get('/register', function (req, res) {
-    res.sendFile('register.html', { root: rootDir });
+    res.sendFile('register.html', { root: root });
     console.log(req.body);
 });
 app.get('/pass_reset', function (req, res) {
-    res.sendFile('pass_reset.html', { root: rootDir });
+    res.sendFile('pass_reset.html', { root: root });
 });
 app.get('/register_check', function (req, res) {
     console.log(req.originalUrl);
