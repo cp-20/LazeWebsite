@@ -82,7 +82,7 @@ var port = 443;
 //database (mongoose)
 var User = require('./database');
 var mongoose_1 = __importDefault(require("mongoose"));
-mongoose_1.default.connect('mongodb://localhost/compilerserver', {
+mongoose_1.default.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(function () { console.log('connected'); });

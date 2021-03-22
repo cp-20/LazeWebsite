@@ -25,7 +25,7 @@ const port : number = 443;
 //database (mongoose)
 const User = require('./database');
 import mongoose from 'mongoose';
-mongoose.connect('mongodb://localhost/compilerserver', {
+mongoose.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {console.log('connected');});
