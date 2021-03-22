@@ -23,24 +23,54 @@ const httpsServer = https.createServer(credentials, app);
 const io = require('socket.io')(httpsServer);
 const port : number = 443;
 //database (mongoose)
-const User = require('./database');
 import mongoose from 'mongoose';
-mongoose.connect('mongodb://localhost:27017/compilerserver', {
+const User: mongoose.Model<any, any> = require('./database');
+mongoose.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true
-});
+}).then(() => {console.log('connected');});
 
 mongoose.Promise = global.Promise;
 //passport
-// const passport = require('passport');
-// const LocalStrategy = require('passport-local').Strategy;
+import passport from 'passport';
+const LocalStrategy = require('passport-local').Strategy;
 
-// passport.use(new LocalStrategy(
-//   function
-// ));
-
+passport.use(new LocalStrategy(
+  {usernameField: 'email'}, (email: string, password: string, done: any) => {
+    User.findOne({email: email}).then((user: any) => {
+      if(!user)
+      {
+        return done(null, false, {message: 'That email is not registered'});
+      }
+      bcrypt.compare(password, user.password, (err, isMatch) => {
+        if(err) console.log(err);
+        if(isMatch)
+        {
+          return done(null, user);
+        }
+        else 
+        {
+          return done(err, false, {message: 'password incorrect'});
+        }
+      })
+    })
+  }
+));
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+})
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err: any, user: any) => {
+    done(err, user);
+  })
+})
+//bcrypt = hash function
+import bcrypt from 'bcrypt';
 const accountsDir: string = '/media/usb/compilerserver/accounts/';
 const rootdirectory: string = path.resolve(rootDir, 'client');
+//express session
+import session from 'express-session';
+
 
 //request時に実行するmiddleware function
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
@@ -54,6 +84,13 @@ app.use(everyRequest);
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+app.use(session({
+  secret: 'secret',
+  resave: true,
+  saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/', (req: express.Request, res: express.Response) => {
     res.sendFile('index.html', {root: rootdirectory});
@@ -63,8 +100,12 @@ app.get('/login', (req: express.Request, res: express.Response) => {
     res.sendFile('login.html', {root: rootdirectory});
 })
 
-app.post('/login', (req: express.Request, res: express.Response) => {
+app.post('/login', (req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.log(req.body);
+  passport.authenticate('local', {
+    successRedirect: '/editor',
+    failureRedirect: '/login'
+  })(req,res,next);
 })
 
 app.get('/editor', (req: express.Request, res: express.Response) => {
@@ -85,15 +126,60 @@ app.get('/register', (req: express.Request, res: express.Response) => {
 
 app.post('/register', (req: express.Request, res: express.Response) => {
   console.log(req.body);
+  const {username, name, emailAddress, password, passwordCheck} = req.body;
+  const newUser = new User({
+    email: emailAddress,
+    username: username,
+    displayName: name,
+    password: password 
+  });
+  bcrypt.genSalt(10, (err: Error, salt) => {
+    bcrypt.hash(newUser.password, salt,(err: Error, hash) => {
+      if(err) console.log('Error hashing password.');
+      newUser.password = hash;
+      newUser.save().then((value: any) => {
+        console.log(value);
+        res.redirect('/login');
+      });
+    });
+  });
 })
 
 app.get('/pass_reset', (req: express.Request, res: express.Response) => {
   res.sendFile('pass_reset.html', {root: rootdirectory});
 })
 
-app.get('/register_check', (req: express.Request, res: express.Response) => {
-  console.log(req.originalUrl);
-  res.send('error');
+app.get('/register_check/', (req: express.Request, res: express.Response) => {
+  if(req.query.email)
+  {
+    let emailAddress : any = req.query.email;
+    console.log(emailAddress);
+    User.findOne({email: emailAddress}).exec((err: any, user: any) => {
+      if(user)
+      {
+        res.json({success: false});
+      }
+      else
+      {
+        res.json({success: true});
+      }
+    });
+  }
+  else if(req.query.id)
+  {
+    let userId : any = req.query.id;
+    console.log(userId);
+    User.findOne({username: userId}).exec((err: any, user: any) => {
+      if(user)
+      {
+        res.json({success: false});
+      }
+      else
+      {
+        res.json({success: true});
+      }
+    });
+  }
 })
 
 let users: Map<string, string> = new Map();

@@ -52,10 +52,9 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from) {
-    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
-        to[j] = from[i];
-    return to;
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
 };
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -81,21 +80,47 @@ var httpsServer = https.createServer(credentials, app);
 var io = require('socket.io')(httpsServer);
 var port = 443;
 //database (mongoose)
-var User = require('./database');
 var mongoose_1 = __importDefault(require("mongoose"));
-mongoose_1.default.connect('mongodb://localhost:27017/compilerserver', {
+var User = require('./database');
+mongoose_1.default.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
-});
+}).then(function () { console.log('connected'); });
 mongoose_1.default.Promise = global.Promise;
 //passport
-// const passport = require('passport');
-// const LocalStrategy = require('passport-local').Strategy;
-// passport.use(new LocalStrategy(
-//   function
-// ));
+var passport_1 = __importDefault(require("passport"));
+var LocalStrategy = require('passport-local').Strategy;
+passport_1.default.use(new LocalStrategy({ usernameField: 'email' }, function (email, password, done) {
+    User.findOne({ email: email }).then(function (user) {
+        if (!user) {
+            return done(null, false, { message: 'That email is not registered' });
+        }
+        bcrypt_1.default.compare(password, user.password, function (err, isMatch) {
+            if (err)
+                console.log(err);
+            if (isMatch) {
+                return done(null, user);
+            }
+            else {
+                return done(err, false, { message: 'password incorrect' });
+            }
+        });
+    });
+}));
+passport_1.default.serializeUser(function (user, done) {
+    done(null, user.id);
+});
+passport_1.default.deserializeUser(function (id, done) {
+    User.findById(id, function (err, user) {
+        done(err, user);
+    });
+});
+//bcrypt = hash function
+var bcrypt_1 = __importDefault(require("bcrypt"));
 var accountsDir = '/media/usb/compilerserver/accounts/';
 var rootdirectory = path.resolve(rootDir, 'client');
+//express session
+var express_session_1 = __importDefault(require("express-session"));
 //request時に実行するmiddleware function
 function everyRequest(req, res, next) {
     console.log('Request URL: ', req.originalUrl);
@@ -106,14 +131,25 @@ app.use(everyRequest);
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(express_session_1.default({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(passport_1.default.initialize());
+app.use(passport_1.default.session());
 app.get('/', function (req, res) {
     res.sendFile('index.html', { root: rootdirectory });
 });
 app.get('/login', function (req, res) {
     res.sendFile('login.html', { root: rootdirectory });
 });
-app.post('/login', function (req, res) {
+app.post('/login', function (req, res, next) {
     console.log(req.body);
+    passport_1.default.authenticate('local', {
+        successRedirect: '/editor',
+        failureRedirect: '/login'
+    })(req, res, next);
 });
 app.get('/editor', function (req, res) {
     res.sendFile('editor.html', { root: rootdirectory });
@@ -129,13 +165,53 @@ app.get('/register', function (req, res) {
 });
 app.post('/register', function (req, res) {
     console.log(req.body);
+    var _a = req.body, username = _a.username, name = _a.name, emailAddress = _a.emailAddress, password = _a.password, passwordCheck = _a.passwordCheck;
+    var newUser = new User({
+        email: emailAddress,
+        username: username,
+        displayName: name,
+        password: password
+    });
+    bcrypt_1.default.genSalt(10, function (err, salt) {
+        bcrypt_1.default.hash(newUser.password, salt, function (err, hash) {
+            if (err)
+                console.log('Error hashing password.');
+            newUser.password = hash;
+            newUser.save().then(function (value) {
+                console.log(value);
+                res.redirect('/login');
+            });
+        });
+    });
 });
 app.get('/pass_reset', function (req, res) {
     res.sendFile('pass_reset.html', { root: rootdirectory });
 });
-app.get('/register_check', function (req, res) {
-    console.log(req.originalUrl);
-    res.send('error');
+app.get('/register_check/', function (req, res) {
+    if (req.query.email) {
+        var emailAddress = req.query.email;
+        console.log(emailAddress);
+        User.findOne({ email: emailAddress }).exec(function (err, user) {
+            if (user) {
+                res.json({ success: false });
+            }
+            else {
+                res.json({ success: true });
+            }
+        });
+    }
+    else if (req.query.id) {
+        var userId = req.query.id;
+        console.log(userId);
+        User.findOne({ username: userId }).exec(function (err, user) {
+            if (user) {
+                res.json({ success: false });
+            }
+            else {
+                res.json({ success: true });
+            }
+        });
+    }
 });
 var users = new Map();
 var usersDirectory = new Map();
@@ -175,12 +251,12 @@ function readDirectory(path, socket, result, callback) {
                                     return [4 /*yield*/, Promise.all(content.map(fn))];
                                 case 2:
                                     temp = _a.sent();
-                                    tempfolders = new Map(__spreadArray([], __read(folders_1)).sort(function (a, b) { return Number(a[0] > b[0]); }));
+                                    tempfolders = new Map(__spread(folders_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
                                     tempfolders.forEach(function (folder) {
                                         if (result.value)
                                             result.value.push(folder);
                                     });
-                                    tempfiles = new Map(__spreadArray([], __read(files_1)).sort(function (a, b) { return Number(a[0] > b[0]); }));
+                                    tempfiles = new Map(__spread(files_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
                                     tempfiles.forEach(function (file) {
                                         if (result.value)
                                             result.value.push(file);
