@@ -94,7 +94,7 @@ mongoose_1.default.Promise = global.Promise;
 //   function
 // ));
 var accountsDir = '/media/usb/compilerserver/accounts/';
-var rootdirectory = path.resolve(rootDir, '/client');
+var rootdirectory = path.resolve(rootDir, 'client');
 //request時に実行するmiddleware function
 function everyRequest(req, res, next) {
     console.log('Request URL: ', req.originalUrl);

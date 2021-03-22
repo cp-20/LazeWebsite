@@ -40,7 +40,7 @@ mongoose.Promise = global.Promise;
 // ));
 
 const accountsDir: string = '/media/usb/compilerserver/accounts/';
-const rootdirectory: string = path.resolve(rootDir, '/client');
+const rootdirectory: string = path.resolve(rootDir, 'client');
 
 //request時に実行するmiddleware function
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
