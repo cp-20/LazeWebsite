@@ -60,6 +60,10 @@ app.get('/login', (req: express.Request, res: express.Response) => {
     res.sendFile('login.html', {root: rootdirectory});
 })
 
+app.post('/login', (req: express.Request, res: express.Response) => {
+  console.log(req.body);
+})
+
 app.get('/editor', (req: express.Request, res: express.Response) => {
     res.sendFile('editor.html', {root: rootdirectory});
 })
@@ -74,6 +78,9 @@ app.get('/admin', (req: express.Request, res: express.Response) => {
 
 app.get('/register', (req: express.Request, res: express.Response) => {
   res.sendFile('register.html', {root: rootdirectory});
+})
+
+app.post('/register', (req: express.Request, res: express.Response) => {
   console.log(req.body);
 })
 
