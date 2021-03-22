@@ -52,10 +52,9 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from) {
-    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
-        to[j] = from[i];
-    return to;
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
 };
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -103,11 +102,15 @@ function everyRequest(req, res, next) {
 }
 app.use(express_1.default.static(rootdirectory));
 app.use(everyRequest);
+app.use(express_1.default.urlencoded({ extended: false }));
 app.get('/', function (req, res) {
     res.sendFile('index.html', { root: rootdirectory });
 });
 app.get('/login', function (req, res) {
     res.sendFile('login.html', { root: rootdirectory });
+});
+app.post('/login', function (req, res) {
+    console.log(req.body);
 });
 app.get('/editor', function (req, res) {
     res.sendFile('editor.html', { root: rootdirectory });
@@ -120,6 +123,8 @@ app.get('/admin', function (req, res) {
 });
 app.get('/register', function (req, res) {
     res.sendFile('register.html', { root: rootdirectory });
+});
+app.post('/register', function (req, res) {
     console.log(req.body);
 });
 app.get('/pass_reset', function (req, res) {
@@ -167,12 +172,12 @@ function readDirectory(path, socket, result, callback) {
                                     return [4 /*yield*/, Promise.all(content.map(fn))];
                                 case 2:
                                     temp = _a.sent();
-                                    tempfolders = new Map(__spreadArray([], __read(folders_1)).sort(function (a, b) { return Number(a[0] > b[0]); }));
+                                    tempfolders = new Map(__spread(folders_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
                                     tempfolders.forEach(function (folder) {
                                         if (result.value)
                                             result.value.push(folder);
                                     });
-                                    tempfiles = new Map(__spreadArray([], __read(files_1)).sort(function (a, b) { return Number(a[0] > b[0]); }));
+                                    tempfiles = new Map(__spread(files_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
                                     tempfiles.forEach(function (file) {
                                         if (result.value)
                                             result.value.push(file);
