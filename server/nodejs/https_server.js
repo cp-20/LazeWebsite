@@ -66,38 +66,68 @@ var fs_1 = __importDefault(require("fs"));
 var path = require('path');
 var exec = require('child_process').exec;
 var app = express_1.default();
-// const http = require('http');
+//https settings
+var rootDir = path.resolve(__dirname, '../../');
 var https = require('https');
-var privateKey = fs_1.default.readFileSync('privkey.pem', 'utf8');
-var certificate = fs_1.default.readFileSync('fullchain.pem', 'utf8');
+var privateKey = fs_1.default.readFileSync(path.resolve(rootDir, 'server/nodejs/privkey.pem'), 'utf8');
+var certificate = fs_1.default.readFileSync(path.resolve(rootDir, 'server/nodejs/fullchain.pem'), 'utf8');
 var credentials = { key: privateKey, cert: certificate };
-// const httpServer = http.createServer(app);
+//http to https auto redirection
+var http = require('http');
+http.createServer((express_1.default()).all("*", function (request, response) {
+    response.redirect("https://" + request.hostname + request.url);
+})).listen(80);
 var httpsServer = https.createServer(credentials, app);
 var io = require('socket.io')(httpsServer);
 var port = 443;
+//database (mongoose)
+var User = require('./database');
+var mongoose_1 = __importDefault(require("mongoose"));
+mongoose_1.default.connect('mongodb://localhost:27017/compilerserver', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+mongoose_1.default.Promise = global.Promise;
+//passport
+// const passport = require('passport');
+// const LocalStrategy = require('passport-local').Strategy;
+// passport.use(new LocalStrategy(
+//   function
+// ));
 var accountsDir = '/media/usb/compilerserver/accounts/';
-var rootDir = path.resolve(__dirname, '../../client');
+var rootdirectory = path.resolve(rootDir, 'client');
 //request時に実行するmiddleware function
-function authenticate(req, res, next) {
+function everyRequest(req, res, next) {
     console.log('Request URL: ', req.originalUrl);
     next();
 }
-app.use(express_1.default.static(rootDir));
-app.use(authenticate);
+app.use(express_1.default.static(rootdirectory));
+app.use(everyRequest);
 app.get('/', function (req, res) {
-    res.sendFile('index.html', { root: rootDir });
+    res.sendFile('index.html', { root: rootdirectory });
 });
 app.get('/login', function (req, res) {
-    res.sendFile('login.html', { root: rootDir });
+    res.sendFile('login.html', { root: rootdirectory });
 });
 app.get('/editor', function (req, res) {
-    res.sendFile('editor.html', { root: rootDir });
+    res.sendFile('editor.html', { root: rootdirectory });
 });
 app.get('/docs', function (req, res) {
-    res.sendFile('docs.html', { root: rootDir });
+    res.sendFile('docs.html', { root: rootdirectory });
 });
 app.get('/admin', function (req, res) {
-    res.sendFile('admin.html', { root: rootDir });
+    res.sendFile('admin.html', { root: rootdirectory });
+});
+app.get('/register', function (req, res) {
+    res.sendFile('register.html', { root: rootdirectory });
+    console.log(req.body);
+});
+app.get('/pass_reset', function (req, res) {
+    res.sendFile('pass_reset.html', { root: rootdirectory });
+});
+app.get('/register_check', function (req, res) {
+    console.log(req.originalUrl);
+    res.send('error');
 });
 var users = new Map();
 var usersDirectory = new Map();

@@ -8,48 +8,82 @@ import { Stream } from "stream";
 const path = require('path');
 const {exec} = require('child_process');
 const app: express.Express = express();
-// const http = require('http');
+//https settings
+const rootDir: string = path.resolve(__dirname, '../../');
 const https = require('https');
-const privateKey = fs.readFileSync('privkey.pem', 'utf8');
-const certificate = fs.readFileSync('fullchain.pem', 'utf8');
-
+const privateKey = fs.readFileSync(path.resolve(rootDir, 'server/nodejs/privkey.pem'), 'utf8');
+const certificate = fs.readFileSync(path.resolve(rootDir, 'server/nodejs/fullchain.pem'), 'utf8');
 const credentials = {key: privateKey, cert: certificate};
-// const httpServer = http.createServer(app);
+//http to https auto redirection
+const http = require('http');
+http.createServer((express()).all("*", function (request, response) {
+  response.redirect(`https://${request.hostname}${request.url}`);
+})).listen(80);
 const httpsServer = https.createServer(credentials, app);
 const io = require('socket.io')(httpsServer);
 const port : number = 443;
+//database (mongoose)
+const User = require('./database');
+import mongoose from 'mongoose';
+mongoose.connect('mongodb://localhost:27017/compilerserver', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
+mongoose.Promise = global.Promise;
+//passport
+// const passport = require('passport');
+// const LocalStrategy = require('passport-local').Strategy;
+
+// passport.use(new LocalStrategy(
+//   function
+// ));
 
 const accountsDir: string = '/media/usb/compilerserver/accounts/';
-const rootDir: string = path.resolve(__dirname, '../../client');
+const rootdirectory: string = path.resolve(rootDir, 'client');
 
 //request時に実行するmiddleware function
-function authenticate(req: express.Request, res: express.Response, next: express.NextFunction)
+function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
     console.log('Request URL: ', req.originalUrl);
     next();
 }
 
-app.use(express.static(rootDir));
-app.use(authenticate);
+app.use(express.static(rootdirectory));
+app.use(everyRequest);
 
 app.get('/', (req: express.Request, res: express.Response) => {
-    res.sendFile('index.html', {root: rootDir});
+    res.sendFile('index.html', {root: rootdirectory});
 })
 
 app.get('/login', (req: express.Request, res: express.Response) => {
-    res.sendFile('login.html', {root: rootDir});
+    res.sendFile('login.html', {root: rootdirectory});
 })
 
 app.get('/editor', (req: express.Request, res: express.Response) => {
-    res.sendFile('editor.html', {root: rootDir});
+    res.sendFile('editor.html', {root: rootdirectory});
 })
 
 app.get('/docs', (req: express.Request, res: express.Response) => {
-    res.sendFile('docs.html', {root: rootDir});
+    res.sendFile('docs.html', {root: rootdirectory});
 })
 
 app.get('/admin', (req: express.Request, res: express.Response) => {
-    res.sendFile('admin.html', {root: rootDir});
+    res.sendFile('admin.html', {root: rootdirectory});
+})
+
+app.get('/register', (req: express.Request, res: express.Response) => {
+  res.sendFile('register.html', {root: rootdirectory});
+  console.log(req.body);
+})
+
+app.get('/pass_reset', (req: express.Request, res: express.Response) => {
+  res.sendFile('pass_reset.html', {root: rootdirectory});
+})
+
+app.get('/register_check', (req: express.Request, res: express.Response) => {
+  console.log(req.originalUrl);
+  res.send('error');
 })
 
 let users: Map<string, string> = new Map();
