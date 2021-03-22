@@ -25,10 +25,10 @@ const port : number = 443;
 //database (mongoose)
 const User = require('./database');
 import mongoose from 'mongoose';
-mongoose.connect('mongodb://localhost:27017/compilerserver', {
+mongoose.connect('mongodb://localhost/compilerserver', {
   useNewUrlParser: true,
   useUnifiedTopology: true
-});
+}).then(() => {console.log('connected');});
 
 mongoose.Promise = global.Promise;
 //passport
