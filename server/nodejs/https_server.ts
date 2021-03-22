@@ -40,7 +40,7 @@ mongoose.Promise = global.Promise;
 // ));
 
 const accountsDir: string = '/media/usb/compilerserver/accounts/';
-const root: string = path.resolve(rootDir, '/client');
+const rootdirectory: string = path.resolve(rootDir, '/client');
 
 //request時に実行するmiddleware function
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
@@ -49,36 +49,36 @@ function everyRequest(req: express.Request, res: express.Response, next: express
     next();
 }
 
-app.use(express.static(root));
+app.use(express.static(rootdirectory));
 app.use(everyRequest);
 
 app.get('/', (req: express.Request, res: express.Response) => {
-    res.sendFile('index.html', {root: root});
+    res.sendFile('index.html', {root: rootdirectory});
 })
 
 app.get('/login', (req: express.Request, res: express.Response) => {
-    res.sendFile('login.html', {root: root});
+    res.sendFile('login.html', {root: rootdirectory});
 })
 
 app.get('/editor', (req: express.Request, res: express.Response) => {
-    res.sendFile('editor.html', {root: root});
+    res.sendFile('editor.html', {root: rootdirectory});
 })
 
 app.get('/docs', (req: express.Request, res: express.Response) => {
-    res.sendFile('docs.html', {root: root});
+    res.sendFile('docs.html', {root: rootdirectory});
 })
 
 app.get('/admin', (req: express.Request, res: express.Response) => {
-    res.sendFile('admin.html', {root: root});
+    res.sendFile('admin.html', {root: rootdirectory});
 })
 
 app.get('/register', (req: express.Request, res: express.Response) => {
-  res.sendFile('register.html', {root: root});
+  res.sendFile('register.html', {root: rootdirectory});
   console.log(req.body);
 })
 
 app.get('/pass_reset', (req: express.Request, res: express.Response) => {
-  res.sendFile('pass_reset.html', {root: root});
+  res.sendFile('pass_reset.html', {root: rootdirectory});
 })
 
 app.get('/register_check', (req: express.Request, res: express.Response) => {
