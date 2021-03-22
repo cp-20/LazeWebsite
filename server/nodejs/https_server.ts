@@ -22,15 +22,22 @@ http.createServer((express()).all("*", function (request, response) {
 const httpsServer = https.createServer(credentials, app);
 const io = require('socket.io')(httpsServer);
 const port : number = 443;
-//database (mongodb)
-const mongoClient = require('mongodb');
-//passport
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+//database (mongoose)
+const User = require('database.js');
+import mongoose from 'mongoose';
+mongoose.connect('mongodb://localhost:27017/compilerserver', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
-passport.use(new LocalStrategy(
-  function
-));
+mongoose.Promise = global.Promise;
+//passport
+// const passport = require('passport');
+// const LocalStrategy = require('passport-local').Strategy;
+
+// passport.use(new LocalStrategy(
+//   function
+// ));
 
 const accountsDir: string = '/media/usb/compilerserver/accounts/';
 
@@ -62,6 +69,20 @@ app.get('/docs', (req: express.Request, res: express.Response) => {
 
 app.get('/admin', (req: express.Request, res: express.Response) => {
     res.sendFile('admin.html', {root: rootDir});
+})
+
+app.get('/register', (req: express.Request, res: express.Response) => {
+  res.sendFile('register.html', {root: rootDir});
+  console.log(req.body);
+})
+
+app.get('/pass_reset', (req: express.Request, res: express.Response) => {
+  res.sendFile('pass_reset.html', {root: rootDir});
+})
+
+app.get('/register_check', (req: express.Request, res: express.Response) => {
+  console.log(req.originalUrl);
+  res.send('error');
 })
 
 let users: Map<string, string> = new Map();

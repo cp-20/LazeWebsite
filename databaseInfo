@@ -1,2 +1,4 @@
 username: coder6583
 password: curvingchicken
+connection string: 
+mongodb+srv://coder6583:<password>@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
