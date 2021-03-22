@@ -68,8 +68,8 @@ var app = express_1.default();
 //https settings
 var rootDir = path.resolve(__dirname, '../../');
 var https = require('https');
-var privateKey = fs_1.default.readFileSync(path.resolve(rootDir, 'privkey.pem'), 'utf8');
-var certificate = fs_1.default.readFileSync(path.resolve(rootDir, 'fullchain.pem'), 'utf8');
+var privateKey = fs_1.default.readFileSync(path.resolve(rootDir, 'server/nodejs/privkey.pem'), 'utf8');
+var certificate = fs_1.default.readFileSync(path.resolve(rootDir, 'server/nodejs/fullchain.pem'), 'utf8');
 var credentials = { key: privateKey, cert: certificate };
 //http to https auto redirection
 var http = require('http');
