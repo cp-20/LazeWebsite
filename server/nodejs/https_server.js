@@ -80,7 +80,7 @@ var httpsServer = https.createServer(credentials, app);
 var io = require('socket.io')(httpsServer);
 var port = 443;
 //database (mongoose)
-var User = require('database.js');
+var User = require('database');
 var mongoose_1 = __importDefault(require("mongoose"));
 mongoose_1.default.connect('mongodb://localhost:27017/compilerserver', {
     useNewUrlParser: true,

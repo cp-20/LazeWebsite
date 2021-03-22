@@ -23,7 +23,7 @@ const httpsServer = https.createServer(credentials, app);
 const io = require('socket.io')(httpsServer);
 const port : number = 443;
 //database (mongoose)
-const User = require('database.js');
+const User = require('database');
 import mongoose from 'mongoose';
 mongoose.connect('mongodb://localhost:27017/compilerserver', {
   useNewUrlParser: true,
