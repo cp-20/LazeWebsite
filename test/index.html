@@ -24,7 +24,7 @@
 		<div class="row">
 			<div class="login-field field col">
 				<h2>ログイン</h2>
-				<form action="/login">
+				<form action="/login" method="POST">
 					<div class="form-group">
 						<label for="login-id">ユーザー名またはパスワード</label>
 						<input type="text" id="login-id" class="form-control" required>
@@ -41,7 +41,7 @@
 			
 			<div class="register-field field col">
 				<h2>アカウント作成</h2>
-				<form action="/register">
+				<form action="/register" method="POST">
 					<div class="form-group">
 						<label for="id">ユーザー名</label>
 						<input type="text" id="id" class="form-control" required>
@@ -74,7 +74,7 @@
 			<div class="pass-reset-field field col">
 				<h2>パスワードリセット</h2>
 
-				<form action="/pass_reset">
+				<form action="/pass_reset" method="POST">
 					<div class="form-group">
 						<label for="reset-id">ユーザー名またはパスワード</label>
 						<input type="text" id="reset-id" class="form-control" required>
