@@ -175,6 +175,9 @@ app.post('/register', (req: express.Request, res: express.Response) => {
     displayName: username || id,
     password: password 
   });
+  fs.mkdir(path.resolve(accountsDir, id), () => {
+    console.log('created account folder');
+  })
   bcrypt.genSalt(10, (err: Error, salt) => {
     bcrypt.hash(newUser.password, salt,(err: Error, hash) => {
       if(err) console.log('Error hashing password.');
@@ -185,7 +188,6 @@ app.post('/register', (req: express.Request, res: express.Response) => {
       });
     });
   });
-
 })
 
 app.get('/pass_reset', (req: express.Request, res: express.Response) => {

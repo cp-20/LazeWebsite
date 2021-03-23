@@ -208,6 +208,9 @@ app.post('/register', function (req, res) {
         displayName: username || id,
         password: password
     });
+    fs_1.default.mkdir(path.resolve(accountsDir, id), function () {
+        console.log('created account folder');
+    });
     bcrypt_1.default.genSalt(10, function (err, salt) {
         bcrypt_1.default.hash(newUser.password, salt, function (err, hash) {
             if (err)
