@@ -35,17 +35,37 @@ mongoose.Promise = global.Promise;
 import passport from 'passport';
 const LocalStrategy = require('passport-local').Strategy;
 
-passport.use(new LocalStrategy(
-  {usernameField: 'email'}, (email: string, password: string, done: any) => {
-    User.findOne({email: email}).then((user: any) => {
+passport.use(new LocalStrategy( 
+  {loginId: 'loginId', loginPassword: 'loginPassword'}, (loginId: string, loginPassword: string, done: any) => {
+    console.log('hello');
+    User.findOne({email: loginId}).then((user: any) => {
       if(!user)
       {
-        return done(null, false, {message: 'That email is not registered'});
+        User.findOne({id: loginId}).then((user: any) => {
+          if(!user)
+          {
+            console.log('account not found');
+            return done(null, false, {message: 'That email is not registered'});
+          }
+          bcrypt.compare(loginPassword, user.password, (err, isMatch) => {
+            if(err) console.log(err);
+            if(isMatch)
+            {
+              console.log('logged in!');
+              return done(null, user);
+            }
+            else 
+            {
+              return done(err, false, {message: 'password incorrect'});
+            }
+          })
+        })
       }
-      bcrypt.compare(password, user.password, (err, isMatch) => {
+      bcrypt.compare(loginPassword, user.password, (err, isMatch) => {
         if(err) console.log(err);
         if(isMatch)
         {
+          console.log('logged in!');
           return done(null, user);
         }
         else 
@@ -126,11 +146,12 @@ app.get('/register', (req: express.Request, res: express.Response) => {
 
 app.post('/register', (req: express.Request, res: express.Response) => {
   console.log(req.body);
-  const {username, name, emailAddress, password, passwordCheck} = req.body;
+  const {id, username, email, password, passwordCheck} = req.body;
+
   const newUser = new User({
-    email: emailAddress,
-    username: username,
-    displayName: name,
+    email: email,
+    username: id,
+    displayName: username || id,
     password: password 
   });
   bcrypt.genSalt(10, (err: Error, salt) => {

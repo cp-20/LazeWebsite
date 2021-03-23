@@ -91,15 +91,33 @@ mongoose_1.default.Promise = global.Promise;
 //passport
 var passport_1 = __importDefault(require("passport"));
 var LocalStrategy = require('passport-local').Strategy;
-passport_1.default.use(new LocalStrategy({ usernameField: 'email' }, function (email, password, done) {
-    User.findOne({ email: email }).then(function (user) {
+passport_1.default.use(new LocalStrategy({ loginId: 'loginId', loginPassword: 'loginPassword' }, function (loginId, loginPassword, done) {
+    console.log('hello');
+    User.findOne({ email: loginId }).then(function (user) {
         if (!user) {
-            return done(null, false, { message: 'That email is not registered' });
+            User.findOne({ id: loginId }).then(function (user) {
+                if (!user) {
+                    console.log('account not found');
+                    return done(null, false, { message: 'That email is not registered' });
+                }
+                bcrypt_1.default.compare(loginPassword, user.password, function (err, isMatch) {
+                    if (err)
+                        console.log(err);
+                    if (isMatch) {
+                        console.log('logged in!');
+                        return done(null, user);
+                    }
+                    else {
+                        return done(err, false, { message: 'password incorrect' });
+                    }
+                });
+            });
         }
-        bcrypt_1.default.compare(password, user.password, function (err, isMatch) {
+        bcrypt_1.default.compare(loginPassword, user.password, function (err, isMatch) {
             if (err)
                 console.log(err);
             if (isMatch) {
+                console.log('logged in!');
                 return done(null, user);
             }
             else {
@@ -166,11 +184,11 @@ app.get('/register', function (req, res) {
 });
 app.post('/register', function (req, res) {
     console.log(req.body);
-    var _a = req.body, username = _a.username, name = _a.name, emailAddress = _a.emailAddress, password = _a.password, passwordCheck = _a.passwordCheck;
+    var _a = req.body, id = _a.id, username = _a.username, email = _a.email, password = _a.password, passwordCheck = _a.passwordCheck;
     var newUser = new User({
-        email: emailAddress,
-        username: username,
-        displayName: name,
+        email: email,
+        username: id,
+        displayName: username || id,
         password: password
     });
     bcrypt_1.default.genSalt(10, function (err, salt) {
