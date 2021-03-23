@@ -212,19 +212,7 @@ app.get('/pass_reset', function (req, res) {
 });
 app.get('/register_check/id', function (req, res) {
     console.log(req.query);
-    if (req.query.email) {
-        var emailAddress = req.query.email;
-        console.log(emailAddress);
-        User.findOne({ email: emailAddress }).exec(function (err, user) {
-            if (user) {
-                res.json({ success: false });
-            }
-            else {
-                res.json({ success: true });
-            }
-        }).catch(function (err) { return console.log(err); });
-    }
-    else if (req.query.id) {
+    if (req.query.id) {
         var userId = req.query.id;
         console.log(userId);
         User.findOne({ username: userId }).exec(function (err, user) {
@@ -236,6 +224,21 @@ app.get('/register_check/id', function (req, res) {
                 res.json({ success: true });
             }
         });
+    }
+});
+app.get('/register_check/email', function (req, res) {
+    console.log(req.query);
+    if (req.query.email) {
+        var emailAddress = req.query.email;
+        console.log(emailAddress);
+        User.findOne({ email: emailAddress }).exec(function (err, user) {
+            if (user) {
+                res.json({ success: false });
+            }
+            else {
+                res.json({ success: true });
+            }
+        }).catch(function (err) { return console.log(err); });
     }
 });
 var users = new Map();

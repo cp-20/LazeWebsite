@@ -177,22 +177,7 @@ app.get('/pass_reset', (req: express.Request, res: express.Response) => {
 
 app.get('/register_check/id', (req: express.Request, res: express.Response) => {
   console.log(req.query);
-  if(req.query.email)
-  {
-    let emailAddress : any = req.query.email;
-    console.log(emailAddress);
-    User.findOne({email: emailAddress}).exec((err: any, user: any) => {
-      if(user)
-      {
-        res.json({success: false});
-      }
-      else
-      {
-        res.json({success: true});
-      }
-    }).catch((err: any) => console.log(err));
-  }
-  else if(req.query.id)
+  if(req.query.id)
   {
     let userId : any = req.query.id;
     console.log(userId);
@@ -208,7 +193,27 @@ app.get('/register_check/id', (req: express.Request, res: express.Response) => {
       }
     });
   }
-})
+});
+
+app.get('/register_check/email', (req: express.Request, res: express.Response) => {
+  console.log(req.query);
+  if(req.query.email)
+  {
+    let emailAddress : any = req.query.email;
+    console.log(emailAddress);
+    User.findOne({email: emailAddress}).exec((err: any, user: any) => {
+      if(user)
+      {
+        res.json({success: false});
+      }
+      else
+      {
+        res.json({success: true});
+      }
+    }).catch((err: any) => console.log(err));
+  }
+});
+
 
 let users: Map<string, string> = new Map();
 let usersDirectory: Map<string, string> = new Map();
