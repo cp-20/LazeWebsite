@@ -163,7 +163,7 @@ app.get('/register_check/', (req: express.Request, res: express.Response) => {
       {
         res.json({success: true});
       }
-    });
+    }).catch((err) => console.log(err));
   }
   else if(req.query.id)
   {

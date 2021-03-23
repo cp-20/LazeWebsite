@@ -198,7 +198,7 @@ app.get('/register_check/', function (req, res) {
             else {
                 res.json({ success: true });
             }
-        });
+        }).catch(function (err) { return console.log(err); });
     }
     else if (req.query.id) {
         var userId = req.query.id;
