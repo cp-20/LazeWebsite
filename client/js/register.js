@@ -58,7 +58,7 @@ $(function () {
             var form = $('#id');
             if (id) {
                 if (!id.match(/[^a-zA-Z0-9_]+/)) {
-                    fetch("/register_check/id?id=" + id)
+                    fetch("/register_check/id?id=" + encodeURI(id))
                         .then(function (res) { return res.json(); })
                         .then(function (result) {
                         if (result.success) {
@@ -88,7 +88,7 @@ $(function () {
             var email = $('#form').val();
             var form = $('#form');
             if (email) {
-                fetch("/register_check/email?email=" + email)
+                fetch("/register_check/email?email=" + encodeURI(email))
                     .then(function (res) { return res.json(); })
                     .then(function (result) {
                     if (result.success) {

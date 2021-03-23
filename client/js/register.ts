@@ -4,7 +4,7 @@ $(() => {
 		email: false,
 		password: false,
 		password_check: false,
-	}
+	};
 	const feedback = (input :JQuery<Element>, success :boolean, value :string) => {
 		// @ts-ignore
 		validFlags[input.prop('name')] = success;
@@ -47,7 +47,7 @@ $(() => {
 			const form = $('#id');
 			if (id) {
 				if (!id.match(/[^a-zA-Z0-9_]+/)) {
-					fetch(`/register_check/id?id=${id}`)
+					fetch(`/register_check/id?id=${encodeURI(id)}`)
 					.then(res => res.json())
 					.then((result :{success: boolean}) => {
 						if (result.success) {
@@ -73,7 +73,7 @@ $(() => {
 			const email = $('#form').val();
 			const form = $('#form');
 			if (email) {
-				fetch(`/register_check/email?email=${email}`)
+				fetch(`/register_check/email?email=${encodeURI(email)}`)
 				.then(res => res.json())
 				.then((result :{success: boolean}) => {
 					if (result.success) {
