@@ -8,6 +8,8 @@ body {
 main {
 	max-width: 600px;
 	margin: 0 auto;
+	padding: 0 10px;
+	box-sizing: content-box;
 
 	.title {
 		margin: 20px 0 30px 0;
