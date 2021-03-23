@@ -1,6 +1,15 @@
 "use strict";
 $(function () {
+    var validFlags = {
+        id: false,
+        email: false,
+        password: false,
+        password_check: false,
+    };
     var feedback = function (input, success, value) {
+        // @ts-ignore
+        validFlags[input.prop('name')] = success;
+        refreshSubmit();
         var form = input.parent();
         if (success) {
             if (form.hasClass('invalid'))
@@ -26,6 +35,15 @@ $(function () {
         input.nextAll('.feedback').html('');
         input.nextAll('.feedback').css('display', 'none');
     };
+    var refreshSubmit = function () {
+        var button = $('#register-submit');
+        if (Object.values(validFlags).every(function (item) { return item; })) {
+            button.prop('disabled', false);
+        }
+        else {
+            button.prop('disabled', true);
+        }
+    };
     // ユーザー名
     var idTimer;
     $('#id').on('keyup', function () {
@@ -34,20 +52,26 @@ $(function () {
         if (idTimer)
             clearTimeout(idTimer);
         idTimer = setTimeout(function () {
+            var _a;
             // 入力終了
-            var id = $('#id').val();
+            var id = (_a = $('#id').val()) === null || _a === void 0 ? void 0 : _a.toString();
             var form = $('#id');
             if (id) {
-                fetch("/register_check/id?id=" + id)
-                    .then(function (res) { return res.json(); })
-                    .then(function (result) {
-                    if (result.success) {
-                        feedback(form, result.success, "<strong>" + id + "</stong>\u306F\u5229\u7528\u53EF\u80FD\u3067\u3059");
-                    }
-                    else {
-                        feedback(form, result.success, "<strong>" + id + "</strong>\u306F\u5229\u7528\u3067\u304D\u307E\u305B\u3093");
-                    }
-                });
+                if (!id.match(/[^a-zA-Z0-9_]+/)) {
+                    fetch("/register_check/id?id=" + id)
+                        .then(function (res) { return res.json(); })
+                        .then(function (result) {
+                        if (result.success) {
+                            feedback(form, result.success, '');
+                        }
+                        else {
+                            feedback(form, result.success, "<strong>" + id + "</strong>\u306F\u5229\u7528\u3067\u304D\u307E\u305B\u3093");
+                        }
+                    });
+                }
+                else {
+                    feedback(form, false, '使用不可能な文字が含まれています');
+                }
             }
             else {
                 resetFeedback(form);
@@ -68,7 +92,7 @@ $(function () {
                     .then(function (res) { return res.json(); })
                     .then(function (result) {
                     if (result.success) {
-                        feedback(form, result.success, "<strong>" + email + "</stong>\u306F\u5229\u7528\u53EF\u80FD\u3067\u3059");
+                        feedback(form, result.success, '');
                     }
                     else {
                         feedback(form, result.success, "<strong>" + email + "</strong>\u306F\u65E2\u306B\u5229\u7528\u3055\u308C\u3066\u3044\u308B\u304B\u4E0D\u6B63\u306A\u5F62\u5F0F\u3067\u3059");
@@ -124,7 +148,7 @@ $(function () {
             var form = $('#password-check');
             if (password) {
                 if (password == $('#password').val()) {
-                    resetFeedback(form);
+                    feedback(form, true, '');
                 }
                 else {
                     feedback(form, false, 'パスワードが一致しません');
