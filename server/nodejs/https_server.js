@@ -95,17 +95,17 @@ passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordFie
     User.findOne({ email: username }).then(function (user) {
         console.log(user);
         if (!user) {
-            User.findOne({ id: username }).then(function (user) {
-                if (!user) {
+            User.findOne({ id: username }).then(function (user_) {
+                if (!user_) {
                     console.log('account not found');
                     return done(null, false, { message: 'That email is not registered' });
                 }
-                bcrypt_1.default.compare(password, user.password, function (err, isMatch) {
+                bcrypt_1.default.compare(password, user_.password, function (err, isMatch) {
                     if (err)
                         console.log(err);
                     if (isMatch) {
                         console.log('logged in!');
-                        return done(null, user);
+                        return done(null, user_);
                     }
                     else {
                         return done(err, false, { message: 'password incorrect' });

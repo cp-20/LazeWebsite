@@ -42,18 +42,18 @@ passport.use(new LocalStrategy(
       console.log(user);
       if(!user)
       {
-        User.findOne({id: username}).then((user: any) => {
-          if(!user)
+        User.findOne({id: username}).then((user_: any) => {
+          if(!user_)
           {
             console.log('account not found');
             return done(null, false, {message: 'That email is not registered'});
           }
-          bcrypt.compare(password, user.password, (err, isMatch) => {
+          bcrypt.compare(password, user_.password, (err, isMatch) => {
             if(err) console.log(err);
             if(isMatch)
             {
               console.log('logged in!');
-              return done(null, user);
+              return done(null, user_);
             }
             else 
             {
