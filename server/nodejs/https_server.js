@@ -93,6 +93,7 @@ var LocalStrategy = require('passport-local').Strategy;
 passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordField: 'loginPassword' }, function (username, password, done) {
     console.log('hello');
     User.findOne({ email: username }).then(function (user) {
+        console.log(user);
         if (!user) {
             User.findOne({ id: username }).then(function (user) {
                 if (!user) {
