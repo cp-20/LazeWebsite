@@ -1,5 +1,15 @@
 $(() => {
+	let validFlags = {
+		id: false,
+		email: false,
+		password: false,
+		password_check: false,
+	}
 	const feedback = (input :JQuery<Element>, success :boolean, value :string) => {
+		// @ts-ignore
+		validFlags[input.prop('name')] = success;
+		refreshSubmit();
+
 		const form = input.parent();
 		if (success) {
 			if (form.hasClass('invalid')) form.removeClass('invalid');
@@ -18,6 +28,14 @@ $(() => {
 		input.nextAll('.feedback').html('');
 		input.nextAll('.feedback').css('display', 'none');
 	};
+	const refreshSubmit = () => {
+		const button = $('#register-submit');
+		if (Object.values(validFlags).every(item => item)) {
+			button.prop('disabled', false);
+		}else {
+			button.prop('disabled', true);
+		}
+	};
 	// ユーザー名
 	let idTimer :(NodeJS.Timeout | undefined);
 	$('#id').on('keyup', () => {
@@ -25,18 +43,22 @@ $(() => {
 		if (idTimer) clearTimeout(idTimer);
 		idTimer = setTimeout(() => {
 			// 入力終了
-			const id = $('#id').val();
+			const id = $('#id').val()?.toString();
 			const form = $('#id');
 			if (id) {
-				fetch(`/register_check/id?id=${id}`)
-				.then(res => res.json())
-				.then((result :{success: boolean}) => {
-					if (result.success) {
-						feedback(form, result.success, `<strong>${id}</stong>は利用可能です`);
-					}else {
-						feedback(form, result.success, `<strong>${id}</strong>は利用できません`);
-					}
-				});
+				if (!id.match(/[^a-zA-Z0-9_]+/)) {
+					fetch(`/register_check/id?id=${id}`)
+					.then(res => res.json())
+					.then((result :{success: boolean}) => {
+						if (result.success) {
+							feedback(form, result.success, '');
+						}else {
+							feedback(form, result.success, `<strong>${id}</strong>は利用できません`);
+						}
+					});	
+				}else {
+					feedback(form, false, '使用不可能な文字が含まれています');
+				}
 			}else {
 				resetFeedback(form);
 			}
@@ -55,7 +77,7 @@ $(() => {
 				.then(res => res.json())
 				.then((result :{success: boolean}) => {
 					if (result.success) {
-						feedback(form, result.success, `<strong>${email}</stong>は利用可能です`);
+						feedback(form, result.success, '');
 					}else {
 						feedback(form, result.success, `<strong>${email}</strong>は既に利用されているか不正な形式です`);
 					}
@@ -101,7 +123,7 @@ $(() => {
 			const form = $('#password-check');
 			if (password) {
 				if (password == $('#password').val()) {
-					resetFeedback(form);
+					feedback(form, true, '');
 				}else {
 					feedback(form, false, 'パスワードが一致しません')
 				}
