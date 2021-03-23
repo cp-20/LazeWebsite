@@ -127,12 +127,12 @@ passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordFie
     });
 }));
 passport_1.default.serializeUser(function (user, done) {
-    console.log(user.id);
+    // console.log(user.id);
     done(null, user.id);
 });
 passport_1.default.deserializeUser(function (id, done) {
     User.findById(id, function (err, user) {
-        console.log(user.id);
+        // console.log(user.id);
         done(err, user);
     });
 });
@@ -145,7 +145,7 @@ var express_session_1 = __importDefault(require("express-session"));
 //request時に実行するmiddleware function
 function everyRequest(req, res, next) {
     console.log('Request URL: ', req.originalUrl);
-    console.log(req.user, 'everyRequest');
+    // console.log(req.user, 'everyRequest');
     next();
 }
 app.use(express_1.default.static(rootdirectory));
@@ -174,6 +174,7 @@ app.post('/login', function (req, res, next) {
     })(req, res, next);
 });
 app.get('/editor', function (req, res) {
+    console.log(req.user);
     res.sendFile('editor.html', { root: rootdirectory });
 });
 app.get('/docs', function (req, res) {
@@ -186,7 +187,7 @@ app.get('/register', function (req, res) {
     res.sendFile('register.html', { root: rootdirectory });
 });
 app.post('/register', function (req, res) {
-    console.log(req.body);
+    // console.log(req.body);
     var _a = req.body, id = _a.id, username = _a.username, email = _a.email, password = _a.password, passwordCheck = _a.passwordCheck;
     var newUser = new User({
         email: email,

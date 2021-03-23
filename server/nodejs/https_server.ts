@@ -78,12 +78,12 @@ passport.use(new LocalStrategy(
   }
 ));
 passport.serializeUser((user: any, done) => {
-  console.log(user.id);
+  // console.log(user.id);
   done(null, user.id);
 })
 passport.deserializeUser((id, done) => {
   User.findById(id, (err: any, user: any) => {
-    console.log(user.id);
+    // console.log(user.id);
     done(err, user);
   })
 })
@@ -99,7 +99,7 @@ import session from 'express-session';
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
     console.log('Request URL: ', req.originalUrl);
-    console.log(req.user, 'everyRequest');
+    // console.log(req.user, 'everyRequest');
     next();
 }
 
@@ -133,6 +133,7 @@ app.post('/login', (req: express.Request, res: express.Response, next: express.N
 })
 
 app.get('/editor', (req: express.Request, res: express.Response) => {
+    console.log(req.user);
     res.sendFile('editor.html', {root: rootdirectory});
 })
 
@@ -149,7 +150,7 @@ app.get('/register', (req: express.Request, res: express.Response) => {
 })
 
 app.post('/register', (req: express.Request, res: express.Response) => {
-  console.log(req.body);
+  // console.log(req.body);
   const {id, username, email, password, passwordCheck} = req.body;
 
   const newUser = new User({
