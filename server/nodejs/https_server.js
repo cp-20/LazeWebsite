@@ -145,6 +145,7 @@ var express_session_1 = __importDefault(require("express-session"));
 //request時に実行するmiddleware function
 function everyRequest(req, res, next) {
     console.log('Request URL: ', req.originalUrl);
+    console.log(req.user);
     next();
 }
 app.use(express_1.default.static(rootdirectory));

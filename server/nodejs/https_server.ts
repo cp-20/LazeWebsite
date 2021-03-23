@@ -77,7 +77,7 @@ passport.use(new LocalStrategy(
     })
   }
 ));
-passport.serializeUser((user, done) => {
+passport.serializeUser((user: any, done) => {
   console.log(user.id);
   done(null, user.id);
 })
@@ -99,6 +99,7 @@ import session from 'express-session';
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
     console.log('Request URL: ', req.originalUrl);
+    console.log(req.user);
     next();
 }
 
