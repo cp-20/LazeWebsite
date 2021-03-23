@@ -90,7 +90,7 @@ mongoose_1.default.Promise = global.Promise;
 //passport
 var passport_1 = __importDefault(require("passport"));
 var LocalStrategy = require('passport-local').Strategy;
-passport_1.default.use(new LocalStrategy({ loginId: 'loginId', loginPassword: 'loginPassword' }, function (loginId, loginPassword, done) {
+passport_1.default.use(new LocalStrategy({ loginIdField: 'loginId', loginPasswordField: 'loginPassword' }, function (loginId, loginPassword, done) {
     console.log('hello');
     User.findOne({ email: loginId }).then(function (user) {
         if (!user) {
@@ -163,7 +163,7 @@ app.get('/login', function (req, res) {
     res.sendFile('login.html', { root: rootdirectory });
 });
 app.post('/login', function (req, res, next) {
-    console.log(req.body);
+    console.log(req.body, 124);
     passport_1.default.authenticate('local', {
         successRedirect: '/editor',
         failureRedirect: '/login'

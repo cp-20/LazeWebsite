@@ -36,7 +36,7 @@ import passport from 'passport';
 const LocalStrategy = require('passport-local').Strategy;
 
 passport.use(new LocalStrategy( 
-  {loginId: 'loginId', loginPassword: 'loginPassword'}, (loginId: string, loginPassword: string, done: any) => {
+  {loginIdField: 'loginId', loginPasswordField: 'loginPassword'}, (loginId: string, loginPassword: string, done: any) => {
     console.log('hello');
     User.findOne({email: loginId}).then((user: any) => {
       if(!user)
@@ -121,7 +121,7 @@ app.get('/login', (req: express.Request, res: express.Response) => {
 })
 
 app.post('/login', (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.log(req.body);
+  console.log(req.body, 124);
   passport.authenticate('local', {
     successRedirect: '/editor',
     failureRedirect: '/login'
