@@ -79,6 +79,20 @@ http.createServer((express_1.default()).all("*", function (request, response) {
 var httpsServer = https.createServer(credentials, app);
 var io = require('socket.io')(httpsServer);
 var port = 443;
+//mount usb
+var accountsDir = '/media/usb/compilerserver/accounts/';
+fs_1.default.access(accountsDir, function (err) {
+    if (err && err.code == 'ENOENT') {
+        fs_1.default.access('/media/pi/A042-416A', function (err) {
+            if (!err) {
+                exec('sudo umount /media/pi/A042-416A').then(exec('sudo mount /dev/sda1 /media/usb').then(console.log('mounted usb')));
+            }
+            else {
+                exec('sudo mount /dev/sda1 /media/usb').then(console.log('mounted usb'));
+            }
+        });
+    }
+});
 //database (mongoose)
 var mongoose_1 = __importDefault(require("mongoose"));
 var User = require('./database');
@@ -138,7 +152,6 @@ passport_1.default.deserializeUser(function (id, done) {
 });
 //bcrypt = hash function
 var bcrypt_1 = __importDefault(require("bcrypt"));
-var accountsDir = '/media/usb/compilerserver/accounts/';
 var rootdirectory = path.resolve(rootDir, 'client');
 //express session
 var express_session_1 = __importDefault(require("express-session"));
@@ -406,7 +419,7 @@ io.sockets.on('connection', function (socket) {
         return __generator(this, function (_a) {
             fs_1.default.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, function (err) {
                 if (err) {
-                    socket.emit('createdProject', {
+                    socket.emit('cre atedProject', {
                         value: 'Could not create project ' + input.projectName,
                         style: 'err'
                     });

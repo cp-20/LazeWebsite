@@ -22,6 +22,23 @@ http.createServer((express()).all("*", function (request, response) {
 const httpsServer = https.createServer(credentials, app);
 const io = require('socket.io')(httpsServer);
 const port : number = 443;
+//mount usb
+const accountsDir: string = '/media/usb/compilerserver/accounts/';
+fs.access(accountsDir, (err) => {
+  if(err && err.code == 'ENOENT')
+  {
+    fs.access('/media/pi/A042-416A', (err) => {
+      if(!err)
+      {
+        exec('sudo umount /media/pi/A042-416A').then(exec('sudo mount /dev/sda1 /media/usb').then(console.log('mounted usb')));
+      }
+      else
+      {
+        exec('sudo mount /dev/sda1 /media/usb').then(console.log('mounted usb'));
+      }
+    })
+  }
+})
 //database (mongoose)
 import mongoose from 'mongoose';
 const User: mongoose.Model<any, any> = require('./database');
@@ -89,7 +106,6 @@ passport.deserializeUser((id, done) => {
 })
 //bcrypt = hash function
 import bcrypt from 'bcrypt';
-const accountsDir: string = '/media/usb/compilerserver/accounts/';
 const rootdirectory: string = path.resolve(rootDir, 'client');
 //express session
 import session from 'express-session';
@@ -169,6 +185,7 @@ app.post('/register', (req: express.Request, res: express.Response) => {
       });
     });
   });
+
 })
 
 app.get('/pass_reset', (req: express.Request, res: express.Response) => {
@@ -370,7 +387,7 @@ io.sockets.on('connection', (socket:any) => {
       fs.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, (err) => {
         if(err)
         {
-          socket.emit('createdProject', {
+          socket.emit('cre atedProject', {
             value: 'Could not create project '+ input.projectName,
             style: 'err'
           })
