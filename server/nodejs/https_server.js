@@ -111,6 +111,7 @@ passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordFie
                     }
                 });
             });
+            return;
         }
         bcrypt_1.default.compare(password, user.password, function (err, isMatch) {
             if (err)

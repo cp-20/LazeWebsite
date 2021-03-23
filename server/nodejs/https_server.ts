@@ -60,6 +60,7 @@ passport.use(new LocalStrategy(
             }
           })
         })
+        return;
       }
       bcrypt.compare(password, user.password, (err, isMatch) => {
         if(err) console.log(err);
