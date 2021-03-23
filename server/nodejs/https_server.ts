@@ -121,7 +121,7 @@ app.get('/login', (req: express.Request, res: express.Response) => {
 })
 
 app.post('/login', (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.log(req.body, 124);
+  // console.log(req.body, 124);
   passport.authenticate('local', {
     successRedirect: '/editor',
     failureRedirect: '/login'
