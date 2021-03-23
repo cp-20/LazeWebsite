@@ -40,12 +40,14 @@ passport.use(new LocalStrategy(
     User.findOne({email: email}).then((user: any) => {
       if(!user)
       {
+        console.log('account not found');
         return done(null, false, {message: 'That email is not registered'});
       }
       bcrypt.compare(password, user.password, (err, isMatch) => {
         if(err) console.log(err);
         if(isMatch)
         {
+          console.log('logged in!');
           return done(null, user);
         }
         else 

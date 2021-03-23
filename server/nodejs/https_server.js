@@ -93,12 +93,14 @@ var LocalStrategy = require('passport-local').Strategy;
 passport_1.default.use(new LocalStrategy({ usernameField: 'email' }, function (email, password, done) {
     User.findOne({ email: email }).then(function (user) {
         if (!user) {
+            console.log('account not found');
             return done(null, false, { message: 'That email is not registered' });
         }
         bcrypt_1.default.compare(password, user.password, function (err, isMatch) {
             if (err)
                 console.log(err);
             if (isMatch) {
+                console.log('logged in!');
                 return done(null, user);
             }
             else {
