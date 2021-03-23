@@ -127,6 +127,7 @@ passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordFie
     });
 }));
 passport_1.default.serializeUser(function (user, done) {
+    console.log(user.id);
     done(null, user.id);
 });
 passport_1.default.deserializeUser(function (id, done) {
