@@ -37,6 +37,7 @@ const LocalStrategy = require('passport-local').Strategy;
 
 passport.use(new LocalStrategy(
   {usernameField: 'email'}, (email: string, password: string, done: any) => {
+    console.log('hello');
     User.findOne({email: email}).then((user: any) => {
       if(!user)
       {

@@ -91,6 +91,7 @@ mongoose_1.default.Promise = global.Promise;
 var passport_1 = __importDefault(require("passport"));
 var LocalStrategy = require('passport-local').Strategy;
 passport_1.default.use(new LocalStrategy({ usernameField: 'email' }, function (email, password, done) {
+    console.log('hello');
     User.findOne({ email: email }).then(function (user) {
         if (!user) {
             console.log('account not found');
