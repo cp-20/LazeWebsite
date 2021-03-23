@@ -126,10 +126,11 @@ app.get('/register', (req: express.Request, res: express.Response) => {
 
 app.post('/register', (req: express.Request, res: express.Response) => {
   console.log(req.body);
-  const {username, name, emailAddress, password, passwordCheck} = req.body;
+  const {id, name, email, password, passwordCheck} = req.body;
+
   const newUser = new User({
-    email: emailAddress,
-    username: username,
+    email: email,
+    username: id,
     displayName: name,
     password: password 
   });

@@ -165,10 +165,10 @@ app.get('/register', function (req, res) {
 });
 app.post('/register', function (req, res) {
     console.log(req.body);
-    var _a = req.body, username = _a.username, name = _a.name, emailAddress = _a.emailAddress, password = _a.password, passwordCheck = _a.passwordCheck;
+    var _a = req.body, id = _a.id, name = _a.name, email = _a.email, password = _a.password, passwordCheck = _a.passwordCheck;
     var newUser = new User({
-        email: emailAddress,
-        username: username,
+        email: email,
+        username: id,
         displayName: name,
         password: password
     });
