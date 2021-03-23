@@ -6,7 +6,7 @@ $(() => {
 			if (!form.hasClass('valid')) form.addClass('valid');
 		}else {
 			if (form.hasClass('valid')) form.removeClass('valid');
-			if (!form.hasClass('invalid')) form.removeClass('invalid');
+			if (!form.hasClass('invalid')) form.addClass('invalid');
 		}
 		input.nextAll('.feedback').html(value);
 		input.nextAll('.feedback').css('display', 'block');
@@ -20,7 +20,8 @@ $(() => {
 	};
 	// ユーザー名
 	let idTimer :(NodeJS.Timeout | undefined);
-	$('#id').on('keydown', () => {
+	$('#id').on('keyup', () => {
+		$('#username').attr('placeholder',$('#id')?.val()?.toString() || '');
 		if (idTimer) clearTimeout(idTimer);
 		idTimer = setTimeout(() => {
 			// 入力終了
@@ -43,7 +44,7 @@ $(() => {
 	});
 	// Eメールアドレス
 	let emailTimer :(NodeJS.Timeout | undefined);
-	$('#email').on('keydown', () => {
+	$('#email').on('keyup', () => {
 		if (emailTimer) clearTimeout(emailTimer);
 		emailTimer = setTimeout(() => {
 			// 入力終了
@@ -66,7 +67,7 @@ $(() => {
 	});
 	// パスワード
 	let passTimer :(NodeJS.Timeout | undefined);
-	$('#password').on('keydown', () => {
+	$('#password').on('keyup', () => {
 		if (passTimer) clearTimeout(passTimer);
 		passTimer = setTimeout(() => {
 			// 入力終了
@@ -91,4 +92,22 @@ $(() => {
 	});
 
 	// パスワードの確認
+	let passCheckTimer :(NodeJS.Timeout | undefined);
+	$('#password-check').on('keyup', () => {
+		if (passCheckTimer) clearTimeout(passCheckTimer);
+		passCheckTimer = setTimeout(() => {
+			// 入力終了
+			const password = $('#password-check').val()?.toString();
+			const form = $('#password-check');
+			if (password) {
+				if (password == $('#password').val()) {
+					resetFeedback(form);
+				}else {
+					feedback(form, false, 'パスワードが一致しません')
+				}
+			}else {
+				resetFeedback(form);
+			}
+		}, 500);
+	});
 });

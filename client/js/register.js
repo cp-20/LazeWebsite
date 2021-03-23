@@ -12,7 +12,7 @@ $(function () {
             if (form.hasClass('valid'))
                 form.removeClass('valid');
             if (!form.hasClass('invalid'))
-                form.removeClass('invalid');
+                form.addClass('invalid');
         }
         input.nextAll('.feedback').html(value);
         input.nextAll('.feedback').css('display', 'block');
@@ -28,7 +28,9 @@ $(function () {
     };
     // ユーザー名
     var idTimer;
-    $('#id').on('keydown', function () {
+    $('#id').on('keyup', function () {
+        var _a, _b;
+        $('#username').attr('placeholder', ((_b = (_a = $('#id')) === null || _a === void 0 ? void 0 : _a.val()) === null || _b === void 0 ? void 0 : _b.toString()) || '');
         if (idTimer)
             clearTimeout(idTimer);
         idTimer = setTimeout(function () {
@@ -54,7 +56,7 @@ $(function () {
     });
     // Eメールアドレス
     var emailTimer;
-    $('#email').on('keydown', function () {
+    $('#email').on('keyup', function () {
         if (emailTimer)
             clearTimeout(emailTimer);
         emailTimer = setTimeout(function () {
@@ -80,7 +82,7 @@ $(function () {
     });
     // パスワード
     var passTimer;
-    $('#password').on('keydown', function () {
+    $('#password').on('keyup', function () {
         if (passTimer)
             clearTimeout(passTimer);
         passTimer = setTimeout(function () {
@@ -111,4 +113,26 @@ $(function () {
         }, 500);
     });
     // パスワードの確認
+    var passCheckTimer;
+    $('#password-check').on('keyup', function () {
+        if (passCheckTimer)
+            clearTimeout(passCheckTimer);
+        passCheckTimer = setTimeout(function () {
+            var _a;
+            // 入力終了
+            var password = (_a = $('#password-check').val()) === null || _a === void 0 ? void 0 : _a.toString();
+            var form = $('#password-check');
+            if (password) {
+                if (password == $('#password').val()) {
+                    resetFeedback(form);
+                }
+                else {
+                    feedback(form, false, 'パスワードが一致しません');
+                }
+            }
+            else {
+                resetFeedback(form);
+            }
+        }, 500);
+    });
 });
