@@ -176,6 +176,7 @@ app.get('/pass_reset', (req: express.Request, res: express.Response) => {
 })
 
 app.get('/register_check/', (req: express.Request, res: express.Response) => {
+  console.log(req.originalUrl);
   if(req.query.email)
   {
     let emailAddress : any = req.query.email;
@@ -189,7 +190,7 @@ app.get('/register_check/', (req: express.Request, res: express.Response) => {
       {
         res.json({success: true});
       }
-    }).catch((err) => console.log(err));
+    }).catch((err: any) => console.log(err));
   }
   else if(req.query.id)
   {
