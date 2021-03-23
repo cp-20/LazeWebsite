@@ -165,11 +165,11 @@ app.get('/register', function (req, res) {
 });
 app.post('/register', function (req, res) {
     console.log(req.body);
-    var _a = req.body, id = _a.id, name = _a.name, email = _a.email, password = _a.password, passwordCheck = _a.passwordCheck;
+    var _a = req.body, id = _a.id, username = _a.username, email = _a.email, password = _a.password, passwordCheck = _a.passwordCheck;
     var newUser = new User({
         email: email,
         username: id,
-        displayName: name,
+        displayName: username || id,
         password: password
     });
     bcrypt_1.default.genSalt(10, function (err, salt) {

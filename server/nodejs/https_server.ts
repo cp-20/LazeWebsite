@@ -126,12 +126,12 @@ app.get('/register', (req: express.Request, res: express.Response) => {
 
 app.post('/register', (req: express.Request, res: express.Response) => {
   console.log(req.body);
-  const {id, name, email, password, passwordCheck} = req.body;
+  const {id, username, email, password, passwordCheck} = req.body;
 
   const newUser = new User({
     email: email,
     username: id,
-    displayName: name,
+    displayName: username || id,
     password: password 
   });
   bcrypt.genSalt(10, (err: Error, salt) => {
