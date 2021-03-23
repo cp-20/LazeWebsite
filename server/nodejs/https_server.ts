@@ -99,7 +99,7 @@ import session from 'express-session';
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
     console.log('Request URL: ', req.originalUrl);
-    console.log(req.user);
+    console.log(req.user, 'everyRequest');
     next();
 }
 
