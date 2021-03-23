@@ -90,16 +90,16 @@ mongoose_1.default.Promise = global.Promise;
 //passport
 var passport_1 = __importDefault(require("passport"));
 var LocalStrategy = require('passport-local').Strategy;
-passport_1.default.use(new LocalStrategy({ loginIdField: 'loginId', loginPasswordField: 'loginPassword' }, function (loginId, loginPassword, done) {
+passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordField: 'loginPassword' }, function (username, password, done) {
     console.log('hello');
-    User.findOne({ email: loginId }).then(function (user) {
+    User.findOne({ email: username }).then(function (user) {
         if (!user) {
-            User.findOne({ id: loginId }).then(function (user) {
+            User.findOne({ id: username }).then(function (user) {
                 if (!user) {
                     console.log('account not found');
                     return done(null, false, { message: 'That email is not registered' });
                 }
-                bcrypt_1.default.compare(loginPassword, user.password, function (err, isMatch) {
+                bcrypt_1.default.compare(password, user.password, function (err, isMatch) {
                     if (err)
                         console.log(err);
                     if (isMatch) {
@@ -112,7 +112,7 @@ passport_1.default.use(new LocalStrategy({ loginIdField: 'loginId', loginPasswor
                 });
             });
         }
-        bcrypt_1.default.compare(loginPassword, user.password, function (err, isMatch) {
+        bcrypt_1.default.compare(password, user.password, function (err, isMatch) {
             if (err)
                 console.log(err);
             if (isMatch) {
@@ -163,7 +163,7 @@ app.get('/login', function (req, res) {
     res.sendFile('login.html', { root: rootdirectory });
 });
 app.post('/login', function (req, res, next) {
-    // console.log(req.body, 124);
+    console.log(req.body, 124);
     passport_1.default.authenticate('local', {
         successRedirect: '/editor',
         failureRedirect: '/login'

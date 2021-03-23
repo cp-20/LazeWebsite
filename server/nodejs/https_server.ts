@@ -36,18 +36,18 @@ import passport from 'passport';
 const LocalStrategy = require('passport-local').Strategy;
 
 passport.use(new LocalStrategy( 
-  {loginIdField: 'loginId', loginPasswordField: 'loginPassword'}, (loginId: string, loginPassword: string, done: any) => {
+  {usernameField: 'loginId', passwordField: 'loginPassword'}, (username: string, password: string, done: any) => {
     console.log('hello');
-    User.findOne({email: loginId}).then((user: any) => {
+    User.findOne({email: username}).then((user: any) => {
       if(!user)
       {
-        User.findOne({id: loginId}).then((user: any) => {
+        User.findOne({id: username}).then((user: any) => {
           if(!user)
           {
             console.log('account not found');
             return done(null, false, {message: 'That email is not registered'});
           }
-          bcrypt.compare(loginPassword, user.password, (err, isMatch) => {
+          bcrypt.compare(password, user.password, (err, isMatch) => {
             if(err) console.log(err);
             if(isMatch)
             {
@@ -61,7 +61,7 @@ passport.use(new LocalStrategy(
           })
         })
       }
-      bcrypt.compare(loginPassword, user.password, (err, isMatch) => {
+      bcrypt.compare(password, user.password, (err, isMatch) => {
         if(err) console.log(err);
         if(isMatch)
         {
@@ -121,7 +121,7 @@ app.get('/login', (req: express.Request, res: express.Response) => {
 })
 
 app.post('/login', (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  // console.log(req.body, 124);
+  console.log(req.body, 124);
   passport.authenticate('local', {
     successRedirect: '/editor',
     failureRedirect: '/login'
