@@ -93,9 +93,8 @@ var LocalStrategy = require('passport-local').Strategy;
 passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordField: 'loginPassword' }, function (username, password, done) {
     console.log('hello');
     User.findOne({ email: username }).then(function (user) {
-        console.log(user);
         if (!user) {
-            User.findOne({ id: username }).then(function (user_) {
+            User.findOne({ username: username }).then(function (user_) {
                 if (!user_) {
                     console.log('account not found');
                     return done(null, false, { message: 'That email is not registered' });

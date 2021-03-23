@@ -39,10 +39,9 @@ passport.use(new LocalStrategy(
   {usernameField: 'loginId', passwordField: 'loginPassword'}, (username: string, password: string, done: any) => {
     console.log('hello');
     User.findOne({email: username}).then((user: any) => {
-      console.log(user);
       if(!user)
       {
-        User.findOne({id: username}).then((user_: any) => {
+        User.findOne({username: username}).then((user_: any) => {
           if(!user_)
           {
             console.log('account not found');
