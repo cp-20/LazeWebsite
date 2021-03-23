@@ -199,6 +199,7 @@ app.get('/register_check/id', (req: express.Request, res: express.Response) => {
     User.findOne({username: userId}).exec((err: any, user: any) => {
       if(user)
       {
+        console.log('there is already an account');
         res.json({success: false});
       }
       else

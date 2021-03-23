@@ -229,6 +229,7 @@ app.get('/register_check/id', function (req, res) {
         console.log(userId);
         User.findOne({ username: userId }).exec(function (err, user) {
             if (user) {
+                console.log('there is already an account');
                 res.json({ success: false });
             }
             else {
