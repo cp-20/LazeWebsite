@@ -175,7 +175,7 @@ app.get('/pass_reset', (req: express.Request, res: express.Response) => {
   res.sendFile('pass_reset.html', {root: rootdirectory});
 })
 
-app.get('/register_check/', (req: express.Request, res: express.Response) => {
+app.get('/register_check/id', (req: express.Request, res: express.Response) => {
   console.log(req.query);
   if(req.query.email)
   {

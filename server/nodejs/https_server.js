@@ -210,7 +210,7 @@ app.post('/register', function (req, res) {
 app.get('/pass_reset', function (req, res) {
     res.sendFile('pass_reset.html', { root: rootdirectory });
 });
-app.get('/register_check/', function (req, res) {
+app.get('/register_check/id', function (req, res) {
     console.log(req.query);
     if (req.query.email) {
         var emailAddress = req.query.email;
