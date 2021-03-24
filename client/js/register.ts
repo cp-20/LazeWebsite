@@ -70,8 +70,8 @@ $(() => {
 		if (emailTimer) clearTimeout(emailTimer);
 		emailTimer = setTimeout(() => {
 			// 入力終了
-			const email = $('#form').val()?.toString();
-			const form = $('#form');
+			const email = $('#email').val()?.toString();
+			const form = $('#email');
 			if (email) {
 				fetch(`/register_check/email?email=${encodeURI(email)}`)
 				.then(res => res.json())
