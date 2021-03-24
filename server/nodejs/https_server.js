@@ -335,7 +335,7 @@ io.sockets.on('connection', function (socket) {
     });
     usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
     console.log(socket.request.session);
-    console.log(socket.request.user);
+    console.log(socket.request);
     socket.on('compile', function (input) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             // コンパイル
