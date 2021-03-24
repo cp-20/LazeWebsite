@@ -307,7 +307,7 @@ io.sockets.on('connection', (socket:any) => {
       }
     });
     usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
-    console.log(socket.request.session);
+    console.log(socket.request.session.passport);
     console.log(socket.request);
     socket.on('compile', async (input: compileData) => {
       // コンパイル
