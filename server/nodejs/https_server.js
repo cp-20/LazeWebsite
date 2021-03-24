@@ -254,7 +254,7 @@ app.get('/register_check/email', function (req, res) {
             else {
                 res.json({ success: true });
             }
-        }).catch(function (err) { return console.log(err); });
+        });
     }
 });
 var users = new Map();

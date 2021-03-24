@@ -229,7 +229,7 @@ app.get('/register_check/email', (req: express.Request, res: express.Response) =
       {
         res.json({success: true});
       }
-    }).catch((err: any) => console.log(err));
+    });
   }
 });
 
