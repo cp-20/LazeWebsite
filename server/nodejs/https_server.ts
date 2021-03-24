@@ -308,7 +308,7 @@ io.sockets.on('connection', (socket:any) => {
     });
     usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
     console.log(socket.request.session.passport);
-    console.log(socket.request);
+    // console.log(socket.request);
     socket.on('compile', async (input: compileData) => {
       // コンパイル
       exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.filename, (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) => {
