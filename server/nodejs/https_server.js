@@ -473,7 +473,7 @@ io.sockets.on('connection', function (socket) {
 // 404
 app.use(function (req, res, next) {
     res.status(404);
-    res.sendFile('err404.html');
+    res.sendFile('err404.html', { root: rootdirectory });
 });
 httpsServer.listen(port, function () {
     console.log('Server at https://rootlang.ddns.net');

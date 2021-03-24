@@ -444,7 +444,7 @@ io.sockets.on('connection', (socket:any) => {
 // 404
 app.use((req :express.Request, res :express.Response, next) => {
   res.status(404);
-  res.sendFile('err404.html');
+  res.sendFile('err404.html', {root: rootdirectory});
 });
 
   httpsServer.listen(port, () => {
