@@ -441,6 +441,12 @@ io.sockets.on('connection', (socket:any) => {
     })
   });
   
+// 404
+app.use((req :express.Request, res :express.Response, next) => {
+  res.status(404);
+  res.sendFile('err404.html');
+});
+
   httpsServer.listen(port, () => {
     console.log('Server at https://rootlang.ddns.net');
   })
