@@ -109,7 +109,7 @@ import bcrypt from 'bcrypt';
 const rootdirectory: string = path.resolve(rootDir, 'client');
 //express session
 import session from 'express-session';
-
+import sharedSession from 'express-socket.io-session';
 
 //request時に実行するmiddleware function
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
@@ -124,11 +124,12 @@ app.use(everyRequest);
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-app.use(session({
+var sessionMiddleware = session({
   secret: 'secret',
   resave: true,
   saveUninitialized: true
-}));
+});
+app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -286,7 +287,9 @@ async function readDirectory(path: string, socket: any, result: dirObject, callb
     });
   })
 }
+io.use(sharedSession(sessionMiddleware, {
 
+}));
 io.sockets.on('connection', (socket:any) => {
     var address = socket.handshake.address;
     console.log('New connection from ' + JSON.stringify(address) + socket.id);
@@ -299,6 +302,7 @@ io.sockets.on('connection', (socket:any) => {
       }
     });
     usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
+    console.log(socket.handshake.session.passport);
     socket.on('compile', async (input: compileData) => {
       // コンパイル
       exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.filename, (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) => {
