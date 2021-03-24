@@ -315,7 +315,9 @@ io.sockets.on('connection', (socket:any) => {
           id: 'guest',
           username: 'ゲスト',
           avatar: ''
-        })
+        });
+        users.set(socket.id, 'guest');
+        usersDirectory.set(socket.id, path.resolve(accountsDir, 'guest'));
       }
       else
       {
@@ -323,7 +325,9 @@ io.sockets.on('connection', (socket:any) => {
           id: user.username,
           username: user.displayName,
           avatar: ''
-        })
+        });
+        users.set(socket.id, user.username);
+        usersDirectory.set(socket.id, path.resolve(accountsDir, user.username));
       }
     })
     socket.on('compile', async (input: compileData) => {
