@@ -305,6 +305,11 @@ io.sockets.on('connection', (socket:any) => {
     let userId = socket.handshake.session.passport.user;
     User.findOne({_id: userId}).exec((err: any, user: any) => {
       console.log(user);
+      socket.emit('login', {
+        id: user.username,
+        username: user.displayName,
+        avatar: ''
+      })
     })
     socket.on('compile', async (input: compileData) => {
       // コンパイル

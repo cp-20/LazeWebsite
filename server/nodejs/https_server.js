@@ -333,6 +333,11 @@ io.sockets.on('connection', function (socket) {
     var userId = socket.handshake.session.passport.user;
     User.findOne({ _id: userId }).exec(function (err, user) {
         console.log(user);
+        socket.emit('login', {
+            id: user.username,
+            username: user.displayName,
+            avatar: ''
+        });
     });
     socket.on('compile', function (input) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
