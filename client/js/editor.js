@@ -42,27 +42,6 @@ $(function () {
     });
     // アカウントのステータス更新
     updateAccount();
-    // ファイルツリー
-    parseDir({
-        type: 'folder',
-        name: projectName,
-        value: [
-            {
-                type: 'file',
-                name: editFileName
-            },
-            {
-                type: 'folder',
-                name: 'samples',
-                value: [
-                    {
-                        type: 'file',
-                        name: 'sample.lang'
-                    }
-                ]
-            }
-        ]
-    });
 });
 // 変数
 var editContents = new Map();
@@ -71,7 +50,7 @@ var projectName = 'Project1';
 var account = {
     id: 'guest',
     name: 'ゲスト',
-    avatar: 'assets/icons/guest.svg'
+    avatar: ''
 };
 // ログ出力
 function logConsole(value, style) {
@@ -187,39 +166,15 @@ function parseDir(dir) {
     projectName = dir.name;
     tree(root, dir);
 }
+// ログインイベント
+socket.on('login', function (data) {
+    account = data;
+    updateAccount();
+});
 // アカウントのステータス更新
 function updateAccount() {
     // 名前
     $('#account-name').text(account.name);
     // アバター画像
-    $('avatar-img').attr('src', account.avatar);
+    $('avatar-img').attr('src', account.avatar || 'assets/icons/guest.svg');
 }
-// 管理者ページ
-// socket.on('requestAdminPage', () => {
-// 	console.log('got');
-// 	window.location.href = '../html/admin.html'
-// });
-// var oName = '';
-// function adminExecuteBtnClicked()
-// {
-// console.log(document.getElementById('adminCommand').value);
-// 	socket.emit('adminexec', {
-// 			command: document.getElementById('adminCommand').value
-// 	});
-// }
-// socket.on('originalUsername', (input) => {
-// 	oName = input.originalName;
-// });
-// function adminLogoutBtnClicked()
-// {
-// let temp = oName;
-// 	socket.emit('adminLogout', {
-// 			originalName: temp
-// });
-// window.location.href = '../index.html';
-// }
-// socket.on('adminOutEmit', (input) => {
-// console.log('gg');
-// console.log(input.value);
-// 	document.getElementById('adminOutput').innerHTML = input.value;
-// });
