@@ -168,6 +168,7 @@ function parseDir(dir) {
 }
 // ログインイベント
 socket.on('login', function (data) {
+    console.log(data);
     account = data;
     updateAccount();
 });

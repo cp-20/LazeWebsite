@@ -178,6 +178,7 @@ function parseDir(dir :dirObject) {
 
 // ログインイベント
 socket.on('login', (data :userData) => {
+	console.log(data);
 	account = data;
 	updateAccount();
 });
