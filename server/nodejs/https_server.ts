@@ -302,7 +302,10 @@ io.sockets.on('connection', (socket:any) => {
       }
     });
     usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
-    console.log(socket.handshake.session.passport);
+    let userId = socket.handshake.session.passport.user;
+    User.findOne({_id: userId}).exec((err: any, user: any) => {
+      console.log(user);
+    })
     socket.on('compile', async (input: compileData) => {
       // コンパイル
       exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.filename, (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) => {
@@ -368,14 +371,6 @@ io.sockets.on('connection', (socket:any) => {
         });
       };
     });
-    //loginシステム
-    socket.on('login', async input => 
-    {
-      //usersのvalueをアカウント名にする
-      users.set(socket.id, input.accountName);
-      usersDirectory.set(socket.id, accountsDir + input.accountName);
-    });
-    
     //すでに作られたProjectをロードする
     socket.on('loadProject', async (input: loadProjectData) => 
     {
