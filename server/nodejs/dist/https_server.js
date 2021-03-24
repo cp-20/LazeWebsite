@@ -36,75 +36,45 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __read = (this && this.__read) || function (o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o), r, ar = [], e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    }
-    catch (error) { e = { error: error }; }
-    finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        }
-        finally { if (e) throw e.error; }
-    }
-    return ar;
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
 };
-var __spread = (this && this.__spread) || function () {
-    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
-    return ar;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = __importDefault(require("express"));
-var fs_1 = __importDefault(require("fs"));
+exports.__esModule = true;
+var express_1 = require("express");
+var fs_1 = require("fs");
 var path = require('path');
 var exec = require('child_process').exec;
-var app = express_1.default();
+var app = express_1["default"]();
 //https settings
 var rootDir = path.resolve(__dirname, '../../');
 var https = require('https');
-var privateKey = fs_1.default.readFileSync(path.resolve(rootDir, 'server/nodejs/privkey.pem'), 'utf8');
-var certificate = fs_1.default.readFileSync(path.resolve(rootDir, 'server/nodejs/fullchain.pem'), 'utf8');
+var privateKey = fs_1["default"].readFileSync(path.resolve(rootDir, 'server/nodejs/privkey.pem'), 'utf8');
+var certificate = fs_1["default"].readFileSync(path.resolve(rootDir, 'server/nodejs/fullchain.pem'), 'utf8');
 var credentials = { key: privateKey, cert: certificate };
 //http to https auto redirection
 var http = require('http');
-http.createServer((express_1.default()).all("*", function (request, response) {
+http.createServer((express_1["default"]()).all("*", function (request, response) {
     response.redirect("https://" + request.hostname + request.url);
 })).listen(80);
 var httpsServer = https.createServer(credentials, app);
 var io = require('socket.io')(httpsServer);
 var port = 443;
-//mount usb
-var accountsDir = '/media/usb/compilerserver/accounts/';
-fs_1.default.access(accountsDir, function (err) {
-    if (err && err.code == 'ENOENT') {
-        fs_1.default.access('/media/pi/A042-416A', function (err) {
-            if (!err) {
-                exec('sudo umount /media/pi/A042-416A').then(exec('sudo mount /dev/sda1 /media/usb').then(console.log('mounted usb')));
-            }
-            else {
-                exec('sudo mount /dev/sda1 /media/usb').then(console.log('mounted usb'));
-            }
-        });
-    }
-});
 //database (mongoose)
-var mongoose_1 = __importDefault(require("mongoose"));
+var mongoose_1 = require("mongoose");
 var User = require('./database');
-mongoose_1.default.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
+mongoose_1["default"].connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(function () { console.log('connected'); });
-mongoose_1.default.Promise = global.Promise;
+mongoose_1["default"].Promise = global.Promise;
 //passport
-var passport_1 = __importDefault(require("passport"));
+var passport_1 = require("passport");
 var LocalStrategy = require('passport-local').Strategy;
-passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordField: 'loginPassword' }, function (username, password, done) {
+passport_1["default"].use(new LocalStrategy({ usernameField: 'loginId', passwordField: 'loginPassword' }, function (username, password, done) {
     console.log('hello');
     User.findOne({ email: username }).then(function (user) {
         if (!user) {
@@ -113,7 +83,7 @@ passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordFie
                     console.log('account not found');
                     return done(null, false, { message: 'That email is not registered' });
                 }
-                bcrypt_1.default.compare(password, user_.password, function (err, isMatch) {
+                bcrypt_1["default"].compare(password, user_.password, function (err, isMatch) {
                     if (err)
                         console.log(err);
                     if (isMatch) {
@@ -127,7 +97,7 @@ passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordFie
             });
             return;
         }
-        bcrypt_1.default.compare(password, user.password, function (err, isMatch) {
+        bcrypt_1["default"].compare(password, user.password, function (err, isMatch) {
             if (err)
                 console.log(err);
             if (isMatch) {
@@ -140,39 +110,40 @@ passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordFie
         });
     });
 }));
-passport_1.default.serializeUser(function (user, done) {
+passport_1["default"].serializeUser(function (user, done) {
     // console.log(user.id);
     done(null, user.id);
 });
-passport_1.default.deserializeUser(function (id, done) {
+passport_1["default"].deserializeUser(function (id, done) {
     User.findById(id, function (err, user) {
         // console.log(user.id);
         done(err, user);
     });
 });
 //bcrypt = hash function
-var bcrypt_1 = __importDefault(require("bcrypt"));
+var bcrypt_1 = require("bcrypt");
+var accountsDir = '/media/usb/compilerserver/accounts/';
 var rootdirectory = path.resolve(rootDir, 'client');
 //express session
-var express_session_1 = __importDefault(require("express-session"));
+var express_session_1 = require("express-session");
 //request時に実行するmiddleware function
 function everyRequest(req, res, next) {
     console.log('Request URL: ', req.originalUrl);
     // console.log(req.user, 'everyRequest');
     next();
 }
-app.use(express_1.default.static(rootdirectory));
+app.use(express_1["default"].static(rootdirectory));
 app.use(everyRequest);
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express_session_1.default({
+app.use(express_session_1["default"]({
     secret: 'secret',
     resave: true,
     saveUninitialized: true
 }));
-app.use(passport_1.default.initialize());
-app.use(passport_1.default.session());
+app.use(passport_1["default"].initialize());
+app.use(passport_1["default"].session());
 app.get('/', function (req, res) {
     res.sendFile('index.html', { root: rootdirectory });
 });
@@ -181,7 +152,7 @@ app.get('/login', function (req, res) {
 });
 app.post('/login', function (req, res, next) {
     console.log(req.body, 124);
-    passport_1.default.authenticate('local', {
+    passport_1["default"].authenticate('local', {
         successRedirect: '/editor',
         failureRedirect: '/login'
     })(req, res, next);
@@ -208,11 +179,8 @@ app.post('/register', function (req, res) {
         displayName: username || id,
         password: password
     });
-    fs_1.default.mkdir(path.resolve(accountsDir, id), function () {
-        console.log('created account folder');
-    });
-    bcrypt_1.default.genSalt(10, function (err, salt) {
-        bcrypt_1.default.hash(newUser.password, salt, function (err, hash) {
+    bcrypt_1["default"].genSalt(10, function (err, salt) {
+        bcrypt_1["default"].hash(newUser.password, salt, function (err, hash) {
             if (err)
                 console.log('Error hashing password.');
             newUser.password = hash;
@@ -228,22 +196,6 @@ app.get('/pass_reset', function (req, res) {
 });
 app.get('/register_check/id', function (req, res) {
     console.log(req.query);
-    if (req.query.id) {
-        var userId = req.query.id;
-        console.log(userId);
-        User.findOne({ username: userId }).exec(function (err, user) {
-            if (user) {
-                console.log('there is already an account');
-                res.json({ success: false });
-            }
-            else {
-                res.json({ success: true });
-            }
-        });
-    }
-});
-app.get('/register_check/email', function (req, res) {
-    console.log(req.query);
     if (req.query.email) {
         var emailAddress = req.query.email;
         console.log(emailAddress);
@@ -254,7 +206,19 @@ app.get('/register_check/email', function (req, res) {
             else {
                 res.json({ success: true });
             }
-        }).catch(function (err) { return console.log(err); });
+        })["catch"](function (err) { return console.log(err); });
+    }
+    else if (req.query.id) {
+        var userId = req.query.id;
+        console.log(userId);
+        User.findOne({ username: userId }).exec(function (err, user) {
+            if (user) {
+                res.json({ success: false });
+            }
+            else {
+                res.json({ success: true });
+            }
+        });
     }
 });
 var users = new Map();
@@ -265,7 +229,7 @@ function readDirectory(path, socket, result, callback) {
         var _this = this;
         return __generator(this, function (_a) {
             return [2 /*return*/, new Promise(function (resolve, reject) {
-                    fs_1.default.readdir(path, { withFileTypes: true }, function (err, content) { return __awaiter(_this, void 0, void 0, function () {
+                    fs_1["default"].readdir(path, { withFileTypes: true }, function (err, content) { return __awaiter(_this, void 0, void 0, function () {
                         var files_1, folders_1, fn, temp, tempfolders, tempfiles;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
@@ -295,12 +259,12 @@ function readDirectory(path, socket, result, callback) {
                                     return [4 /*yield*/, Promise.all(content.map(fn))];
                                 case 2:
                                     temp = _a.sent();
-                                    tempfolders = new Map(__spread(folders_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
+                                    tempfolders = new Map(__spreadArrays(folders_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
                                     tempfolders.forEach(function (folder) {
                                         if (result.value)
                                             result.value.push(folder);
                                     });
-                                    tempfiles = new Map(__spread(files_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
+                                    tempfiles = new Map(__spreadArrays(files_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
                                     tempfiles.forEach(function (file) {
                                         if (result.value)
                                             result.value.push(file);
@@ -321,7 +285,7 @@ io.sockets.on('connection', function (socket) {
     console.log('New connection from ' + JSON.stringify(address) + socket.id);
     //defaultはguestとして入る
     users.set(socket.id, "guest");
-    fs_1.default.mkdir(accountsDir + 'guest/' + socket.id, function (err) {
+    fs_1["default"].mkdir(accountsDir + 'guest/' + socket.id, function (err) {
         if (err) {
             console.log('could not create ' + accountsDir + 'guest/' + socket.id);
         }
@@ -420,9 +384,9 @@ io.sockets.on('connection', function (socket) {
     //Projectを作る
     socket.on('createProject', function (input) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            fs_1.default.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, function (err) {
+            fs_1["default"].mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, function (err) {
                 if (err) {
-                    socket.emit('cre atedProject', {
+                    socket.emit('createdProject', {
                         value: 'Could not create project ' + input.projectName,
                         style: 'err'
                     });
@@ -442,7 +406,7 @@ io.sockets.on('connection', function (socket) {
         console.log("a");
         if (users.get(socket.id) == 'guest') {
             if (usersDirectory.get(socket.id)) {
-                fs_1.default.rmdir((usersDirectory.get(socket.id)), function (err) {
+                fs_1["default"].rmdir((usersDirectory.get(socket.id)), function (err) {
                     console.log(usersDirectory.get(socket.id));
                 });
             }

@@ -22,6 +22,23 @@ http.createServer((express()).all("*", function (request, response) {
 const httpsServer = https.createServer(credentials, app);
 const io = require('socket.io')(httpsServer);
 const port : number = 443;
+//mount usb
+const accountsDir: string = '/media/usb/compilerserver/accounts/';
+fs.access(accountsDir, (err) => {
+  if(err && err.code == 'ENOENT')
+  {
+    fs.access('/media/pi/A042-416A', (err) => {
+      if(!err)
+      {
+        exec('sudo umount /media/pi/A042-416A').then(exec('sudo mount /dev/sda1 /media/usb').then(console.log('mounted usb')));
+      }
+      else
+      {
+        exec('sudo mount /dev/sda1 /media/usb').then(console.log('mounted usb'));
+      }
+    })
+  }
+})
 //database (mongoose)
 import mongoose from 'mongoose';
 const User: mongoose.Model<any, any> = require('./database');
@@ -77,17 +94,18 @@ passport.use(new LocalStrategy(
     })
   }
 ));
-passport.serializeUser((user, done) => {
+passport.serializeUser((user: any, done) => {
+  // console.log(user.id);
   done(null, user.id);
 })
 passport.deserializeUser((id, done) => {
   User.findById(id, (err: any, user: any) => {
+    // console.log(user.id);
     done(err, user);
   })
 })
 //bcrypt = hash function
 import bcrypt from 'bcrypt';
-const accountsDir: string = '/media/usb/compilerserver/accounts/';
 const rootdirectory: string = path.resolve(rootDir, 'client');
 //express session
 import session from 'express-session';
@@ -97,6 +115,7 @@ import session from 'express-session';
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
     console.log('Request URL: ', req.originalUrl);
+    // console.log(req.user, 'everyRequest');
     next();
 }
 
@@ -130,6 +149,7 @@ app.post('/login', (req: express.Request, res: express.Response, next: express.N
 })
 
 app.get('/editor', (req: express.Request, res: express.Response) => {
+    console.log(req.user);
     res.sendFile('editor.html', {root: rootdirectory});
 })
 
@@ -146,7 +166,7 @@ app.get('/register', (req: express.Request, res: express.Response) => {
 })
 
 app.post('/register', (req: express.Request, res: express.Response) => {
-  console.log(req.body);
+  // console.log(req.body);
   const {id, username, email, password, passwordCheck} = req.body;
 
   const newUser = new User({
@@ -155,6 +175,9 @@ app.post('/register', (req: express.Request, res: express.Response) => {
     displayName: username || id,
     password: password 
   });
+  fs.mkdir(path.resolve(accountsDir, id), () => {
+    console.log('created account folder');
+  })
   bcrypt.genSalt(10, (err: Error, salt) => {
     bcrypt.hash(newUser.password, salt,(err: Error, hash) => {
       if(err) console.log('Error hashing password.');
@@ -171,7 +194,28 @@ app.get('/pass_reset', (req: express.Request, res: express.Response) => {
   res.sendFile('pass_reset.html', {root: rootdirectory});
 })
 
-app.get('/register_check/', (req: express.Request, res: express.Response) => {
+app.get('/register_check/id', (req: express.Request, res: express.Response) => {
+  console.log(req.query);
+  if(req.query.id)
+  {
+    let userId : any = req.query.id;
+    console.log(userId);
+    User.findOne({username: userId}).exec((err: any, user: any) => {
+      if(user)
+      {
+        console.log('there is already an account');
+        res.json({success: false});
+      }
+      else
+      {
+        res.json({success: true});
+      }
+    });
+  }
+});
+
+app.get('/register_check/email', (req: express.Request, res: express.Response) => {
+  console.log(req.query);
   if(req.query.email)
   {
     let emailAddress : any = req.query.email;
@@ -185,24 +229,10 @@ app.get('/register_check/', (req: express.Request, res: express.Response) => {
       {
         res.json({success: true});
       }
-    }).catch((err) => console.log(err));
+    }).catch((err: any) => console.log(err));
   }
-  else if(req.query.id)
-  {
-    let userId : any = req.query.id;
-    console.log(userId);
-    User.findOne({username: userId}).exec((err: any, user: any) => {
-      if(user)
-      {
-        res.json({success: false});
-      }
-      else
-      {
-        res.json({success: true});
-      }
-    });
-  }
-})
+});
+
 
 let users: Map<string, string> = new Map();
 let usersDirectory: Map<string, string> = new Map();
@@ -359,7 +389,7 @@ io.sockets.on('connection', (socket:any) => {
       fs.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, (err) => {
         if(err)
         {
-          socket.emit('createdProject', {
+          socket.emit('cre atedProject', {
             value: 'Could not create project '+ input.projectName,
             style: 'err'
           })
