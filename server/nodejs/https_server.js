@@ -166,6 +166,11 @@ app.use(everyRequest);
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+var sessionMiddleware = express_session_1.default({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+});
 app.use(express_session_1.default({
     secret: 'secret',
     resave: true,
@@ -316,6 +321,9 @@ function readDirectory(path, socket, result, callback) {
         });
     });
 }
+io.use(function (socket, next) {
+    sessionMiddleware(socket.request, socket.request.res, next);
+});
 io.sockets.on('connection', function (socket) {
     var address = socket.handshake.address;
     console.log('New connection from ' + JSON.stringify(address) + socket.id);
@@ -327,6 +335,7 @@ io.sockets.on('connection', function (socket) {
         }
     });
     usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
+    console.log(socket.request.session.username);
     socket.on('compile', function (input) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             // コンパイル
