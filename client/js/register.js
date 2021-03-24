@@ -84,8 +84,9 @@ $(function () {
         if (emailTimer)
             clearTimeout(emailTimer);
         emailTimer = setTimeout(function () {
+            var _a;
             // 入力終了
-            var email = $('#form').val();
+            var email = (_a = $('#form').val()) === null || _a === void 0 ? void 0 : _a.toString();
             var form = $('#form');
             if (email) {
                 fetch("/register_check/email?email=" + encodeURI(email))
