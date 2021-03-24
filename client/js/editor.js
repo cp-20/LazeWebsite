@@ -49,7 +49,7 @@ var editFileName = 'test.lang';
 var projectName = 'Project1';
 var account = {
     id: 'guest',
-    name: 'ゲスト',
+    username: 'ゲスト',
     avatar: ''
 };
 // ログ出力
@@ -175,7 +175,7 @@ socket.on('login', function (data) {
 // アカウントのステータス更新
 function updateAccount() {
     // 名前
-    $('#account-name').text(account.name);
+    $('#account-name').text(account.username);
     // アバター画像
-    $('avatar-img').attr('src', account.avatar || 'assets/icons/guest.svg');
+    $('#avatar-img').attr('src', account.avatar || 'assets/icons/guest.svg');
 }
