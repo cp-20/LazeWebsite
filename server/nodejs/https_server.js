@@ -155,6 +155,7 @@ var bcrypt_1 = __importDefault(require("bcrypt"));
 var rootdirectory = path.resolve(rootDir, 'client');
 //express session
 var express_session_1 = __importDefault(require("express-session"));
+var express_socket_io_session_1 = __importDefault(require("express-socket.io-session"));
 //request時に実行するmiddleware function
 function everyRequest(req, res, next) {
     console.log('Request URL: ', req.originalUrl);
@@ -168,13 +169,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 var sessionMiddleware = express_session_1.default({
     secret: 'secret',
-    resave: true,
-    saveUninitialized: true
+    resave: false,
+    saveUninitialized: false
 });
 app.use(express_session_1.default({
     secret: 'secret',
-    resave: true,
-    saveUninitialized: true
+    resave: false,
+    saveUninitialized: false
 }));
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
@@ -321,9 +322,7 @@ function readDirectory(path, socket, result, callback) {
         });
     });
 }
-io.use(function (socket, next) {
-    sessionMiddleware(socket.request, socket.request.res, next);
-});
+io.use(express_socket_io_session_1.default(sessionMiddleware));
 io.sockets.on('connection', function (socket) {
     var address = socket.handshake.address;
     console.log('New connection from ' + JSON.stringify(address) + socket.id);
@@ -335,7 +334,7 @@ io.sockets.on('connection', function (socket) {
         }
     });
     usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
-    console.log(socket.request.session.username);
+    console.log(socket.handshake.session.userdata);
     socket.on('compile', function (input) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             // コンパイル
