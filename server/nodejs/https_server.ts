@@ -127,13 +127,13 @@ app.use(bodyParser.json());
 const sessionMiddleware = session({
   secret: 'secret',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie:
+  {
+    httpOnly: false
+  }
 });
-app.use(session({
-  secret: 'secret',
-  resave: false,
-  saveUninitialized: false
-}));
+app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
 

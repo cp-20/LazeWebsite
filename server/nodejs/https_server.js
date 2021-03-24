@@ -169,13 +169,12 @@ app.use(bodyParser.json());
 var sessionMiddleware = express_session_1.default({
     secret: 'secret',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: false
+    }
 });
-app.use(express_session_1.default({
-    secret: 'secret',
-    resave: false,
-    saveUninitialized: false
-}));
+app.use(sessionMiddleware);
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 app.get('/', function (req, res) {
