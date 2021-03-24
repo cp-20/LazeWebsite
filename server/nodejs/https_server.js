@@ -343,6 +343,8 @@ io.sockets.on('connection', function (socket) {
                 username: 'ゲスト',
                 avatar: ''
             });
+            users.set(socket.id, 'guest');
+            usersDirectory.set(socket.id, path.resolve(accountsDir, 'guest'));
         }
         else {
             socket.emit('login', {
@@ -350,6 +352,8 @@ io.sockets.on('connection', function (socket) {
                 username: user.displayName,
                 avatar: ''
             });
+            users.set(socket.id, user.username);
+            usersDirectory.set(socket.id, path.resolve(accountsDir, user.username));
         }
     });
     socket.on('compile', function (input) { return __awaiter(void 0, void 0, void 0, function () {
