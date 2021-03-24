@@ -89,16 +89,21 @@ $(function () {
             var email = (_a = $('#email').val()) === null || _a === void 0 ? void 0 : _a.toString();
             var form = $('#email');
             if (email) {
-                fetch("/register_check/email?email=" + encodeURI(email))
-                    .then(function (res) { return res.json(); })
-                    .then(function (result) {
-                    if (result.success) {
-                        feedback(form, result.success, '');
-                    }
-                    else {
-                        feedback(form, result.success, "<strong>" + email + "</strong>\u306F\u65E2\u306B\u5229\u7528\u3055\u308C\u3066\u3044\u308B\u304B\u4E0D\u6B63\u306A\u5F62\u5F0F\u3067\u3059");
-                    }
-                });
+                if (email.match(/^[^\s]+@[^\s]+$/)) {
+                    fetch("/register_check/email?email=" + encodeURI(email))
+                        .then(function (res) { return res.json(); })
+                        .then(function (result) {
+                        if (result.success) {
+                            feedback(form, result.success, '');
+                        }
+                        else {
+                            feedback(form, result.success, "<strong>" + email + "</strong>\u306F\u65E2\u306B\u5229\u7528\u3055\u308C\u3066\u3044\u307E\u3059");
+                        }
+                    });
+                }
+                else {
+                    feedback(form, false, "<strong>" + email + "</strong>\u306F\u4E0D\u6B63\u306A\u5F62\u5F0F\u3067\u3059");
+                }
             }
             else {
                 resetFeedback(form);

@@ -73,15 +73,19 @@ $(() => {
 			const email = $('#email').val()?.toString();
 			const form = $('#email');
 			if (email) {
-				fetch(`/register_check/email?email=${encodeURI(email)}`)
-				.then(res => res.json())
-				.then((result :{success: boolean}) => {
-					if (result.success) {
-						feedback(form, result.success, '');
-					}else {
-						feedback(form, result.success, `<strong>${email}</strong>は既に利用されているか不正な形式です`);
-					}
-				});
+				if (email.match(/^[^\s]+@[^\s]+$/)) {
+					fetch(`/register_check/email?email=${encodeURI(email)}`)
+					.then(res => res.json())
+					.then((result :{success: boolean}) => {
+						if (result.success) {
+							feedback(form, result.success, '');
+						}else {
+							feedback(form, result.success, `<strong>${email}</strong>は既に利用されています`);
+						}
+					});
+				}else {
+					feedback(form, false, `<strong>${email}</strong>は不正な形式です`);
+				}
 			}else {
 				resetFeedback(form);
 			}
