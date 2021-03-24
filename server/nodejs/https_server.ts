@@ -302,14 +302,29 @@ io.sockets.on('connection', (socket:any) => {
       }
     });
     usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
-    let userId = socket.handshake.session.passport.user;
+    let userId;
+    if(!(socket.handshake.session.passport === undefined))
+      userId = socket.handshake.session.passport.user;
+    else
+      userId = 'guest';
     User.findOne({_id: userId}).exec((err: any, user: any) => {
       console.log(user);
-      socket.emit('login', {
-        id: user.username,
-        username: user.displayName,
-        avatar: ''
-      })
+      if(err)
+      {
+        socket.emit('login', {
+          id: 'guest',
+          username: 'ゲスト',
+          avatar: ''
+        })
+      }
+      else
+      {
+        socket.emit('login', {
+          id: user.username,
+          username: user.displayName,
+          avatar: ''
+        })
+      }
     })
     socket.on('compile', async (input: compileData) => {
       // コンパイル
