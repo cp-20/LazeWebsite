@@ -330,7 +330,28 @@ io.sockets.on('connection', function (socket) {
         }
     });
     usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
-    console.log(socket.handshake.session.passport);
+    var userId;
+    if (!(socket.handshake.session.passport === undefined))
+        userId = socket.handshake.session.passport.user;
+    else
+        userId = 'guest';
+    User.findOne({ _id: userId }).exec(function (err, user) {
+        console.log(user);
+        if (err) {
+            socket.emit('login', {
+                id: 'guest',
+                username: 'ゲスト',
+                avatar: ''
+            });
+        }
+        else {
+            socket.emit('login', {
+                id: user.username,
+                username: user.displayName,
+                avatar: ''
+            });
+        }
+    });
     socket.on('compile', function (input) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             // コンパイル
@@ -394,15 +415,6 @@ io.sockets.on('connection', function (socket) {
                 });
             }
             ;
-            return [2 /*return*/];
-        });
-    }); });
-    //loginシステム
-    socket.on('login', function (input) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            //usersのvalueをアカウント名にする
-            users.set(socket.id, input.accountName);
-            usersDirectory.set(socket.id, accountsDir + input.accountName);
             return [2 /*return*/];
         });
     }); });
