@@ -234,6 +234,7 @@ app.get('/register_check/email', (req: express.Request, res: express.Response) =
   }
 });
 
+app.get('')
 
 let users: Map<string, string> = new Map();
 let usersDirectory: Map<string, string> = new Map();
@@ -342,6 +343,7 @@ io.sockets.on('connection', (socket:any) => {
         }
         exec('./compiler ' + input.filename + ' ' + usersDirectory.get(socket.id) + '/', (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) =>
         {
+          
           // 出力
           console.log(err, stdout, stderr);
           if(err) {
