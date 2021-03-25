@@ -235,7 +235,9 @@ app.get('/register_check/email', (req: express.Request, res: express.Response) =
   }
 });
 
-app.get('')
+app.get('/node_modules/', (req: express.Request, res: express.Response) => {
+  console.log('get node modules');
+})
 
 let users: Map<string, string> = new Map();
 let usersDirectory: Map<string, string> = new Map();
