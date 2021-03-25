@@ -213,6 +213,7 @@ app.get('/register_check/id', (req: express.Request, res: express.Response) => {
         res.json({success: true});
       }
     });
+    
   }
 });
 
