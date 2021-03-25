@@ -270,7 +270,6 @@ async function readDirectory(path: string, socket: any, result: dirObject, callb
              return val;
             });
           }
-          
         }
         
         let temp = await Promise.all(content.map(fn));
