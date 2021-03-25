@@ -347,8 +347,6 @@ io.sockets.on('connection', (socket:any) => {
         }
         exec('./compiler ' + input.filename + ' ' + usersDirectory.get(socket.id) + '/', (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) =>
         {
-
-
           // 出力
           console.log(err, stdout, stderr);
           if(err) {
