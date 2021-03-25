@@ -120,6 +120,7 @@ function everyRequest(req: express.Request, res: express.Response, next: express
 }
 
 app.use(express.static(rootdirectory));
+
 app.use(everyRequest);
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));
@@ -344,7 +345,7 @@ io.sockets.on('connection', (socket:any) => {
         exec('./compiler ' + input.filename + ' ' + usersDirectory.get(socket.id) + '/', (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) =>
         {
 
-          
+
           // 出力
           console.log(err, stdout, stderr);
           if(err) {
