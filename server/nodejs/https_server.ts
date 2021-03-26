@@ -114,7 +114,7 @@ import sharedSession from 'express-socket.io-session';
 //request時に実行するmiddleware function
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
-    console.log('Request URL: ', req.originalUrl, 'IP:', req.socket.address());
+    console.log('Request URL: ', req.originalUrl, 'IP:', req.socket.remoteAddress);
     // console.log(req.user, 'everyRequest');
     next();
 }
