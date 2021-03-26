@@ -114,12 +114,13 @@ import sharedSession from 'express-socket.io-session';
 //request時に実行するmiddleware function
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
-    console.log('Request URL: ', req.originalUrl);
+    console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
     // console.log(req.user, 'everyRequest');
     next();
 }
 
 app.use(express.static(rootdirectory));
+
 app.use(everyRequest);
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));
@@ -234,6 +235,11 @@ app.get('/register_check/email', (req: express.Request, res: express.Response) =
   }
 });
 
+
+app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', (req: express.Request, res: express.Response) => {
+  console.log('get node modules');
+  res.sendFile('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', {root: rootDir});
+})
 
 let users: Map<string, string> = new Map();
 let usersDirectory: Map<string, string> = new Map();
