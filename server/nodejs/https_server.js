@@ -259,9 +259,10 @@ app.get('/register_check/email', function (req, res) {
         });
     }
 });
-// app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', (req: express.Request, res: express.Response) => {
-//   console.log('get node modules');
-// })
+app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', function (req, res) {
+    console.log('get node modules');
+    res.sendFile('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', { root: rootDir });
+});
 var users = new Map();
 var usersDirectory = new Map();
 //ディレクトリー読むための再帰関数
