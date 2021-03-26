@@ -259,7 +259,7 @@ app.get('/register_check/email', function (req, res) {
         });
     }
 });
-app.get('/node_modules/', function (req, res) {
+app.get('/node_modules', function (req, res) {
     console.log('get node modules');
 });
 var users = new Map();
