@@ -158,7 +158,7 @@ var express_session_1 = __importDefault(require("express-session"));
 var express_socket_io_session_1 = __importDefault(require("express-socket.io-session"));
 //request時に実行するmiddleware function
 function everyRequest(req, res, next) {
-    console.log('Request URL: ', req.originalUrl);
+    console.log('Request URL: ', req.originalUrl, 'IP:', req.socket.address);
     // console.log(req.user, 'everyRequest');
     next();
 }
@@ -259,7 +259,7 @@ app.get('/register_check/email', function (req, res) {
         });
     }
 });
-app.get('/node_modules', function (req, res) {
+app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', function (req, res) {
     console.log('get node modules');
 });
 var users = new Map();

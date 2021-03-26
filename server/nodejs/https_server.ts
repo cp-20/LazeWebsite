@@ -114,7 +114,7 @@ import sharedSession from 'express-socket.io-session';
 //request時に実行するmiddleware function
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
-    console.log('Request URL: ', req.originalUrl);
+    console.log('Request URL: ', req.originalUrl, 'IP:', req.socket.address);
     // console.log(req.user, 'everyRequest');
     next();
 }
@@ -236,7 +236,7 @@ app.get('/register_check/email', (req: express.Request, res: express.Response) =
 });
 
 
-app.get('/node_modules', (req: express.Request, res: express.Response) => {
+app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', (req: express.Request, res: express.Response) => {
   console.log('get node modules');
 })
 
