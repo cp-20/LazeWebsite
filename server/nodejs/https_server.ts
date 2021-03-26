@@ -236,9 +236,9 @@ app.get('/register_check/email', (req: express.Request, res: express.Response) =
 });
 
 
-app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', (req: express.Request, res: express.Response) => {
-  console.log('get node modules');
-})
+// app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', (req: express.Request, res: express.Response) => {
+//   console.log('get node modules');
+// })
 
 let users: Map<string, string> = new Map();
 let usersDirectory: Map<string, string> = new Map();
