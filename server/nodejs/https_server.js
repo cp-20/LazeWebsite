@@ -150,6 +150,9 @@ passport_1.default.deserializeUser(function (id, done) {
         done(err, user);
     });
 });
+//Login with Google
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
+passport_1.default.use(GoogleStrategy);
 //bcrypt = hash function
 var bcrypt_1 = __importDefault(require("bcrypt"));
 var rootdirectory = path.resolve(rootDir, 'client');
@@ -277,10 +280,10 @@ function readDirectory(path, socket, result, callback) {
                             switch (_a.label) {
                                 case 0:
                                     if (!err) return [3 /*break*/, 1];
-                                    console.log('couldnt load project', 24);
+                                    console.log('couldnt load project', err);
                                     socket.emit('loadedProject', {
                                         value: 'Could not load folder ' + path,
-                                        style: err
+                                        style: 'err'
                                     });
                                     return [3 /*break*/, 3];
                                 case 1:
@@ -381,10 +384,18 @@ io.sockets.on('connection', function (socket) {
                         exec('sudo rm -f ' + input.filename + ' .' + input.filename);
                     }
                     else {
-                        socket.emit('output', {
-                            value: stdout,
-                            style: 'log'
-                        });
+                        if (stdout) {
+                            socket.emit('output', {
+                                value: stdout,
+                                style: 'log'
+                            });
+                        }
+                        if (stderr) {
+                            socket.emit('output', {
+                                value: stderr,
+                                style: 'log'
+                            });
+                        }
                         exec('sudo rm -f ' + input.filename + ' .' + input.filename);
                     }
                     return;

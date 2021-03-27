@@ -104,6 +104,11 @@ passport.deserializeUser((id, done) => {
     done(err, user);
   })
 })
+
+//Login with Google
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+passport.use(GoogleStrategy);
+
 //bcrypt = hash function
 import bcrypt from 'bcrypt';
 const rootdirectory: string = path.resolve(rootDir, 'client');
@@ -251,10 +256,10 @@ async function readDirectory(path: string, socket: any, result: dirObject, callb
     fs.readdir(path, {withFileTypes: true},async (err: NodeJS.ErrnoException | null, content: fs.Dirent[])=>{
       if(err)
       {
-        console.log('couldnt load project', 24);
+        console.log('couldnt load project', err);
         socket.emit('loadedProject', {
           value: 'Could not load folder ' + path,
-          style: err
+          style: 'err'
         });
       }
       else
@@ -357,10 +362,20 @@ io.sockets.on('connection', (socket:any) => {
             });
             exec('sudo rm -f ' + input.filename + ' .' + input.filename);
           }else {
-            socket.emit('output', {
-              value: stdout,
-              style: 'log'
-            });
+            if(stdout)
+            {
+              socket.emit('output', {
+                value: stdout,
+                style: 'log'
+              });
+            }
+            if(stderr)
+            {
+              socket.emit('output', {
+                value: stderr,
+                style: 'log'
+              });
+            }
             exec('sudo rm -f ' + input.filename + ' .' + input.filename);
           }
           return;
