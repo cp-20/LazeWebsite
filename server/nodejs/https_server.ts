@@ -256,7 +256,7 @@ async function readDirectory(path: string, socket: any, result: dirObject, callb
     fs.readdir(path, {withFileTypes: true},async (err: NodeJS.ErrnoException | null, content: fs.Dirent[])=>{
       if(err)
       {
-        console.log('couldnt load project', 24);
+        console.log('couldnt load project', err);
         socket.emit('loadedProject', {
           value: 'Could not load folder ' + path,
           style: 'err'

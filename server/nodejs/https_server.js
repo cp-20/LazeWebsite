@@ -280,7 +280,7 @@ function readDirectory(path, socket, result, callback) {
                             switch (_a.label) {
                                 case 0:
                                     if (!err) return [3 /*break*/, 1];
-                                    console.log('couldnt load project', 24);
+                                    console.log('couldnt load project', err);
                                     socket.emit('loadedProject', {
                                         value: 'Could not load folder ' + path,
                                         style: 'err'
