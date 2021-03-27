@@ -325,13 +325,9 @@ div.explorer {
 		}
 	}
 
-	&.newproject {
+	&.show {
 		visibility: visible;
 		opacity: 1;
-
-		.newproject {
-			visibility: visible;
-		}
 	}
 }
 
