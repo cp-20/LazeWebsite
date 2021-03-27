@@ -268,6 +268,7 @@ app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', function (
 });
 var users = new Map();
 var usersDirectory = new Map();
+var usersProjectDirectory = new Map();
 //ディレクトリー読むための再帰関数
 function readDirectory(path, socket, result, callback) {
     return __awaiter(this, void 0, void 0, function () {
@@ -352,6 +353,7 @@ io.sockets.on('connection', function (socket) {
             });
             users.set(socket.id, 'guest');
             usersDirectory.set(socket.id, path.resolve(accountsDir, 'guest'));
+            usersProjectDirectory.set(socket.id, path.resolve(usersDirectory.get(socket.id), 'none'));
         }
         else {
             socket.emit('login', {
@@ -361,6 +363,7 @@ io.sockets.on('connection', function (socket) {
             });
             users.set(socket.id, user.username);
             usersDirectory.set(socket.id, path.resolve(accountsDir, user.username));
+            usersProjectDirectory.set(socket.id, path.resolve(usersDirectory.get(socket.id), 'none'));
         }
     });
     socket.on('compile', function (input) { return __awaiter(void 0, void 0, void 0, function () {
@@ -415,23 +418,32 @@ io.sockets.on('connection', function (socket) {
                 });
             }
             else {
-                exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.projectName + '/' + input.filename, function (err, stdout, stderr) {
-                    if (err) {
-                        socket.emit('saved', {
-                            value: stderr + ' : Save not complete.',
-                            style: 'err',
-                            success: false
-                        });
-                    }
-                    else {
-                        socket.emit('saved', {
-                            value: 'Save complete.',
-                            style: 'info',
-                            success: true
-                        });
-                    }
-                    return;
-                });
+                if (usersProjectDirectory.get(socket.id) == path.resolve(usersDirectory.get(socket.id), 'none')) {
+                    socket.emit('saved', {
+                        value: 'Load a project first.',
+                        style: 'err',
+                        success: false
+                    });
+                }
+                else {
+                    exec('echo \"' + input.value + '\" > ' + usersProjectDirectory.get(socket.id) + '/' + input.filename, function (err, stdout, stderr) {
+                        if (err) {
+                            socket.emit('saved', {
+                                value: stderr + ' : Save not complete.',
+                                style: 'err',
+                                success: false
+                            });
+                        }
+                        else {
+                            socket.emit('saved', {
+                                value: 'Save complete.',
+                                style: 'info',
+                                success: true
+                            });
+                        }
+                        return;
+                    });
+                }
             }
             ;
             return [2 /*return*/];
@@ -441,34 +453,51 @@ io.sockets.on('connection', function (socket) {
     socket.on('loadProject', function (input) { return __awaiter(void 0, void 0, void 0, function () {
         var result;
         return __generator(this, function (_a) {
-            result = { type: 'folder', name: input.projectName, value: [] };
-            // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
-            readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result, function () { }).then(function (val) {
+            if (users.get(socket.id) != 'guest') {
+                result = { type: 'folder', name: input.projectName, value: [] };
+                // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
+                readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result, function () { }).then(function (val) {
+                    socket.emit('loadedProject', {
+                        value: val,
+                        style: 'log'
+                    });
+                });
+            }
+            else {
                 socket.emit('loadedProject', {
-                    value: val,
+                    value: 'Sign in to load a project.',
                     style: 'log'
                 });
-            });
+            }
             return [2 /*return*/];
         });
     }); });
     //Projectを作る
     socket.on('newProject', function (input) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            fs_1.default.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, function (err) {
-                if (err) {
-                    socket.emit('createdProject', {
-                        value: 'Could not create project ' + input.projectName,
-                        style: 'err'
-                    });
-                }
-                else {
-                    socket.emit('createdProject', {
-                        value: 'Created project ' + input.projectName,
-                        style: 'log'
-                    });
-                }
-            });
+            if (users.get(socket.id) != 'guest') {
+                fs_1.default.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, function (err) {
+                    if (err) {
+                        socket.emit('newProjectCreated', {
+                            value: 'Could not create project ' + input.projectName,
+                            style: 'err'
+                        });
+                    }
+                    else {
+                        socket.emit('newProjectCreated', {
+                            value: 'Created project ' + input.projectName,
+                            style: 'log'
+                        });
+                    }
+                });
+                usersProjectDirectory.set(socket.id, usersDirectory.get(socket.id) + '/' + input.projectName);
+            }
+            else {
+                socket.emit('newProjectCreated', {
+                    value: 'Sign in to create a new project',
+                    style: 'err'
+                });
+            }
             return [2 /*return*/];
         });
     }); });
