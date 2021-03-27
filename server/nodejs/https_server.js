@@ -384,10 +384,18 @@ io.sockets.on('connection', function (socket) {
                         exec('sudo rm -f ' + input.filename + ' .' + input.filename);
                     }
                     else {
-                        socket.emit('output', {
-                            value: stdout,
-                            style: 'log'
-                        });
+                        if (stdout) {
+                            socket.emit('output', {
+                                value: stdout,
+                                style: 'log'
+                            });
+                        }
+                        if (stderr) {
+                            socket.emit('output', {
+                                value: stderr,
+                                style: 'log'
+                            });
+                        }
                         exec('sudo rm -f ' + input.filename + ' .' + input.filename);
                     }
                     return;
