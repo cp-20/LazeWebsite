@@ -248,6 +248,7 @@ app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', (req: expr
 
 let users: Map<string, string> = new Map();
 let usersDirectory: Map<string, string> = new Map();
+let usersProjectDirectory: Map<string, string> = new Map();
 
 //ディレクトリー読むための再帰関数
 async function readDirectory(path: string, socket: any, result: dirObject, callback: Function)
@@ -329,6 +330,7 @@ io.sockets.on('connection', (socket:any) => {
         });
         users.set(socket.id, 'guest');
         usersDirectory.set(socket.id, path.resolve(accountsDir, 'guest'));
+        usersProjectDirectory.set(socket.id, path.resolve(usersDirectory.get(socket.id), 'none'));
       }
       else
       {
@@ -339,6 +341,7 @@ io.sockets.on('connection', (socket:any) => {
         });
         users.set(socket.id, user.username);
         usersDirectory.set(socket.id, path.resolve(accountsDir, user.username));
+        usersProjectDirectory.set(socket.id, path.resolve(usersDirectory.get(socket.id), 'none'));
       }
     })
     socket.on('compile', async (input: compileData) => {
@@ -395,57 +398,89 @@ io.sockets.on('connection', (socket:any) => {
         })
       }
       else{
-        exec('echo \"' + input.value + '\" > ' + usersDirectory.get(socket.id) + '/' + input.projectName + '/' + input.filename, 
-        (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) => {
-          if(err) {
-            socket.emit('saved', {
-              value: stderr + ' : Save not complete.',
-              style : 'err',
-              success: false
-            })
-          }
-          else
-          {
-            socket.emit('saved', {
-              value: 'Save complete.',
-              style: 'info',
-              success: true
-            })
-          }
-          return;
-        });
+        if(usersProjectDirectory.get(socket.id) == path.resolve(usersDirectory.get(socket.id), 'none'))
+        {
+          socket.emit('saved', {
+            value: 'Load a project first.',
+            style: 'err',
+            success: false
+          })
+        }
+        else
+        {
+          exec('echo \"' + input.value + '\" > ' + usersProjectDirectory.get(socket.id) + '/' + input.filename, 
+          (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) => {
+            if(err) {
+              socket.emit('saved', {
+                value: stderr + ' : Save not complete.',
+                style : 'err',
+                success: false
+              })
+            }
+            else
+            {
+              socket.emit('saved', {
+                value: 'Save complete.',
+                style: 'info',
+                success: true
+              })
+            }
+            return;
+          });
+        }
       };
     });
     //すでに作られたProjectをロードする
     socket.on('loadProject', async (input: loadProjectData) => 
     {
-      let result: dirObject = {type: 'folder', name: input.projectName, value: []};
-      // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
-      readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result, () => {}).then((val) => {
+      if(users.get(socket.id) != 'guest')
+      {
+        let result: dirObject = {type: 'folder', name: input.projectName, value: []};
+        // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
+        readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result, () => {}).then((val) => {
+          socket.emit('loadedProject', {
+            value: val,
+            style: 'log'
+          });
+        });
+      }
+      else
+      {
         socket.emit('loadedProject', {
-          value: val,
+          value: 'Sign in to load a project.',
           style: 'log'
         });
-      });
+      }
     });
     //Projectを作る
-    socket.on('createProject', async (input: createProjectData) => {
-      fs.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, (err) => {
-        if(err)
-        {
-          socket.emit('cre atedProject', {
-            value: 'Could not create project '+ input.projectName,
-            style: 'err'
-          })
-        }
-        else
-        {
-          socket.emit('createdProject', {
-            value: 'Created project ' + input.projectName,
-            style: 'log'
-          })
-        }
-      });
+    socket.on('newProject', async (input: createProjectData) => {
+      if(users.get(socket.id) != 'guest')
+      {
+        fs.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, (err) => {
+          if(err)
+          {
+            socket.emit('newProjectCreated', {
+              value: 'Could not create project '+ input.projectName,
+              style: 'err'
+            })
+          }
+          else
+          {
+            socket.emit('newProjectCreated', {
+              value: 'Created project ' + input.projectName,
+              style: 'log'
+            })
+          }
+        });
+        usersProjectDirectory.set(socket.id, usersDirectory.get(socket.id) + '/' + input.projectName);
+      }
+      else
+      {
+        socket.emit('newProjectCreated', {
+          value: 'Sign in to create a new project',
+          style: 'err'
+        })
+      }
     })
     //disconnectしたとき
     socket.on('disconnect', () => {
