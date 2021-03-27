@@ -453,11 +453,11 @@ io.sockets.on('connection', function (socket) {
         });
     }); });
     //Projectを作る
-    socket.on('createProject', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+    socket.on('newProject', function (input) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             fs_1.default.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, function (err) {
                 if (err) {
-                    socket.emit('cre atedProject', {
+                    socket.emit('createdProject', {
                         value: 'Could not create project ' + input.projectName,
                         style: 'err'
                     });

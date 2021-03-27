@@ -429,11 +429,11 @@ io.sockets.on('connection', (socket:any) => {
       });
     });
     //Projectを作る
-    socket.on('createProject', async (input: createProjectData) => {
+    socket.on('newProject', async (input: createProjectData) => {
       fs.mkdir(usersDirectory.get(socket.id) + '/' + input.projectName, (err) => {
         if(err)
         {
-          socket.emit('cre atedProject', {
+          socket.emit('createdProject', {
             value: 'Could not create project '+ input.projectName,
             style: 'err'
           })
