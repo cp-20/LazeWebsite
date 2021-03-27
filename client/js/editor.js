@@ -31,6 +31,11 @@ $(function () {
     $('#btn-load').on('click', loadProject);
     $('#btn-save').on('click', function () { return save(editor); });
     $('#btn-compile').on('click', function () { return compile(editor); });
+    $('#btn-newproject').on('click', newProject);
+    // newProject
+    $('#newproject-name').on('submit', newProjectName);
+    $('#input-newproject').on('keyup', function () { return $('#input-newproject').val() ? $('#newproject-submit').prop('disabled', false) : $('#newproject-submit').prop('disabled', true); });
+    $('#newproject-cancel').on('click', function () { return $('#overlay').removeClass('newproject'); });
     // リサイズ可能に
     $('.explorer').resizable({
         handleSelector: '.exp-spliter',
@@ -165,6 +170,29 @@ function parseDir(dir) {
     root.innerHTML = '';
     projectName = dir.name;
     tree(root, dir);
+}
+// 新しいプロジェクト
+function newProject() {
+    $('#input-newproject').val('');
+    $('#newproject-submit').prop('disabled', true);
+    $('#overlay').addClass('newproject');
+    $('#newproject-warning').text('');
+}
+function newProjectName() {
+    var _a;
+    var projectName = (_a = $('#input-newproject').val()) === null || _a === void 0 ? void 0 : _a.toString();
+    if (projectName) {
+        if (projectName.indexOf('/') > -1) {
+            $('#newproject-warning').text('/は使えません');
+        }
+        else {
+            socket.emit('newProject', {
+                projectName: projectName
+            });
+            $('#overlay').removeClass('newproject');
+        }
+    }
+    return false;
 }
 // ログインイベント
 socket.on('login', function (data) {

@@ -31,6 +31,12 @@ $(() => {
 	$('#btn-load').on('click', loadProject);
 	$('#btn-save').on('click', () => save(editor));
 	$('#btn-compile').on('click', () => compile(editor));
+	$('#btn-newproject').on('click', newProject);
+
+	// newProject
+	$('#newproject-name').on('submit', newProjectName);
+	$('#input-newproject').on('keyup', () => $('#input-newproject').val() ? $('#newproject-submit').prop('disabled', false) : $('#newproject-submit').prop('disabled', true));
+	$('#newproject-cancel').on('click', () => $('#overlay').removeClass('newproject'));
 
 	// リサイズ可能に
 	$('.explorer').resizable({
@@ -174,6 +180,28 @@ function parseDir(dir :dirObject) {
 	root.innerHTML = '';
 	projectName = dir.name;
 	tree(root, dir);
+}
+
+// 新しいプロジェクト
+function newProject() {
+	$('#input-newproject').val('');
+	$('#newproject-submit').prop('disabled', true);
+	$('#overlay').addClass('newproject');
+	$('#newproject-warning').text('');
+}
+function newProjectName() {
+	const projectName = $('#input-newproject').val()?.toString();
+	if (projectName) {
+		if (projectName.indexOf('/') > -1) {
+			$('#newproject-warning').text('/は使えません');
+		}else {
+			socket.emit('newProject', {
+				projectName: 	projectName
+			});
+			$('#overlay').removeClass('newproject');
+		}
+	}
+	return false;
 }
 
 // ログインイベント

@@ -102,6 +102,9 @@
 					<button class="btn btn-secondary btn-editor p-0 btn-load" id="btn-load">
 						<img src="assets/icons/load.svg">
 					</button>
+					<button class="btn btn-secondary btn-editor p-0 btn-newproject" id="btn-newproject">
+						<img src="assets/icons/newproject.svg">
+					</button>
 				</div>
 
 				<div class="editor-main">
@@ -123,7 +126,17 @@
 	</main>
 
 	<div id="overlay" class="overlay">
-		
+		<div class="newproject overlay-box">
+			<form id="newproject-name">
+				<label for="input-newproject">プロジェクト名を決めてください</label>
+				<input type="text" name="input-newproject" id="input-newproject" autofocus>
+				<small id="newproject-warning" class="text-danger"></small>
+				<div class="buttons">
+					<button type="button" id="newproject-cancel" class="btn btn-secondary">キャンセル</button>
+					<button type="submit" id="newproject-submit" class="btn btn-primary">作成</button>
+				</div>
+			</form>
+		</div>
 	</div>
 
 	<div id="popup-message">
