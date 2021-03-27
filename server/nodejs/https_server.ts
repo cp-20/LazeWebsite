@@ -104,6 +104,11 @@ passport.deserializeUser((id, done) => {
     done(err, user);
   })
 })
+
+//Login with Google
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+passport.use(GoogleStrategy);
+
 //bcrypt = hash function
 import bcrypt from 'bcrypt';
 const rootdirectory: string = path.resolve(rootDir, 'client');
@@ -254,7 +259,7 @@ async function readDirectory(path: string, socket: any, result: dirObject, callb
         console.log('couldnt load project', 24);
         socket.emit('loadedProject', {
           value: 'Could not load folder ' + path,
-          style: err
+          style: 'err'
         });
       }
       else

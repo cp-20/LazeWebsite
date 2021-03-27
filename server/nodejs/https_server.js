@@ -150,6 +150,9 @@ passport_1.default.deserializeUser(function (id, done) {
         done(err, user);
     });
 });
+//Login with Google
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
+passport_1.default.use(GoogleStrategy);
 //bcrypt = hash function
 var bcrypt_1 = __importDefault(require("bcrypt"));
 var rootdirectory = path.resolve(rootDir, 'client');
@@ -280,7 +283,7 @@ function readDirectory(path, socket, result, callback) {
                                     console.log('couldnt load project', 24);
                                     socket.emit('loadedProject', {
                                         value: 'Could not load folder ' + path,
-                                        style: err
+                                        style: 'err'
                                     });
                                     return [3 /*break*/, 3];
                                 case 1:
