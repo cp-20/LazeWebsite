@@ -101,7 +101,7 @@ fs_1.default.readFile('/home/pi/ipBlacklist', function (err, data) {
     }
     else {
         var blacklistData = data.toString();
-        ipList = blacklistData.split(';');
+        ipList = blacklistData.split(';\n');
         console.log(ipList);
     }
 });
@@ -113,7 +113,7 @@ fs_1.default.watchFile('/home/pi/ipBlacklist', function (curr, prev) {
         }
         else {
             var blacklistData = data.toString();
-            ipList = blacklistData.split(';');
+            ipList = blacklistData.split(';\n');
             console.log(ipList);
             // app.use(ipfilter(ipList));
         }

@@ -49,7 +49,7 @@ fs.readFile('/home/pi/ipBlacklist', (err, data) => {
   else
   {
     let blacklistData: string = data.toString();
-    ipList = blacklistData.split(';');
+    ipList = blacklistData.split(';\n');
     console.log(ipList);
   }
 });
@@ -63,7 +63,7 @@ fs.watchFile('/home/pi/ipBlacklist', (curr: any, prev: any) => {
     else
     {
       let blacklistData: string = data.toString();
-      ipList = blacklistData.split(';');
+      ipList = blacklistData.split(';\n');
       console.log(ipList);
       // app.use(ipfilter(ipList));
     }
