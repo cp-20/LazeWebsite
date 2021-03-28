@@ -79,7 +79,7 @@ function logPopup(value, style) {
     var output = document.createElement('div');
     output.classList.add('popup');
     output.classList.add(style);
-    output.innerHTML = "<span>" + value + "</span><button><img src=\"./assets/icons/cross2.svg\"></button>";
+    output.innerHTML = "<span>" + value + "</span><button><svg viewBox=\"0 0 64 64\"><use xlink:href=\"assets/icons/icons.svg#cross\"></use></svg></button>";
     output.addEventListener('animationend', function (e) {
         if (e.animationName.startsWith('popup-end'))
             this.remove();
