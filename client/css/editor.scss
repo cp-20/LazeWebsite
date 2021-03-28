@@ -38,12 +38,37 @@ div.explorer {
 	background-color: whitesmoke;
 	overflow: auto;
 
-	.exp-btns {
-		height: 40px;
+	.exp-header {
+		display: flex;
+		align-items: center;
+		flex-direction: row;
+		height: 45px;
+		padding: 0 5px;
+		background-color: $color-accent;
+
+		span {
+			color: #eee;
+			cursor: default;
+			@include text-overflow;
+		}
+
+		.btn {
+			width: 32px;
+			height: 32px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin: 2px 5px;
+
+			svg {
+				width: 24px;
+				height: 24px;
+			}
+		}
 	}
 
 	.exp-view {
-		height: calc(100% - 40px);
+		height: calc(100% - 45px);
 
 		ul {
 			margin: 0;
@@ -194,7 +219,8 @@ div.explorer {
 				transform: translateX(-22px);
 			}
 
-			img {
+			svg {
+				color: #eee;
 				width: 32px;
 			}
 		}
@@ -325,13 +351,9 @@ div.explorer {
 		}
 	}
 
-	&.newproject {
+	&.show {
 		visibility: visible;
 		opacity: 1;
-
-		.newproject {
-			visibility: visible;
-		}
 	}
 }
 
@@ -347,6 +369,7 @@ div.explorer {
 	.popup {
 		display: flex;
 		align-items: center;
+		pointer-events: all;
 
 		width: 300px;
 		height: 40px;
@@ -435,7 +458,8 @@ div.explorer {
 
 			cursor: pointer;
 
-			img {
+			svg {
+				color: #ddd;
 				width: 16px;
 			}
 		}

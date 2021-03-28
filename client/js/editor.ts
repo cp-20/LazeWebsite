@@ -34,9 +34,8 @@ $(() => {
 	$('#btn-newproject').on('click', newProject);
 
 	// newProject
-	$('#newproject-name').on('submit', newProjectName);
-	$('#input-newproject').on('keyup', () => $('#input-newproject').val() ? $('#newproject-submit').prop('disabled', false) : $('#newproject-submit').prop('disabled', true));
-	$('#newproject-cancel').on('click', () => $('#overlay').removeClass('newproject'));
+	$('#project-name').on('keyup', () => $('#project-name').val() ? $('#setname-submit').prop('disabled', false) : $('#setname-submit').prop('disabled', true));
+	$('#setname-cancel').on('click', setNameCancel);
 
 	// リサイズ可能に
 	$('.explorer').resizable({
@@ -84,7 +83,7 @@ function logPopup(value :string, style='info') {
 	let output = document.createElement('div');
 	output.classList.add('popup');
 	output.classList.add(style);
-	output.innerHTML = `<span>${value}</span><button><img src="./assets/icons/cross2.svg"></button>`;
+	output.innerHTML = `<span>${value}</span><button><svg viewBox="0 0 64 64"><use xlink:href="assets/icons/icons.svg#cross"></use></svg></button>`;
 	output.addEventListener('animationend', function(e) {
 		if (e.animationName.startsWith('popup-end')) this.remove();
 	});
@@ -128,27 +127,43 @@ function compile(editor :CodeMirror.Editor) {
 	});
 }
 
-// プロジェクトのロード
-function loadProject() {
-	socket.emit('loadProject', {
-		projectName: 'test'
-	});
+// プロジェクトのロードor作成をキャンセル
+function setNameCancel() {
+	$('#overlay').removeClass('show');
+	$('#setname').off('submit');
 }
 
-// ファイルのロード
-function loadFile() {
-	socket.emit('loadProject', {
-		projectName: 'test'
-	});
+// プロジェクトのロード
+function loadProject() {
+	$('label[for="project-name"]').text('ロードするプロジェクトの名前を入力してください');
+	$('#project-name').val('');
+	$('#setname-submit').prop('disabled', true);
+	$('#overlay').addClass('show');
+	$('#setname').on('submit', setloadFileName);
+	$('#project-name-warning').text('');
+}
+function setloadFileName() {
+	const projectName = $('#project-name').val()?.toString();
+	if (projectName) {
+		socket.emit('loadProject', {
+			projectName: 	projectName
+		});
+		$('#overlay').removeClass('show');
+	}
+	return false;
 }
 
 // ロード完了 → ファイルツリーに反映
 socket.on('loadedProject', (result :loadedProject) => {
-	console.log(result);
+	// プロジェクト名更新
+	projectName = result.value.name;
+	$('#project-name-label').text(projectName);
+
+	// ツリービュー
 	parseDir(result.value);
 
 	// ログ
-	logConsole('Project loaded');
+	logConsole(`${projectName} is loaded`);
 });
 function parseDir(dir :dirObject) {
 	const tree = (root :Element, dir :dirObject, nest=0) => {
@@ -184,21 +199,23 @@ function parseDir(dir :dirObject) {
 
 // 新しいプロジェクト
 function newProject() {
-	$('#input-newproject').val('');
-	$('#newproject-submit').prop('disabled', true);
-	$('#overlay').addClass('newproject');
-	$('#newproject-warning').text('');
+	$('label[for="project-name"]').text('作成するプロジェクトの名前を決めてください');
+	$('#project-name').val('');
+	$('#setname-submit').prop('disabled', true);
+	$('#project-name-warning').text('');
+	$('#setname').on('submit', setNewProjectName);
+	$('#overlay').addClass('show');
 }
-function newProjectName() {
-	const projectName = $('#input-newproject').val()?.toString();
+function setNewProjectName() {
+	const projectName = $('#project-name').val()?.toString();
 	if (projectName) {
 		if (projectName.indexOf('/') > -1) {
-			$('#newproject-warning').text('/は使えません');
+			$('#project-name-warning').text('/は使えません');
 		}else {
 			socket.emit('newProject', {
 				projectName: 	projectName
 			});
-			$('#overlay').removeClass('newproject');
+			$('#overlay').removeClass('show');
 		}
 	}
 	return false;

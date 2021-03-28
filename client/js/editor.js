@@ -33,9 +33,8 @@ $(function () {
     $('#btn-compile').on('click', function () { return compile(editor); });
     $('#btn-newproject').on('click', newProject);
     // newProject
-    $('#newproject-name').on('submit', newProjectName);
-    $('#input-newproject').on('keyup', function () { return $('#input-newproject').val() ? $('#newproject-submit').prop('disabled', false) : $('#newproject-submit').prop('disabled', true); });
-    $('#newproject-cancel').on('click', function () { return $('#overlay').removeClass('newproject'); });
+    $('#project-name').on('keyup', function () { return $('#project-name').val() ? $('#setname-submit').prop('disabled', false) : $('#setname-submit').prop('disabled', true); });
+    $('#setname-cancel').on('click', setNameCancel);
     // リサイズ可能に
     $('.explorer').resizable({
         handleSelector: '.exp-spliter',
@@ -80,7 +79,7 @@ function logPopup(value, style) {
     var output = document.createElement('div');
     output.classList.add('popup');
     output.classList.add(style);
-    output.innerHTML = "<span>" + value + "</span><button><img src=\"./assets/icons/cross2.svg\"></button>";
+    output.innerHTML = "<span>" + value + "</span><button><svg viewBox=\"0 0 64 64\"><use xlink:href=\"assets/icons/icons.svg#cross\"></use></svg></button>";
     output.addEventListener('animationend', function (e) {
         if (e.animationName.startsWith('popup-end'))
             this.remove();
@@ -118,24 +117,40 @@ function compile(editor) {
         value: value
     });
 }
+// プロジェクトのロードor作成をキャンセル
+function setNameCancel() {
+    $('#overlay').removeClass('show');
+    $('#setname').off('submit');
+}
 // プロジェクトのロード
 function loadProject() {
-    socket.emit('loadProject', {
-        projectName: 'test'
-    });
+    $('label[for="project-name"]').text('ロードするプロジェクトの名前を入力してください');
+    $('#project-name').val('');
+    $('#setname-submit').prop('disabled', true);
+    $('#overlay').addClass('show');
+    $('#setname').on('submit', setloadFileName);
+    $('#project-name-warning').text('');
 }
-// ファイルのロード
-function loadFile() {
-    socket.emit('loadProject', {
-        projectName: 'test'
-    });
+function setloadFileName() {
+    var _a;
+    var projectName = (_a = $('#project-name').val()) === null || _a === void 0 ? void 0 : _a.toString();
+    if (projectName) {
+        socket.emit('loadProject', {
+            projectName: projectName
+        });
+        $('#overlay').removeClass('show');
+    }
+    return false;
 }
 // ロード完了 → ファイルツリーに反映
 socket.on('loadedProject', function (result) {
-    console.log(result);
+    // プロジェクト名更新
+    projectName = result.value.name;
+    $('#project-name-label').text(projectName);
+    // ツリービュー
     parseDir(result.value);
     // ログ
-    logConsole('Project loaded');
+    logConsole(projectName + " is loaded");
 });
 function parseDir(dir) {
     var tree = function (root, dir, nest) {
@@ -173,23 +188,25 @@ function parseDir(dir) {
 }
 // 新しいプロジェクト
 function newProject() {
-    $('#input-newproject').val('');
-    $('#newproject-submit').prop('disabled', true);
-    $('#overlay').addClass('newproject');
-    $('#newproject-warning').text('');
+    $('label[for="project-name"]').text('作成するプロジェクトの名前を決めてください');
+    $('#project-name').val('');
+    $('#setname-submit').prop('disabled', true);
+    $('#project-name-warning').text('');
+    $('#setname').on('submit', setNewProjectName);
+    $('#overlay').addClass('show');
 }
-function newProjectName() {
+function setNewProjectName() {
     var _a;
-    var projectName = (_a = $('#input-newproject').val()) === null || _a === void 0 ? void 0 : _a.toString();
+    var projectName = (_a = $('#project-name').val()) === null || _a === void 0 ? void 0 : _a.toString();
     if (projectName) {
         if (projectName.indexOf('/') > -1) {
-            $('#newproject-warning').text('/は使えません');
+            $('#project-name-warning').text('/は使えません');
         }
         else {
             socket.emit('newProject', {
                 projectName: projectName
             });
-            $('#overlay').removeClass('newproject');
+            $('#overlay').removeClass('show');
         }
     }
     return false;
