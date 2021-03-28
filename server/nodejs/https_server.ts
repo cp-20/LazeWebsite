@@ -51,6 +51,7 @@ fs.watchFile('./ipBlacklist', (curr: any, prev: any) => {
     {
       let blacklistData: string = data.toString();
       let ipList = blacklistData.split(';');
+      console.log(ipList);
       app.use(ipfilter(ipList));
     }
   });
