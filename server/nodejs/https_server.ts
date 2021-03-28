@@ -40,19 +40,32 @@ fs.access(accountsDir, (err) => {
   }
 })
 //ip filter
-const ipfilter = require('express-ipfilter').IpFilter;
-fs.watchFile('./ipBlacklist', (curr: any, prev: any) => {
-  fs.readFile('./ipBlacklist', (err, data) => {
+var ipList: Array<string>;
+fs.readFile('/home/pi/ipBlacklist', (err, data) => {
+  if(err)
+  {
+    console.log('Could not read blacklist.');
+  }
+  else
+  {
+    let blacklistData: string = data.toString();
+    ipList = blacklistData.split(';');
+    console.log(ipList);
+  }
+});
+// const ipfilter = require('express-ipfilter').IpFilter;
+fs.watchFile('/home/pi/ipBlacklist', (curr: any, prev: any) => {
+  fs.readFile('/home/pi/ipBlacklist', (err, data) => {
     if(err)
     {
-      console.log('Could not read blacklist.');
+      console.log('Could not read ipBlacklist.');
     }
     else
     {
       let blacklistData: string = data.toString();
-      let ipList = blacklistData.split(';');
+      ipList = blacklistData.split(';');
       console.log(ipList);
-      app.use(ipfilter(ipList));
+      // app.use(ipfilter(ipList));
     }
   });
 })
@@ -136,9 +149,16 @@ import sharedSession from 'express-socket.io-session';
 //request時に実行するmiddleware function
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
-    console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
-    // console.log(req.user, 'everyRequest');
-    next();
+    if(ipList.includes(req.socket.remoteAddress!))
+    {
+      res.end();
+    }
+    else
+    {
+      console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+      // console.log(req.user, 'everyRequest');
+      next();
+    }
 }
 
 app.use(express.static(rootdirectory));
@@ -506,7 +526,7 @@ io.sockets.on('connection', (socket:any) => {
       {
         if(usersDirectory.get(socket.id))
         {
-          fs.rmdir((usersDirectory.get(socket.id)), (err: NodeJS.ErrnoException | null) => {
+          fs.rmdir((usersDirectory.get(socket.id)!), (err: NodeJS.ErrnoException | null) => {
             console.log(usersDirectory.get(socket.id));
           });        
         }

@@ -94,17 +94,28 @@ fs_1.default.access(accountsDir, function (err) {
     }
 });
 //ip filter
-var ipfilter = require('express-ipfilter').IpFilter;
-fs_1.default.watchFile('./ipBlacklist', function (curr, prev) {
-    fs_1.default.readFile('./ipBlacklist', function (err, data) {
+var ipList;
+fs_1.default.readFile('/home/pi/ipBlacklist', function (err, data) {
+    if (err) {
+        console.log('Could not read blacklist.');
+    }
+    else {
+        var blacklistData = data.toString();
+        ipList = blacklistData.split(';');
+        console.log(ipList);
+    }
+});
+// const ipfilter = require('express-ipfilter').IpFilter;
+fs_1.default.watchFile('/home/pi/ipBlacklist', function (curr, prev) {
+    fs_1.default.readFile('/home/pi/ipBlacklist', function (err, data) {
         if (err) {
-            console.log('Could not read blacklist.');
+            console.log('Could not read ipBlacklist.');
         }
         else {
             var blacklistData = data.toString();
-            var ipList = blacklistData.split(';');
+            ipList = blacklistData.split(';');
             console.log(ipList);
-            app.use(ipfilter(ipList));
+            // app.use(ipfilter(ipList));
         }
     });
 });
@@ -176,9 +187,14 @@ var express_session_1 = __importDefault(require("express-session"));
 var express_socket_io_session_1 = __importDefault(require("express-socket.io-session"));
 //request時に実行するmiddleware function
 function everyRequest(req, res, next) {
-    console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
-    // console.log(req.user, 'everyRequest');
-    next();
+    if (ipList.includes(req.socket.remoteAddress)) {
+        res.end();
+    }
+    else {
+        console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+        // console.log(req.user, 'everyRequest');
+        next();
+    }
 }
 app.use(express_1.default.static(rootdirectory));
 app.use(everyRequest);
