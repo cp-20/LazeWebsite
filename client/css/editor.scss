@@ -49,6 +49,7 @@ div.explorer {
 		span {
 			color: #eee;
 			cursor: default;
+			font-weight: bold;
 			@include text-overflow;
 		}
 
