@@ -151,6 +151,8 @@ function everyRequest(req: express.Request, res: express.Response, next: express
 {
     if(ipList.includes(req.socket.remoteAddress!))
     {
+      console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
+      res.send('banned L');
       res.end();
     }
     else
