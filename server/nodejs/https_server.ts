@@ -40,7 +40,21 @@ fs.access(accountsDir, (err) => {
   }
 })
 //ip filter
-
+const ipfilter = require('express-ipfilter').IpFilter;
+fs.watchFile('./ipBlacklist', (curr: any, prev: any) => {
+  fs.readFile('./ipBlacklist', (err, data) => {
+    if(err)
+    {
+      console.log('Could not read blacklist.');
+    }
+    else
+    {
+      let blacklistData: string = data.toString();
+      let ipList = blacklistData.split(';');
+      app.use(ipfilter(ipList));
+    }
+  });
+})
 //database (mongoose)
 import mongoose from 'mongoose';
 const User: mongoose.Model<any, any> = require('./database');
