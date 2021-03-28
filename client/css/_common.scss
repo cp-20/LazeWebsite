@@ -43,6 +43,12 @@ button.btn-secondary {
 	box-shadow: 0 8px 24px rgba(149,157,165,0.2);
 }
 
+@mixin text-overflow() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 // ドロップダウン
 ul.dropdown-menu {
 	border: none;

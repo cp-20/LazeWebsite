@@ -144,10 +144,13 @@ function setloadFileName() {
 }
 // ロード完了 → ファイルツリーに反映
 socket.on('loadedProject', function (result) {
-    console.log(result);
+    // プロジェクト名更新
+    projectName = result.value.name;
+    $('#project-name-label').text(projectName);
+    // ツリービュー
     parseDir(result.value);
     // ログ
-    logConsole('Project loaded');
+    logConsole(projectName + " is loaded");
 });
 function parseDir(dir) {
     var tree = function (root, dir, nest) {

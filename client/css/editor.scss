@@ -38,12 +38,19 @@ div.explorer {
 	background-color: whitesmoke;
 	overflow: auto;
 
-	.exp-btns {
+	.exp-header {
 		display: flex;
 		align-items: center;
+		flex-direction: row;
 		height: 45px;
 		padding: 0 5px;
 		background-color: $color-accent;
+
+		span {
+			color: #eee;
+			cursor: default;
+			@include text-overflow;
+		}
 
 		.btn {
 			width: 32px;
