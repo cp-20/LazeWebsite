@@ -85,10 +85,16 @@ fs_1.default.access(accountsDir, function (err) {
     if (err && err.code == 'ENOENT') {
         fs_1.default.access('/media/pi/A042-416A', function (err) {
             if (!err) {
-                exec('sudo umount /media/pi/A042-416A').then(exec('sudo mount /dev/sda1 /media/usb').then(console.log('mounted usb')));
+                exec('sudo umount /media/pi/A042-416A', function () {
+                    exec('sudo mount /dev/sda1 /media/usb', function () {
+                        console.log('mounted usb');
+                    });
+                });
             }
             else {
-                exec('sudo mount /dev/sda1 /media/usb').then(console.log('mounted usb'));
+                exec('sudo mount /dev/sda1 /media/usb', function () {
+                    console.log('mounted usb');
+                });
             }
         });
     }

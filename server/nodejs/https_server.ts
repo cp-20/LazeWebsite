@@ -30,11 +30,17 @@ fs.access(accountsDir, (err) => {
     fs.access('/media/pi/A042-416A', (err) => {
       if(!err)
       {
-        exec('sudo umount /media/pi/A042-416A').then(exec('sudo mount /dev/sda1 /media/usb').then(console.log('mounted usb')));
+        exec('sudo umount /media/pi/A042-416A', () => {
+          exec('sudo mount /dev/sda1 /media/usb', () => {
+            console.log('mounted usb');
+          })
+        });
       }
       else
       {
-        exec('sudo mount /dev/sda1 /media/usb').then(console.log('mounted usb'));
+        exec('sudo mount /dev/sda1 /media/usb', () => {
+          console.log('mounted usb')
+        });
       }
     })
   }
