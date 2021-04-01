@@ -47,4 +47,4 @@ util.o: util.c util.h
 	cc -g -c util.c
 
 clean: 
-	rm -f compiler util.o lexAnalyze.o lex.yy.o lex.yy.c errormsg.o y.tab.o
+	rm -f compiler util.o lexAnalyze.o lex.yy.o errormsg.o y.tab.o
