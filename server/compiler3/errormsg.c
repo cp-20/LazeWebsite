@@ -39,6 +39,28 @@ void EM_error(int pos, char *message, ...)
     {
         lines = lines->rest; num++;
     }
+    // printf("%s", fileName);
+    if(fileName) fprintf(stderr, "%s:", fileName);
+    if(lines) fprintf(stderr,  "%d, %d:", num, pos-lines->i);
+    va_start(ap, message);
+    vfprintf(stderr, message, ap);
+    va_end(ap);
+    fprintf(stderr, "\n");
+    exit(0);
+}
+
+void debug(int pos, char *message, ...)
+{
+    va_list ap;
+    IntList lines = linePos;
+    int num = lineNum;
+
+    anyErrors = TRUE;
+    while(lines && lines -> i >= pos)
+    {
+        lines = lines->rest; num++;
+    }
+    // printf("%s", fileName);
     if(fileName) fprintf(stderr, "%s:", fileName);
     if(lines) fprintf(stderr,  "%d, %d:", num, pos-lines->i);
     va_start(ap, message);

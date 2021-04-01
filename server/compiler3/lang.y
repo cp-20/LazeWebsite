@@ -8,7 +8,7 @@
     #define YYDEBUG 1
 
     int yylex(void);
-    A_exp absyn_root;
+    A_decList absyn_root;
 
     void yyerror(char *s)
     {
@@ -27,10 +27,12 @@
     S_symbol sym;
     A_expList expList;
     A_stm stm;
+    A_stmList stmList;
     A_ty type;
     A_dec dec;
     A_fundec funcdec;
     A_fieldList fieldList;
+    A_decList decList;
 }
 
 %token <sval> ID STRING
@@ -41,17 +43,19 @@
 %type <var> lvalue
 %type <exp> exp assignExp
 %type <expList> explist
-%type <stm> stm if while assign funcCall for stmlist return
-%type <dec> declare
-%type <funcdec> funcDec
+%type <stm> stm if while assign funcCall for return
+%type <stmList> stmlist
+%type <dec> declare funcDec
+/* %type <funcdec> funcDec */
 %type <type> type
 %type <fieldList> tyfield1 tyfield
+%type <decList> decs
 
 %token
     COMMA COLON SEMICOLON LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE DOT PLUS MINUS TIMES DIVIDE EQ 
     NEQ LT LE GT GE AND OR ASSIGN ARRAY IF THEN ELSE FROM TO BREAK INTTYPE STRINGTYPE
-    REALTYPE CONTINUE RETURN TYPE VOID NUL
-
+    REALTYPE CONTINUE RETURN TYPE VOID NUL TRUEE FALSEE BOOLEAN
+ 
 %left SEMICOLON
 
 %nonassoc UMINUS
@@ -66,16 +70,19 @@
 
 %%
 
+program: decs {absyn_root = $1;}
 
-program :   declare
-            | funcDec
-            | declare program
-            | funcDec program
+decs :   declare {$$ = A_DecList($1, NULL);}
+            | funcDec {$$ = A_DecList($1, NULL);}
+            | declare decs {$$ = A_DecList($1, $2);}
+            | funcDec decs {$$ = A_DecList($1, $2);}
 
 exp :       INT {$$ = A_IntExp(EM_tokPos, $1);}
             | STRING { $$ = A_StringExp(EM_tokPos, $1);}
             | REAL { $$ = A_RealExp(EM_tokPos, $1); }
             | NUL {$$ = A_NilExp(EM_tokPos);}
+            | TRUEE {$$ = A_IntExp(EM_tokPos, 1);}
+            | FALSEE {$$ = A_IntExp(EM_tokPos, 0);}
             | lvalue { $$ = A_VarExp(EM_tokPos, $1); }
             | assignExp {$$ = $1;}
             | exp PLUS exp {$$ = A_OpExp(EM_tokPos, A_plusOp, $1, $3);}
@@ -98,7 +105,7 @@ exp :       INT {$$ = A_IntExp(EM_tokPos, $1);}
 
 assignExp : lvalue ASSIGN exp { $$ = A_AssignExp(EM_tokPos, $1, $3);}
 
-stm :       funcDec {$$ = A_DeclarationStm(EM_tokPos, A_FunctionDec(EM_tokPos, A_FundecList($1, NULL)));}
+stm :       funcDec {$$ = A_DeclarationStm(EM_tokPos, $1);}
             | funcCall SEMICOLON 
             | assign SEMICOLON {$$ = $1;}
             | declare {$$ = A_DeclarationStm(EM_tokPos, $1);}
@@ -108,9 +115,12 @@ stm :       funcDec {$$ = A_DeclarationStm(EM_tokPos, A_FunctionDec(EM_tokPos, A
             | return SEMICOLON{$$ = $1;}
             | BREAK SEMICOLON {$$ = A_BreakStm(EM_tokPos);}
             | CONTINUE SEMICOLON {$$ = A_ContinueStm(EM_tokPos);}
+            | LBRACE stmlist RBRACE {$$ = A_CompoundStm(EM_tokPos, $2);}
 
-stmlist :   /* empty */ {$$ = NULL;}
-            | stm stmlist {$$ = A_CompoundStm(EM_tokPos, $1, $2);}
+/* stmlist :            {$$ = NULL;}
+            | stm stmlist {$$ = A_CompoundStm(EM_tokPos, $1, $2);} */
+stmlist :   stm {$$ = A_StmList($1, NULL);}
+        |   stm stmlist {$$ = A_StmList($1, $2);}
 
 return :    LPAREN exp RPAREN RETURN {$$ = A_ReturnStm(EM_tokPos, $2);}
 
@@ -119,6 +129,7 @@ type :      id {$$ = A_NameTy(EM_tokPos, $1);}
             | INTTYPE {$$ = A_NameTy(EM_tokPos, S_Symbol("int"));}
             | STRINGTYPE {$$ = A_NameTy(EM_tokPos, S_Symbol("string"));}
             | REALTYPE {$$ = A_NameTy(EM_tokPos, S_Symbol("real"));}
+            | BOOLEAN {$$ = A_NameTy(EM_tokPos, S_Symbol("int"));}
 
 tyfield :   /* empty */ {$$ = NULL;}
             | tyfield1 {$$ = $1;}
@@ -126,7 +137,7 @@ tyfield :   /* empty */ {$$ = NULL;}
 tyfield1 :  type COLON id {$$ = A_FieldList(A_Field(EM_tokPos, $3, $1 -> u.name), NULL);}
             | type COLON id COMMA tyfield1 {$$ = A_FieldList(A_Field(EM_tokPos, $3, $1 -> u.name), $5);}
 
-funcDec :   type COLON id LPAREN tyfield RPAREN ASSIGN LBRACE stmlist RBRACE {$$ = A_Fundec(EM_tokPos, $3, $5, $1 -> u.name, $9);}
+funcDec :   type COLON id LPAREN tyfield RPAREN ASSIGN stm {$$ = A_FunctionDec(EM_tokPos, A_FundecList(A_Fundec(EM_tokPos, $3, $5, $1 -> u.name, $8), NULL));}
 
 funcCall :  id LPAREN RPAREN {$$ = A_CallStm(EM_tokPos, $1, NULL);}
             | id LPAREN explist RPAREN {$$ = A_CallStm(EM_tokPos, $1, $3);}
@@ -135,16 +146,16 @@ assign :    lvalue ASSIGN exp {$$ = A_AssignStm(EM_tokPos, $1, $3);}
             | lvalue PLUS PLUS {$$ = A_AssignStm(EM_tokPos, $1, A_OpExp(EM_tokPos, A_plusOp, A_VarExp(EM_tokPos, $1), A_IntExp(EM_tokPos, 1)));}
             | lvalue MINUS MINUS {$$ = A_AssignStm(EM_tokPos, $1, A_OpExp(EM_tokPos, A_minusOp, A_VarExp(EM_tokPos, $1), A_IntExp(EM_tokPos, 1)));}
 
-declare :   type COLON assign SEMICOLON {$$ = A_VarDec(EM_tokPos, $3, $1 -> u.name); }
+declare :   type COLON assign SEMICOLON {$$ = A_VarDec(EM_tokPos, $3, $1 -> u.name);}
             | type COLON lvalue SEMICOLON{$$ = A_VarDec(EM_tokPos, A_AssignStm(EM_tokPos, $3, NULL), $1 -> u.name);}
             | TYPE COLON id ASSIGN LBRACE tyfield RBRACE SEMICOLON {A_TypeDec(EM_tokPos, A_NametyList(A_Namety($3, A_RecordTy(EM_tokPos, $6)), NULL));}
 
-if :        IF LPAREN exp RPAREN THEN LBRACE stmlist RBRACE  %prec LOWER_THAN_ELSE {$$ = A_IfStm(EM_tokPos, $3, $7, NULL);}
-            | IF LPAREN exp RPAREN THEN LBRACE stmlist RBRACE ELSE LBRACE stm RBRACE{$$ = A_IfStm(EM_tokPos, $3, $7, $11);}
+if :        IF LPAREN exp RPAREN THEN stm  %prec LOWER_THAN_ELSE {$$ = A_IfStm(EM_tokPos, $3, $6, NULL);}
+            | IF LPAREN exp RPAREN THEN stm ELSE stm {$$ = A_IfStm(EM_tokPos, $3, $6, $8);}
 
-while :     LPAREN exp RPAREN TO LBRACE stmlist RBRACE {$$ = A_WhileStm(EM_tokPos, $2, $6);}
+while :     LPAREN exp RPAREN TO stm {$$ = A_WhileStm(EM_tokPos, $2, $5);}
 
-for :       LPAREN exp RPAREN FROM LPAREN exp RPAREN TO LPAREN assign RPAREN LBRACE stmlist RBRACE {$$ = A_ForStm(EM_tokPos, $2, $6, $10, $13);}
+for :       LPAREN exp RPAREN FROM LPAREN exp RPAREN TO LPAREN exp RPAREN stm {$$ = A_ForStm(EM_tokPos, $2, $6, $10, $12);}
 
 explist:    exp COMMA explist {$$ = A_ExpList($1, $3);}
             | exp { $$ = A_ExpList($1, 0); }

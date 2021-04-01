@@ -1,3 +1,5 @@
+#pragma once
+
 typedef int A_pos;
 
 typedef struct A_block_ *A_block;
@@ -9,6 +11,7 @@ typedef struct A_ty_ *A_ty;
 
 typedef struct A_decList_ *A_decList;
 typedef struct A_expList_ *A_expList;
+typedef struct A_stmList_ *A_stmList;
 typedef struct A_field_ *A_field;
 typedef struct A_fieldList_ *A_fieldList;
 typedef struct A_fundec_ *A_fundec;
@@ -34,12 +37,12 @@ struct A_stm_
     A_pos pos;
     union
     {
-        struct {A_stm stm1, stm2;} compound;
+        A_stmList compound;
         struct {A_var var; A_exp exp;} assign;
         struct {A_dec dec;} declaration;
         struct {A_exp test; A_stm then, elsee;} iff;
         struct {A_exp test; A_stm body;} whilee;
-        struct {A_exp assign; A_exp condition; A_stm increment; A_stm body;} forr;
+        struct {A_exp assign; A_exp condition; A_exp increment; A_stm body;} forr;
         struct {S_symbol func; A_expList args;} call;
         struct {A_exp ret;} returnn;
     } u;
@@ -74,7 +77,7 @@ struct A_exp_
     {
         A_varExp, A_nilExp, A_intExp, A_stringExp, A_callExp,
 	    A_opExp, A_recordExp, A_seqExp, A_assignExp, A_ifExp,
-	    A_whileExp, A_forExp, A_breakExp, A_arrayExp, A_realExp
+	    A_arrayExp, A_realExp
     } kind;
     A_pos pos;
     union 
@@ -133,6 +136,7 @@ struct A_ty_
 struct A_field_ {S_symbol name, typ; A_pos pos; bool escape;};
 struct A_fieldList_ {A_field head; A_fieldList tail;};
 struct A_expList_ {A_exp head; A_expList tail;};
+struct A_stmList_ {A_stm head; A_stmList tail;};
 struct A_fundec_ {A_pos pos;
                  S_symbol name; A_fieldList params; 
 		 S_symbol result; A_stm body;};
@@ -149,10 +153,10 @@ struct A_efieldList_ {A_efield head; A_efieldList tail;};
 A_stm A_AssignStm(A_pos pos, A_var var, A_exp exp);
 A_stm A_IfStm(A_pos pos, A_exp test, A_stm then, A_stm elsee);
 A_stm A_WhileStm(A_pos pos, A_exp test, A_stm body);
-A_stm A_ForStm(A_pos pos, A_exp assign, A_exp condition, A_stm increment, A_stm body);
+A_stm A_ForStm(A_pos pos, A_exp assign, A_exp condition, A_exp increment, A_stm body);
 A_stm A_BreakStm(A_pos pos);
 A_stm A_ContinueStm(A_pos pos);
-A_stm A_CompoundStm(A_pos pos, A_stm stm1, A_stm stm2);
+A_stm A_CompoundStm(A_pos pos, A_stmList stmlist);
 A_stm A_DeclarationStm(A_pos pos, A_dec dec);
 A_stm A_CallStm(A_pos pos, S_symbol func, A_expList args);
 A_stm A_ReturnStm(A_pos pos, A_exp exp);
@@ -191,6 +195,7 @@ A_ty A_ArrayTy(A_pos pos, S_symbol array);
 A_field A_Field(A_pos pos, S_symbol name, S_symbol typ);
 A_fieldList A_FieldList(A_field head, A_fieldList tail);
 A_expList A_ExpList(A_exp head, A_expList tail);
+A_stmList A_StmList(A_stm head, A_stmList tail);
 A_fundec A_Fundec(A_pos pos, S_symbol name, A_fieldList params, S_symbol result, A_stm body);
 A_fundecList A_FundecList(A_fundec head, A_fundecList tail);
 A_decList A_DecList(A_dec head, A_decList tail);

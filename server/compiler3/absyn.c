@@ -35,7 +35,7 @@ A_stm A_WhileStm(A_pos pos, A_exp test, A_stm body)
     p-> u.whilee.body = body;
     return p;
 }
-A_stm A_ForStm(A_pos pos, A_exp assign , A_exp condition, A_stm increment, A_stm body)
+A_stm A_ForStm(A_pos pos, A_exp assign , A_exp condition, A_exp increment, A_stm body)
 {
     A_stm p = checked_malloc(sizeof(*p));
     p-> kind = A_forStm;
@@ -59,13 +59,12 @@ A_stm A_ContinueStm(A_pos pos)
     p-> kind = A_continueStm;
     return p;
 }
-A_stm A_CompoundStm(A_pos pos, A_stm stm1, A_stm stm2)
+A_stm A_CompoundStm(A_pos pos, A_stmList stmlist)
 {
     A_stm p = checked_malloc(sizeof(*p));
     p-> kind = A_compoundStm;
     p-> pos = pos;
-    p-> u.compound.stm1 = stm1;
-    p-> u.compound.stm2 = stm2;
+    p -> u.compound = stmlist;
     return p;
 }
 A_stm A_DeclarationStm(A_pos pos, A_dec dec)
@@ -364,6 +363,14 @@ A_fieldList A_FieldList(A_field head, A_fieldList tail)
 A_expList A_ExpList(A_exp head, A_expList tail)
 {
     A_expList p = checked_malloc(sizeof(*p));
+    p->head=head;
+    p->tail=tail;
+    return p;
+}
+
+A_stmList A_StmList(A_stm head, A_stmList tail)
+{
+    A_stmList p = checked_malloc(sizeof(*p));
     p->head=head;
     p->tail=tail;
     return p;

@@ -91,8 +91,11 @@ extern int yydebug;
     TYPE = 297,
     VOID = 298,
     NUL = 299,
-    UMINUS = 300,
-    LOWER_THAN_ELSE = 301
+    TRUEE = 300,
+    FALSEE = 301,
+    BOOLEAN = 302,
+    UMINUS = 303,
+    LOWER_THAN_ELSE = 304
   };
 #endif
 /* Tokens.  */
@@ -138,8 +141,11 @@ extern int yydebug;
 #define TYPE 297
 #define VOID 298
 #define NUL 299
-#define UMINUS 300
-#define LOWER_THAN_ELSE 301
+#define TRUEE 300
+#define FALSEE 301
+#define BOOLEAN 302
+#define UMINUS 303
+#define LOWER_THAN_ELSE 304
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -156,12 +162,14 @@ union YYSTYPE
     S_symbol sym;
     A_expList expList;
     A_stm stm;
+    A_stmList stmList;
     A_ty type;
     A_dec dec;
     A_fundec funcdec;
     A_fieldList fieldList;
+    A_decList decList;
 
-#line 165 "y.tab.h"
+#line 173 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
