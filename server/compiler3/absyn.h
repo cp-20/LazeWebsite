@@ -77,7 +77,7 @@ struct A_exp_
     {
         A_varExp, A_nilExp, A_intExp, A_stringExp, A_callExp,
 	    A_opExp, A_recordExp, A_seqExp, A_assignExp, A_ifExp,
-	    A_arrayExp, A_realExp
+	    A_arrayExp, A_realExp, A_boolExp
     } kind;
     A_pos pos;
     union 
@@ -87,6 +87,7 @@ struct A_exp_
 	    int intt;
 	    string stringg;
         double real;
+        bool booll;
 	    struct {S_symbol func; A_expList args;} call;
 	    struct {A_oper oper; A_exp left; A_exp right;} op;
 	    struct {S_symbol typ; A_efieldList fields;} record;
@@ -171,6 +172,7 @@ A_exp A_NilExp(A_pos pos);
 A_exp A_IntExp(A_pos pos, int i);
 A_exp A_StringExp(A_pos pos, string s);
 A_exp A_RealExp(A_pos pos, double f);
+A_exp A_BoolExp(A_pos pos, bool b);
 A_exp A_CallExp(A_pos pos, S_symbol func, A_expList args);
 A_exp A_OpExp(A_pos pos, A_oper oper, A_exp left, A_exp right);
 A_exp A_RecordExp(A_pos pos, S_symbol typ, A_efieldList fields);

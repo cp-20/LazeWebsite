@@ -19,7 +19,7 @@ A_stm A_AssignStm(A_pos pos, A_var var, A_exp exp)
 A_stm A_IfStm(A_pos pos, A_exp test, A_stm then, A_stm elsee)
 {
     A_stm p = checked_malloc(sizeof(*p));
-    p-> kind = A_assignStm;
+    p-> kind = A_ifStm;
     p-> pos = pos;
     p-> u.iff.test = test;
     p-> u.iff.then = then;
@@ -178,6 +178,15 @@ A_exp A_RealExp(A_pos pos, double f)
     p->kind=A_realExp;
     p->pos=pos;
     p->u.intt=f;
+    return p;
+}
+
+A_exp A_BoolExp(A_pos pos, bool b)
+{
+    A_exp p = checked_malloc(sizeof(*p));
+    p -> kind = A_boolExp;
+    p -> pos = pos;
+    p -> u.booll = b;
     return p;
 }
 

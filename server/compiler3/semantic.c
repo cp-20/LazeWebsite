@@ -34,30 +34,40 @@ struct expty transStm(S_table venv, S_table tenv, A_stm stm)
         {
             debug(stm -> pos, "Compound Statement");
             A_stmList stmlist;
-            for(stmlist = stm -> u.compound; stmlist != NULL; stmlist = stmlist -> tail)
+            int i = 0;
+            S_beginScope(venv);
+            S_beginScope(tenv);
+            for(i = 0, stmlist = stm -> u.compound; stmlist != NULL; stmlist = stmlist -> tail, i++)
             {
                 if(stmlist -> head != NULL)
                 {
-                    A_stm stm = stmlist -> head;
-                    transStm(venv, tenv, stm);
+                    A_stm stmHead = stmlist -> head;
+                    transStm(venv, tenv, stmHead);
                 }
             }
+            S_endScope(venv);
+            S_endScope(tenv);
             return expTy(NULL, Ty_Void());
+            break;
         }
         case A_assignStm:
         {
             debug(stm -> pos, "Assign Statement");
             A_var var = stm -> u.assign.var;
             A_exp exp = stm -> u.assign.exp;
-            Ty_ty varType = S_look(venv, var->u.simple);
+            E_enventry varType = S_look(venv, var->u.simple);
             Ty_ty expType = transExp(venv, tenv, exp).ty;
+            if(var -> u.simple != NULL)
+            {
+                debug(stm -> pos, "Var : %s", S_name(var -> u.simple));
+            }
             if(varType == NULL)
             {
                 EM_error(stm -> pos, "%s is undefined.", S_name(var->u.simple));
             }
-            if(varType != expType)
+            if(varType-> u.var.ty != expType)
             {
-                EM_error(stm -> pos, "The type %s cannot be assigned to %s", S_name(returnSymFromType(expType)), S_name(var->u.simple));
+                EM_error(stm -> pos, "The type %s cannot be assigned to %s of type %d.", S_name(returnSymFromType(expType)), S_name(var->u.simple), varType -> kind);
             }
             return expTy(NULL, Ty_Void());
         }
@@ -111,7 +121,7 @@ struct expty transStm(S_table venv, S_table tenv, A_stm stm)
             struct expty condition = transExp(venv, tenv, stm -> u.forr.condition);
             if(condition.ty != Ty_Bool())
             {
-                EM_error(stm -> pos, "While statement condition expression must have a type of boolean.");
+                EM_error(stm -> pos, "For statement condition expression must have a type of boolean.");
             }
             transExp(venv, tenv, stm -> u.forr.increment);
             transStm(venv, tenv, stm -> u.forr.body);
@@ -130,6 +140,59 @@ struct expty transStm(S_table venv, S_table tenv, A_stm stm)
         case A_callStm:
         {
             debug(stm -> pos, "Call Statement");
+            E_enventry entry = S_look(venv, stm -> u.call.func);
+            if(entry != NULL && entry -> kind == E_funcentry)
+            {
+                A_expList expArgs;
+                Ty_tyList entryArgsTy;
+                int i = 1;
+                for(i = 1, expArgs = stm -> u.call.args, entryArgsTy = entry -> u.func.formals; expArgs != NULL && entryArgsTy != NULL;
+                             expArgs = expArgs -> tail, entryArgsTy = entryArgsTy -> tail, i++)
+                {
+                    A_exp exp = expArgs -> head;
+                    Ty_ty type = entryArgsTy -> head;
+                    if(exp != NULL && type != NULL)
+                    {
+                        struct expty argType = transExp(venv, tenv, exp);
+                        if(actual_ty(type) != actual_ty(argType.ty))
+                        {
+                            EM_error(stm -> pos, "Type of argument %d does not match with type \'%s\'.", i, S_name(returnSymFromType(actual_ty(type))));
+                        }
+                    }
+                    else
+                    {
+                        if(exp == NULL && type != NULL)
+                        {
+                            EM_error(stm -> pos, "There are too few arguments in the call statement.");
+                            break;
+                        }
+                        else if(exp != NULL && type == NULL)
+                        {
+                            EM_error(stm -> pos, "There are too many arguments in the call statement.");
+                            break;
+                        }
+                    }
+                }
+                if(expArgs == NULL && entryArgsTy != NULL)
+                {
+                    if(entryArgsTy -> head != NULL)
+                    {
+                        EM_error(stm -> pos, "There are too few arguments in the call statement.");
+                    }
+                }
+                else if(expArgs != NULL && entryArgsTy == NULL)
+                {
+                    if(expArgs -> head != NULL)
+                    {
+                        EM_error(stm -> pos, "There are too many arguments in the call statement.");
+                    }
+                }
+                return expTy(NULL, entry -> u.func.result);
+            }
+            else
+            {
+                EM_error(stm -> pos, "Undefined function \'%s\'", S_name(stm -> u.call.func));
+            }
             return expTy(NULL, Ty_Void());
         }
         case A_returnStm:
@@ -150,6 +213,14 @@ struct expty transVar(S_table venv, S_table tenv, A_var v)
             if(x && x -> kind == E_varentry)
             {
                 return expTy(NULL, actual_ty(x -> u.var.ty));
+            }
+            else if(!x)
+            {
+                EM_error(v -> pos, "It doesn't exist");
+            }
+            else if(x -> kind != E_varentry)
+            {
+                EM_error(v -> pos, "It is not a variable. %s", S_name(x -> u.var.ty -> u.name.sym));
             }
             else
             {
@@ -190,6 +261,11 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e)
             return expTy(NULL, Ty_Real());
             break;
         }
+        case A_boolExp:
+        {
+            return expTy(NULL, Ty_Bool());
+            break;
+        }
         case A_nilExp:
         {
             return expTy(NULL, Ty_Nil());
@@ -207,8 +283,8 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e)
             {
                 A_expList expArgs;
                 Ty_tyList entryArgsTy;
-                int i = 0;
-                for(i = 0, expArgs = e -> u.call.args, entryArgsTy = entry -> u.func.formals; expArgs != NULL && entryArgsTy != NULL;
+                int i = 1;
+                for(i = 1, expArgs = e -> u.call.args, entryArgsTy = entry -> u.func.formals; expArgs != NULL && entryArgsTy != NULL;
                              expArgs = expArgs -> tail, entryArgsTy = entryArgsTy -> tail, i++)
                 {
                     A_exp exp = expArgs -> head;
@@ -218,12 +294,9 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e)
                         struct expty argType = transExp(venv, tenv, exp);
                         if(actual_ty(type) != actual_ty(argType.ty))
                         {
-                            EM_error(e -> pos, "Type of argument %d does not match with type \'%s\'.", i, actual_ty(type) -> u.name.sym);
+                            debug(e -> pos, "%d", actual_ty(type) -> kind);
+                            EM_error(e -> pos, "Type of argument %d does not match with type \'%s\'.", i, S_name(returnSymFromType(actual_ty(type))));
                         }
-                        // else
-                        // {
-
-                        // }
                     }
                     else
                     {
@@ -241,14 +314,14 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e)
                 }
                 if(expArgs == NULL && entryArgsTy != NULL)
                 {
-                    if(expArgs -> head != NULL)
+                    if(entryArgsTy -> head != NULL)
                     {
                         EM_error(e -> pos, "There are too many arguments in the call expression.");
                     }
                 }
                 else if(expArgs != NULL && entryArgsTy == NULL)
                 {
-                    if(entryArgsTy -> head != NULL)
+                    if(expArgs -> head != NULL)
                     {
                         EM_error(e -> pos, "There are too few arguments in the call expression.");
                     }
@@ -516,6 +589,16 @@ void transDec(S_table venv, S_table tenv, A_dec d)
         case A_varDec:
         {
             struct expty exp;
+            E_enventry varEntry = S_look(venv, d -> u.var.var -> u.simple);
+            E_enventry typeEntry = S_look(tenv, d -> u.var.var -> u.simple);
+            if(varEntry != NULL)
+            {
+                debug(d -> pos, "Variable or function of name %s is already declared.", S_name(d -> u.var.var -> u.simple));
+            }
+            if(typeEntry != NULL)
+            {
+                EM_error(d -> pos, "Type of name %s is already declared.", S_name(d -> u.var.var -> u.simple));
+            }
             if(d -> u.var.init != NULL)
             {
                 exp = transExp(venv, tenv, d -> u.var.init);
@@ -528,13 +611,14 @@ void transDec(S_table venv, S_table tenv, A_dec d)
             }
             else if(d -> u.var.init == NULL)
             {
-                printf(d -> pos, "Variable declared.\n");
+                debug(d -> pos, "Variable declared.\n");
                 S_enter(venv, d -> u.var.var -> u.simple, E_VarEntry(checkSymType(d -> u.var.typ)));
             }
             break;
         }
         case A_functionDec:
         {
+            debug(d -> pos, "Function declared.");
             A_fundec func = d -> u.function -> head;
             Ty_ty resultType = S_look(tenv, func -> result);
             Ty_tyList paramTypes = makeParamTypeList(tenv, func -> params);
@@ -544,9 +628,10 @@ void transDec(S_table venv, S_table tenv, A_dec d)
             {
                 A_fieldList list;
                 Ty_tyList typeList;
-                for(list = func -> params, typeList = paramTypes; list != NULL; list = list -> tail, typeList = typeList -> tail)
+                for(list = func -> params, typeList = paramTypes; list != NULL && typeList != NULL; list = list -> tail, typeList = typeList -> tail)
                 {
-                    S_enter(venv, list -> head -> name, E_VarEntry(typeList -> head));
+                    if(typeList -> head != NULL)
+                        S_enter(venv, list -> head -> name, E_VarEntry(typeList -> head));
                 }
                 if(func -> body != NULL)
                 {

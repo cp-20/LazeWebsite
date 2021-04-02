@@ -1613,13 +1613,13 @@ yyreduce:
 
   case 11:
 #line 84 "lang.y"
-                    {(yyval.exp) = A_IntExp(EM_tokPos, 1);}
+                    {(yyval.exp) = A_BoolExp(EM_tokPos, TRUE);}
 #line 1618 "y.tab.c"
     break;
 
   case 12:
 #line 85 "lang.y"
-                     {(yyval.exp) = A_IntExp(EM_tokPos, 0);}
+                     {(yyval.exp) = A_BoolExp(EM_tokPos, FALSE);}
 #line 1624 "y.tab.c"
     break;
 
@@ -1715,13 +1715,13 @@ yyreduce:
 
   case 28:
 #line 103 "lang.y"
-                          {(yyval.exp) = A_IfExp(EM_tokPos, (yyvsp[-2].exp), (yyvsp[0].exp), A_IntExp(EM_tokPos, 0));}
+                          {(yyval.exp) = A_IfExp(EM_tokPos, (yyvsp[-2].exp), (yyvsp[0].exp), A_BoolExp(EM_tokPos, 0));}
 #line 1720 "y.tab.c"
     break;
 
   case 29:
 #line 104 "lang.y"
-                         {(yyval.exp) = A_IfExp(EM_tokPos, (yyvsp[-2].exp), A_IntExp(EM_tokPos, 1), (yyvsp[0].exp));}
+                         {(yyval.exp) = A_IfExp(EM_tokPos, (yyvsp[-2].exp), A_BoolExp(EM_tokPos, 1), (yyvsp[0].exp));}
 #line 1726 "y.tab.c"
     break;
 

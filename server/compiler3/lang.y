@@ -81,8 +81,8 @@ exp :       INT {$$ = A_IntExp(EM_tokPos, $1);}
             | STRING { $$ = A_StringExp(EM_tokPos, $1);}
             | REAL { $$ = A_RealExp(EM_tokPos, $1); }
             | NUL {$$ = A_NilExp(EM_tokPos);}
-            | TRUEE {$$ = A_IntExp(EM_tokPos, 1);}
-            | FALSEE {$$ = A_IntExp(EM_tokPos, 0);}
+            | TRUEE {$$ = A_BoolExp(EM_tokPos, TRUE);}
+            | FALSEE {$$ = A_BoolExp(EM_tokPos, FALSE);}
             | lvalue { $$ = A_VarExp(EM_tokPos, $1); }
             | assignExp {$$ = $1;}
             | exp PLUS exp {$$ = A_OpExp(EM_tokPos, A_plusOp, $1, $3);}
@@ -100,8 +100,8 @@ exp :       INT {$$ = A_IntExp(EM_tokPos, $1);}
             // 6 shift/reduce conflicts
             | id LPAREN explist RPAREN {$$ = A_CallExp(EM_tokPos, $1, $3);} 
             | LPAREN exp RPAREN {$$ = $2;}
-            | exp AND exp {$$ = A_IfExp(EM_tokPos, $1, $3, A_IntExp(EM_tokPos, 0));}
-            | exp OR exp {$$ = A_IfExp(EM_tokPos, $1, A_IntExp(EM_tokPos, 1), $3);}
+            | exp AND exp {$$ = A_IfExp(EM_tokPos, $1, $3, A_BoolExp(EM_tokPos, 0));}
+            | exp OR exp {$$ = A_IfExp(EM_tokPos, $1, A_BoolExp(EM_tokPos, 1), $3);}
 
 assignExp : lvalue ASSIGN exp { $$ = A_AssignExp(EM_tokPos, $1, $3);}
 
@@ -165,3 +165,4 @@ id :        ID { $$ = S_Symbol($1); }
 
 lvalue :    id {$$ = A_SimpleVar(EM_tokPos, $1);}
             | lvalue DOT id {$$ = A_FieldVar(EM_tokPos, $1, $3);}
+ 

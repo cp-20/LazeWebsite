@@ -103,6 +103,9 @@ bool toByte(string fname, string tempFileName)
             case L'｜':
                 fputc('|', output);
                 break;
+            case L'＆':
+                fputc('&', output);
+                break;
             case L'「':
                 fputc('"', output);
                 break;
