@@ -120,7 +120,7 @@ fs_1.default.watchFile('/home/pi/ipBlacklist', function (curr, prev) {
         else {
             var blacklistData = data.toString();
             ipList = blacklistData.split(';\n');
-            console.log(ipList);
+            console.log(ipList.length + ' blocked ip addresses.');
             // app.use(ipfilter(ipList));
         }
     });

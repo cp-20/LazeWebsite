@@ -70,7 +70,7 @@ fs.watchFile('/home/pi/ipBlacklist', (curr: any, prev: any) => {
     {
       let blacklistData: string = data.toString();
       ipList = blacklistData.split(';\n');
-      console.log(ipList);
+      console.log(ipList.length + ' blocked ip addresses.');
       // app.use(ipfilter(ipList));
     }
   });
