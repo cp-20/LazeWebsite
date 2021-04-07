@@ -30,17 +30,51 @@ fs.access(accountsDir, (err) => {
     fs.access('/media/pi/A042-416A', (err) => {
       if(!err)
       {
-        exec('sudo umount /media/pi/A042-416A').then(exec('sudo mount /dev/sda1 /media/usb').then(console.log('mounted usb')));
+        exec('sudo umount /media/pi/A042-416A', () => {
+          exec('sudo mount /dev/sda1 /media/usb', () => {
+            console.log('mounted usb');
+          })
+        });
       }
       else
       {
-        exec('sudo mount /dev/sda1 /media/usb').then(console.log('mounted usb'));
+        exec('sudo mount /dev/sda1 /media/usb', () => {
+          console.log('mounted usb')
+        });
       }
     })
   }
 })
 //ip filter
-
+var ipList: Array<string>;
+fs.readFile('/home/pi/ipBlacklist', (err, data) => {
+  if(err)
+  {
+    console.log('Could not read blacklist.');
+  }
+  else
+  {
+    let blacklistData: string = data.toString();
+    ipList = blacklistData.split(';\n');
+    console.log(ipList);
+  }
+});
+// const ipfilter = require('express-ipfilter').IpFilter;
+fs.watchFile('/home/pi/ipBlacklist', (curr: any, prev: any) => {
+  fs.readFile('/home/pi/ipBlacklist', (err, data) => {
+    if(err)
+    {
+      console.log('Could not read ipBlacklist.');
+    }
+    else
+    {
+      let blacklistData: string = data.toString();
+      ipList = blacklistData.split(';\n');
+      console.log(ipList.length + ' blocked ip addresses.');
+      // app.use(ipfilter(ipList));
+    }
+  });
+})
 //database (mongoose)
 import mongoose from 'mongoose';
 const User: mongoose.Model<any, any> = require('./database');
@@ -121,9 +155,18 @@ import sharedSession from 'express-socket.io-session';
 //request時に実行するmiddleware function
 function everyRequest(req: express.Request, res: express.Response, next: express.NextFunction)
 {
-    console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
-    // console.log(req.user, 'everyRequest');
-    next();
+    if(ipList.includes(req.socket.remoteAddress!))
+    {
+      console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
+      res.send('banned L');
+      res.end();
+    }
+    else
+    {
+      console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+      // console.log(req.user, 'everyRequest');
+      next();
+    }
 }
 
 app.use(express.static(rootdirectory));
@@ -491,7 +534,7 @@ io.sockets.on('connection', (socket:any) => {
       {
         if(usersDirectory.get(socket.id))
         {
-          fs.rmdir((usersDirectory.get(socket.id)), (err: NodeJS.ErrnoException | null) => {
+          fs.rmdir((usersDirectory.get(socket.id)!), (err: NodeJS.ErrnoException | null) => {
             console.log(usersDirectory.get(socket.id));
           });        
         }

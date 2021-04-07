@@ -1,5 +1,5 @@
-compiler: lexAnalyze.o parse.o y.tab.o absyn.o symbol.o table.o lex.yy.o errormsg.o util.o
-	cc -g -o compiler lexAnalyze.o parse.o y.tab.o absyn.o symbol.o table.o lex.yy.o errormsg.o util.o
+compiler: lexAnalyze.o parse.o semantic.o env.o types.o y.tab.o absyn.o symbol.o table.o lex.yy.o errormsg.o util.o
+	cc -g -o compiler lexAnalyze.o parse.o semantic.o env.o types.o y.tab.o absyn.o symbol.o table.o lex.yy.o errormsg.o util.o
 
 lexAnalyze.o: lexAnalyze.c errormsg.h util.h
 	cc -g -c lexAnalyze.c
@@ -7,11 +7,20 @@ lexAnalyze.o: lexAnalyze.c errormsg.h util.h
 parse.o: parse.c parse.h
 	cc -g -c parse.c
 
+semantic.o: semantic.c semantic.h
+	cc -g -c semantic.c
+
+env.o: env.c env.h
+	cc -g -c env.c
+
+types.o: types.c types.h
+	cc -g -c types.c
+
 y.tab.o: y.tab.c
 	cc -g -c -DYYERROR_VERBOSE -DYYDEBUG=1 y.tab.c
 
 y.tab.c: lang.y
-	echo "y.tab.c"
+	yacc -dv -v lang.y
 
 y.tab.h: y.tab.c
 	echo "created y.tab.h"
@@ -32,10 +41,10 @@ lex.yy.o: lex.yy.c errormsg.h util.h
 	cc -g -c lex.yy.c
 
 lex.yy.c: lang.l
-	echo "lex.yy.c"
+	lex -w lang.l
 
 util.o: util.c util.h
 	cc -g -c util.c
 
 clean: 
-	rm -f compiler util.o lexAnalyze.o lex.yy.o errormsg.o y.tab.o parse.o absyn.o table.o symbol.o
+	rm -f compiler lexAnalyze.o parse.o semantic.o env.o types.o y.tab.o absyn.o symbol.o table.o lex.yy.o errormsg.o util.o

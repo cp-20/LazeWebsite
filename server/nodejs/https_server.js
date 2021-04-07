@@ -52,10 +52,9 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from) {
-    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
-        to[j] = from[i];
-    return to;
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
 };
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -86,13 +85,45 @@ fs_1.default.access(accountsDir, function (err) {
     if (err && err.code == 'ENOENT') {
         fs_1.default.access('/media/pi/A042-416A', function (err) {
             if (!err) {
-                exec('sudo umount /media/pi/A042-416A').then(exec('sudo mount /dev/sda1 /media/usb').then(console.log('mounted usb')));
+                exec('sudo umount /media/pi/A042-416A', function () {
+                    exec('sudo mount /dev/sda1 /media/usb', function () {
+                        console.log('mounted usb');
+                    });
+                });
             }
             else {
-                exec('sudo mount /dev/sda1 /media/usb').then(console.log('mounted usb'));
+                exec('sudo mount /dev/sda1 /media/usb', function () {
+                    console.log('mounted usb');
+                });
             }
         });
     }
+});
+//ip filter
+var ipList;
+fs_1.default.readFile('/home/pi/ipBlacklist', function (err, data) {
+    if (err) {
+        console.log('Could not read blacklist.');
+    }
+    else {
+        var blacklistData = data.toString();
+        ipList = blacklistData.split(';\n');
+        console.log(ipList);
+    }
+});
+// const ipfilter = require('express-ipfilter').IpFilter;
+fs_1.default.watchFile('/home/pi/ipBlacklist', function (curr, prev) {
+    fs_1.default.readFile('/home/pi/ipBlacklist', function (err, data) {
+        if (err) {
+            console.log('Could not read ipBlacklist.');
+        }
+        else {
+            var blacklistData = data.toString();
+            ipList = blacklistData.split(';\n');
+            console.log(ipList.length + ' blocked ip addresses.');
+            // app.use(ipfilter(ipList));
+        }
+    });
 });
 //database (mongoose)
 var mongoose_1 = __importDefault(require("mongoose"));
@@ -162,9 +193,16 @@ var express_session_1 = __importDefault(require("express-session"));
 var express_socket_io_session_1 = __importDefault(require("express-socket.io-session"));
 //request時に実行するmiddleware function
 function everyRequest(req, res, next) {
-    console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
-    // console.log(req.user, 'everyRequest');
-    next();
+    if (ipList.includes(req.socket.remoteAddress)) {
+        console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
+        res.send('banned L');
+        res.end();
+    }
+    else {
+        console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
+        // console.log(req.user, 'everyRequest');
+        next();
+    }
 }
 app.use(express_1.default.static(rootdirectory));
 app.use(everyRequest);
@@ -306,12 +344,12 @@ function readDirectory(path, socket, result, callback) {
                                     return [4 /*yield*/, Promise.all(content.map(fn))];
                                 case 2:
                                     temp = _a.sent();
-                                    tempfolders = new Map(__spreadArray([], __read(folders_1)).sort(function (a, b) { return Number(a[0] > b[0]); }));
+                                    tempfolders = new Map(__spread(folders_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
                                     tempfolders.forEach(function (folder) {
                                         if (result.value)
                                             result.value.push(folder);
                                     });
-                                    tempfiles = new Map(__spreadArray([], __read(files_1)).sort(function (a, b) { return Number(a[0] > b[0]); }));
+                                    tempfiles = new Map(__spread(files_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
                                     tempfiles.forEach(function (file) {
                                         if (result.value)
                                             result.value.push(file);

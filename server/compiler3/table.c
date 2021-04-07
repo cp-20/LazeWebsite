@@ -43,7 +43,8 @@ TAB_table TAB_empty(void)
 
 void TAB_insert(TAB_table t, void *key, void *value)
 {int index;
- assert(t && key);
+ assert(t);
+ assert(key);
  index = ((unsigned)key) % TABSIZE;
  t->table[index] = Binder(key, value,t->table[index], t->top);
  t->top = key;

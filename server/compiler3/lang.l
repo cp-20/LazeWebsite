@@ -75,6 +75,9 @@ charAndNum [㐀-龯ぁ-んァ-ヶ]*
 型 {adjust(); return TYPE;}
 無 {adjust(); return VOID;}
 空 {adjust(); return NUL;}
+真偽 {adjust(); return BOOLEAN;}
+真 {adjust(); return TRUEE;}
+偽 {adjust(); return FALSEE;}
 
 {char}{charAndNum} {adjust(); yylval.sval = strdup(yytext); return ID;}
 .	 {adjust(); EM_error(EM_tokPos,"illegal token");}

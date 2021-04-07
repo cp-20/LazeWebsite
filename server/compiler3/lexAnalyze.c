@@ -1,11 +1,12 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include "util.h"
 #include "errormsg.h"
 #include "symbol.h"
 #include "absyn.h"
 #include "y.tab.h"
 #include "parse.h"
+#include <stdlib.h>
+#include <string.h>
 
 YYSTYPE yylval;
 extern int yydebug;
@@ -32,18 +33,16 @@ void parseTest(string fname)
     EM_reset(fname);
     if(yyparse() == 0)
     {
-        fprintf(stdout, "Parsing Successful\n");
+        fprintf(stderr, "Parsing Successful\n");
     }
     else
     {
         fprintf(stderr, "Parsing Failed\n");
-        exit(0);
     }
 }
 
 int main(int argc, char **argv)
 {
-    // setlocale(LC_CTYPE, "C.UTF-16");
     // yydebug = 1;
     string fname, directory;
     int tok;
@@ -65,7 +64,8 @@ int main(int argc, char **argv)
         while(!toByte(fullFname, fullTempFname));
         fprintf(stdout, "\n");
         // parse(tempFileName);
-        parseTest(fullTempFname);
+        // parseTest(fullTempFname);
+        SEM_transProg(parse(fullTempFname));
     }
     else
     {
@@ -74,30 +74,9 @@ int main(int argc, char **argv)
         EM_reset(tempFileName);
         while(!toByte(fname, tempFileName));
         fprintf(stdout, "\n");
+        SEM_transProg(parse(tempFileName));
         // parse(tempFileName);
-        parseTest(tempFileName);
+        // parseTest(tempFileName);
     }
-
-    // for(;;)
-    // {
-    //     tok = yylex();
-        
-    //     if(tok == 0)
-    //         break;
-    //     switch(tok)
-    //     {
-    //         case ID: case STRING:
-    //             printf("%10s %4d %s \n", tokname(tok), EM_tokPos, yylval.sval);
-    //             break;
-    //         case INT:
-    //             printf("%10s %4d %d \n", tokname(tok), EM_tokPos, yylval.ival);
-    //             break;
-    //         case REAL:
-    //             printf("%10s %4d %f\n", tokname(tok), EM_tokPos, yylval.fval);
-    //             break;
-    //         default:
-    //             printf("%10s %4d\n", tokname(tok), EM_tokPos);
-    //     }
-    // }
     return 0;
 }

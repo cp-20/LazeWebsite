@@ -46,7 +46,7 @@ bool toByte(string fname, string tempFileName)
     file = fopen(fname, "r, ccs = UTF16LE");
     const size_t nameLength = (sizeof fname / sizeof *fname) + 5; 
 
-    output = fopen(tempFileName, "w, css = UTF16LE");
+    output = fopen(tempFileName, "w, ccs = UTF16LE");
     // str = fgetws(str, 2, file);
     // size_t size = sizeof str / sizeof *str;
     // wprintf("%ls", str);
@@ -102,6 +102,9 @@ bool toByte(string fname, string tempFileName)
                 break;
             case L'｜':
                 fputc('|', output);
+                break;
+            case L'＆':
+                fputc('&', output);
                 break;
             case L'「':
                 fputc('"', output);
