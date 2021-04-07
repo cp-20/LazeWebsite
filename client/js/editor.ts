@@ -42,9 +42,10 @@ $(() => {
 		handleSelector: '.exp-spliter',
 		resizeHeight: false
 	});
-	$('.editor-main').resizable({
+	$('.editor-console').resizable({
 		handleSelector: '.console-spliter',
-		resizeWidth: false
+		resizeWidth: false,
+		resizeHeightFrom: 'top'
 	});
 
 	// アカウントのステータス更新

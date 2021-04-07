@@ -228,7 +228,7 @@ div.explorer {
 	}
 
 	.editor-main {
-		height: calc(100% - 290px);
+		flex: 1;
 		overflow-y: hidden;
 	}
 
@@ -240,7 +240,8 @@ div.explorer {
 	.editor-console {
 		display: flex;
 		flex-direction: column;
-		flex: 1;
+		height: 150px;
+		min-height: 30px;
 		background-color: rgb(30, 30, 30);
 
 		.console-label {
