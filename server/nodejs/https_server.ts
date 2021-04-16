@@ -22,6 +22,11 @@ http.createServer((express()).all("*", function (request, response) {
 const httpsServer = https.createServer(credentials, app);
 const io = require('socket.io')(httpsServer);
 const port : number = 443;
+//log function
+function LOG(log: any, title: string)
+{
+  console.log(`${title}(${log})\``);
+}
 //mount usb
 const accountsDir: string = '/media/usb/compilerserver/accounts/';
 fs.access(accountsDir, (err) => {
@@ -32,14 +37,14 @@ fs.access(accountsDir, (err) => {
       {
         exec('sudo umount /media/pi/A042-416A', () => {
           exec('sudo mount /dev/sda1 /media/usb', () => {
-            console.log('mounted usb');
+            LOG('mounted usb', 'status');
           })
         });
       }
       else
       {
         exec('sudo mount /dev/sda1 /media/usb', () => {
-          console.log('mounted usb')
+          LOG('mounted usb', 'status');
         });
       }
     })
@@ -50,13 +55,13 @@ var ipList: Array<string>;
 fs.readFile('/home/pi/ipBlacklist', (err, data) => {
   if(err)
   {
-    console.log('Could not read blacklist.');
+    LOG('Could not read blacklist.', 'status');
   }
   else
   {
     let blacklistData: string = data.toString();
     ipList = blacklistData.split(';\n');
-    console.log(ipList);
+    LOG(`${ipList.length} blocked ip addresses.`, 'status');
   }
 });
 // const ipfilter = require('express-ipfilter').IpFilter;
@@ -64,13 +69,13 @@ fs.watchFile('/home/pi/ipBlacklist', (curr: any, prev: any) => {
   fs.readFile('/home/pi/ipBlacklist', (err, data) => {
     if(err)
     {
-      console.log('Could not read ipBlacklist.');
+      LOG('Could not read ipBlacklist.', 'status');
     }
     else
     {
       let blacklistData: string = data.toString();
       ipList = blacklistData.split(';\n');
-      console.log(ipList.length + ' blocked ip addresses.');
+      LOG(`${ipList.length} blocked ip addresses.`, 'status');
       // app.use(ipfilter(ipList));
     }
   });
@@ -81,7 +86,7 @@ const User: mongoose.Model<any, any> = require('./database');
 mongoose.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true
-}).then(() => {console.log('connected');});
+}).then(() => {LOG('connected to database', 'status');});
 
 mongoose.Promise = global.Promise;
 //passport
@@ -90,21 +95,21 @@ const LocalStrategy = require('passport-local').Strategy;
 
 passport.use(new LocalStrategy( 
   {usernameField: 'loginId', passwordField: 'loginPassword'}, (username: string, password: string, done: any) => {
-    console.log('hello');
+    LOG('Login Attempt', 'login');
     User.findOne({email: username}).then((user: any) => {
       if(!user)
       {
         User.findOne({username: username}).then((user_: any) => {
           if(!user_)
           {
-            console.log('account not found');
+            LOG('account not found', 'login');
             return done(null, false, {message: 'That email is not registered'});
           }
           bcrypt.compare(password, user_.password, (err, isMatch) => {
-            if(err) console.log(err);
+            if(err) LOG(err, 'login');
             if(isMatch)
             {
-              console.log('logged in!');
+              LOG('logged in!', 'login');
               return done(null, user_);
             }
             else 
@@ -116,10 +121,10 @@ passport.use(new LocalStrategy(
         return;
       }
       bcrypt.compare(password, user.password, (err, isMatch) => {
-        if(err) console.log(err);
+        if(err) LOG(err, 'login');
         if(isMatch)
         {
-          console.log('logged in!');
+          LOG('logged in!', 'login');
           return done(null, user);
         }
         else 
@@ -131,12 +136,10 @@ passport.use(new LocalStrategy(
   }
 ));
 passport.serializeUser((user: any, done) => {
-  // console.log(user.id);
   done(null, user.id);
 })
 passport.deserializeUser((id, done) => {
   User.findById(id, (err: any, user: any) => {
-    // console.log(user.id);
     done(err, user);
   })
 })
@@ -157,14 +160,13 @@ function everyRequest(req: express.Request, res: express.Response, next: express
 {
     if(ipList.includes(req.socket.remoteAddress!))
     {
-      console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
+      LOG(`Blacklisted ip tried to access. IP: ${req.socket.remoteAddress}`, 'ip');
       res.send('banned L');
       res.end();
     }
     else
     {
-      console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
-      // console.log(req.user, 'everyRequest');
+      LOG(`Request URL: ${req.originalUrl}\nIP: ${req.socket.remoteAddress}`, 'ip');
       next();
     }
 }
@@ -193,7 +195,6 @@ app.get('/login', (req: express.Request, res: express.Response) => {
 })
 
 app.post('/login', (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.log(req.body, 124);
   passport.authenticate('local', {
     successRedirect: '/editor',
     failureRedirect: '/login'
@@ -201,7 +202,7 @@ app.post('/login', (req: express.Request, res: express.Response, next: express.N
 })
 
 app.get('/editor', (req: express.Request, res: express.Response) => {
-    console.log(req.user);
+    LOG(req.user, 'user');
     res.sendFile('editor.html', {root: rootdirectory});
 })
 
@@ -218,7 +219,6 @@ app.get('/register', (req: express.Request, res: express.Response) => {
 })
 
 app.post('/register', (req: express.Request, res: express.Response) => {
-  // console.log(req.body);
   const {id, username, email, password, passwordCheck} = req.body;
 
   const newUser = new User({
@@ -228,14 +228,14 @@ app.post('/register', (req: express.Request, res: express.Response) => {
     password: password 
   });
   fs.mkdir(path.resolve(accountsDir, id), () => {
-    console.log('created account folder');
+    LOG('created account folder', 'status');
   })
   bcrypt.genSalt(10, (err: Error, salt) => {
     bcrypt.hash(newUser.password, salt,(err: Error, hash) => {
-      if(err) console.log('Error hashing password.');
+      if(err) LOG('Error hashing password.', 'status');
       newUser.password = hash;
       newUser.save().then((value: any) => {
-        console.log(value);
+        LOG(value, 'login');
         res.redirect('/login');
       });
     });
@@ -247,15 +247,14 @@ app.get('/pass_reset', (req: express.Request, res: express.Response) => {
 })
 
 app.get('/register_check/id', (req: express.Request, res: express.Response) => {
-  console.log(req.query);
   if(req.query.id)
   {
     let userId : any = req.query.id;
-    console.log(userId);
+    LOG(userId, 'register');
     User.findOne({username: userId}).exec((err: any, user: any) => {
       if(user)
       {
-        console.log('there is already an account');
+        LOG('there is already an account', 'register');
         res.json({success: false});
       }
       else
@@ -267,11 +266,10 @@ app.get('/register_check/id', (req: express.Request, res: express.Response) => {
 });
 
 app.get('/register_check/email', (req: express.Request, res: express.Response) => {
-  console.log(req.query);
   if(req.query.email)
   {
     let emailAddress : any = req.query.email;
-    console.log(emailAddress);
+    LOG(emailAddress, 'register');
     User.findOne({email: emailAddress}).exec((err: any, user: any) => {
       if(user)
       {
@@ -287,7 +285,7 @@ app.get('/register_check/email', (req: express.Request, res: express.Response) =
 
 
 app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', (req: express.Request, res: express.Response) => {
-  console.log('get node modules');
+  LOG('get node modules', 'node_modules');
   res.sendFile('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', {root: rootDir});
 })
 
@@ -302,7 +300,7 @@ async function readDirectory(path: string, socket: any, result: dirObject, callb
     fs.readdir(path, {withFileTypes: true},async (err: NodeJS.ErrnoException | null, content: fs.Dirent[])=>{
       if(err)
       {
-        console.log('couldnt load project', err);
+        LOG(`couldnt load project\n${err}`, 'status');
         socket.emit('loadedProject', {
           value: 'Could not load folder ' + path,
           style: 'err'
@@ -349,13 +347,13 @@ io.use(sharedSession(sessionMiddleware, {
 }));
 io.sockets.on('connection', (socket:any) => {
     var address = socket.handshake.address;
-    console.log('New connection from ' + JSON.stringify(address) + socket.id);
+    LOG(`New connection from ${JSON.stringify(address)} ${socket.id}`, 'ip');
     //defaultはguestとして入る
     users.set(socket.id, "guest");
     fs.mkdir(accountsDir + 'guest/' + socket.id, (err) => {
       if(err)
       {
-        console.log('could not create ' + accountsDir + 'guest/' + socket.id);
+        LOG(`could not create ${accountsDir}guest/${socket.id}`, 'status');
       }
     });
     usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
@@ -365,7 +363,7 @@ io.sockets.on('connection', (socket:any) => {
     else
       userId = 'guest';
     User.findOne({_id: userId}).exec((err: any, user: any) => {
-      console.log(user);
+      LOG(user, 'user');
       if(err)
       {
         socket.emit('login', {
@@ -402,7 +400,7 @@ io.sockets.on('connection', (socket:any) => {
         exec('./compiler ' + input.filename + ' ' + usersDirectory.get(socket.id) + '/', (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) =>
         {
           // 出力
-          console.log(err, stdout, stderr);
+          LOG(`${stdout}\n${stderr}`, 'Compile');
           if(err) {
             socket.emit('output', {
               value: stderr,
@@ -481,7 +479,6 @@ io.sockets.on('connection', (socket:any) => {
       if(users.get(socket.id) != 'guest')
       {
         let result: dirObject = {type: 'folder', name: input.projectName, value: []};
-        // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
         readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result, () => {}).then((val) => {
           socket.emit('loadedProject', {
             value: val,
@@ -529,13 +526,13 @@ io.sockets.on('connection', (socket:any) => {
     })
     //disconnectしたとき
     socket.on('disconnect', () => {
-      console.log("a");
+      LOG("user disconnected", 'user');
       if(users.get(socket.id) == 'guest')
       {
         if(usersDirectory.get(socket.id))
         {
           fs.rmdir((usersDirectory.get(socket.id)!), (err: NodeJS.ErrnoException | null) => {
-            console.log(usersDirectory.get(socket.id));
+            LOG(`${usersDirectory.get(socket.id)} deleted`, 'user');
           });        
         }
       }
@@ -549,5 +546,5 @@ app.use((req :express.Request, res :express.Response, next) => {
 });
 
   httpsServer.listen(port, () => {
-    console.log('Server at https://rootlang.ddns.net');
+    LOG('Server at https://rootlang.ddns.net', 'status');
   })
