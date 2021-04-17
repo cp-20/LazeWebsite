@@ -79,6 +79,10 @@ http.createServer((express_1.default()).all("*", function (request, response) {
 var httpsServer = https.createServer(credentials, app);
 var io = require('socket.io')(httpsServer);
 var port = 443;
+//log function
+function LOG(log, title) {
+    console.log(title + "(" + log + ")`");
+}
 //mount usb
 var accountsDir = '/media/usb/compilerserver/accounts/';
 fs_1.default.access(accountsDir, function (err) {
@@ -87,13 +91,13 @@ fs_1.default.access(accountsDir, function (err) {
             if (!err) {
                 exec('sudo umount /media/pi/A042-416A', function () {
                     exec('sudo mount /dev/sda1 /media/usb', function () {
-                        console.log('mounted usb');
+                        LOG('mounted usb', 'status');
                     });
                 });
             }
             else {
                 exec('sudo mount /dev/sda1 /media/usb', function () {
-                    console.log('mounted usb');
+                    LOG('mounted usb', 'status');
                 });
             }
         });
@@ -103,24 +107,24 @@ fs_1.default.access(accountsDir, function (err) {
 var ipList;
 fs_1.default.readFile('/home/pi/ipBlacklist', function (err, data) {
     if (err) {
-        console.log('Could not read blacklist.');
+        LOG('Could not read blacklist.', 'status');
     }
     else {
         var blacklistData = data.toString();
         ipList = blacklistData.split(';\n');
-        console.log(ipList);
+        LOG(ipList.length + " blocked ip addresses.", 'status');
     }
 });
 // const ipfilter = require('express-ipfilter').IpFilter;
 fs_1.default.watchFile('/home/pi/ipBlacklist', function (curr, prev) {
     fs_1.default.readFile('/home/pi/ipBlacklist', function (err, data) {
         if (err) {
-            console.log('Could not read ipBlacklist.');
+            LOG('Could not read ipBlacklist.', 'status');
         }
         else {
             var blacklistData = data.toString();
             ipList = blacklistData.split(';\n');
-            console.log(ipList.length + ' blocked ip addresses.');
+            LOG(ipList.length + " blocked ip addresses.", 'status');
             // app.use(ipfilter(ipList));
         }
     });
@@ -131,25 +135,25 @@ var User = require('./database');
 mongoose_1.default.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
-}).then(function () { console.log('connected'); });
+}).then(function () { LOG('connected to database', 'status'); });
 mongoose_1.default.Promise = global.Promise;
 //passport
 var passport_1 = __importDefault(require("passport"));
 var LocalStrategy = require('passport-local').Strategy;
 passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordField: 'loginPassword' }, function (username, password, done) {
-    console.log('hello');
+    LOG('Login Attempt', 'login');
     User.findOne({ email: username }).then(function (user) {
         if (!user) {
             User.findOne({ username: username }).then(function (user_) {
                 if (!user_) {
-                    console.log('account not found');
+                    LOG('account not found', 'login');
                     return done(null, false, { message: 'That email is not registered' });
                 }
                 bcrypt_1.default.compare(password, user_.password, function (err, isMatch) {
                     if (err)
-                        console.log(err);
+                        LOG(err, 'login');
                     if (isMatch) {
-                        console.log('logged in!');
+                        LOG('logged in!', 'login');
                         return done(null, user_);
                     }
                     else {
@@ -161,9 +165,9 @@ passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordFie
         }
         bcrypt_1.default.compare(password, user.password, function (err, isMatch) {
             if (err)
-                console.log(err);
+                LOG(err, 'login');
             if (isMatch) {
-                console.log('logged in!');
+                LOG('logged in!', 'login');
                 return done(null, user);
             }
             else {
@@ -173,12 +177,10 @@ passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordFie
     });
 }));
 passport_1.default.serializeUser(function (user, done) {
-    // console.log(user.id);
     done(null, user.id);
 });
 passport_1.default.deserializeUser(function (id, done) {
     User.findById(id, function (err, user) {
-        // console.log(user.id);
         done(err, user);
     });
 });
@@ -194,13 +196,12 @@ var express_socket_io_session_1 = __importDefault(require("express-socket.io-ses
 //request時に実行するmiddleware function
 function everyRequest(req, res, next) {
     if (ipList.includes(req.socket.remoteAddress)) {
-        console.log('Blacklisted ip tried to access. IP: ', req.socket.remoteAddress);
+        LOG("Blacklisted ip tried to access. IP: " + req.socket.remoteAddress, 'ip');
         res.send('banned L');
         res.end();
     }
     else {
-        console.log('Request URL: ', req.originalUrl, '\nIP:', req.socket.remoteAddress);
-        // console.log(req.user, 'everyRequest');
+        LOG("Request URL: " + req.originalUrl + "\nIP: " + req.socket.remoteAddress, 'ip');
         next();
     }
 }
@@ -224,14 +225,13 @@ app.get('/login', function (req, res) {
     res.sendFile('login.html', { root: rootdirectory });
 });
 app.post('/login', function (req, res, next) {
-    console.log(req.body, 124);
     passport_1.default.authenticate('local', {
         successRedirect: '/editor',
         failureRedirect: '/login'
     })(req, res, next);
 });
 app.get('/editor', function (req, res) {
-    console.log(req.user);
+    LOG(req.user, 'user');
     res.sendFile('editor.html', { root: rootdirectory });
 });
 app.get('/docs', function (req, res) {
@@ -244,7 +244,6 @@ app.get('/register', function (req, res) {
     res.sendFile('register.html', { root: rootdirectory });
 });
 app.post('/register', function (req, res) {
-    // console.log(req.body);
     var _a = req.body, id = _a.id, username = _a.username, email = _a.email, password = _a.password, passwordCheck = _a.passwordCheck;
     var newUser = new User({
         email: email,
@@ -253,15 +252,15 @@ app.post('/register', function (req, res) {
         password: password
     });
     fs_1.default.mkdir(path.resolve(accountsDir, id), function () {
-        console.log('created account folder');
+        LOG('created account folder', 'status');
     });
     bcrypt_1.default.genSalt(10, function (err, salt) {
         bcrypt_1.default.hash(newUser.password, salt, function (err, hash) {
             if (err)
-                console.log('Error hashing password.');
+                LOG('Error hashing password.', 'status');
             newUser.password = hash;
             newUser.save().then(function (value) {
-                console.log(value);
+                LOG(value, 'login');
                 res.redirect('/login');
             });
         });
@@ -271,13 +270,12 @@ app.get('/pass_reset', function (req, res) {
     res.sendFile('pass_reset.html', { root: rootdirectory });
 });
 app.get('/register_check/id', function (req, res) {
-    console.log(req.query);
     if (req.query.id) {
         var userId = req.query.id;
-        console.log(userId);
+        LOG(userId, 'register');
         User.findOne({ username: userId }).exec(function (err, user) {
             if (user) {
-                console.log('there is already an account');
+                LOG('there is already an account', 'register');
                 res.json({ success: false });
             }
             else {
@@ -287,10 +285,9 @@ app.get('/register_check/id', function (req, res) {
     }
 });
 app.get('/register_check/email', function (req, res) {
-    console.log(req.query);
     if (req.query.email) {
         var emailAddress = req.query.email;
-        console.log(emailAddress);
+        LOG(emailAddress, 'register');
         User.findOne({ email: emailAddress }).exec(function (err, user) {
             if (user) {
                 res.json({ success: false });
@@ -302,7 +299,7 @@ app.get('/register_check/email', function (req, res) {
     }
 });
 app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', function (req, res) {
-    console.log('get node modules');
+    LOG('get node modules', 'node_modules');
     res.sendFile('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', { root: rootDir });
 });
 var users = new Map();
@@ -320,7 +317,7 @@ function readDirectory(path, socket, result, callback) {
                             switch (_a.label) {
                                 case 0:
                                     if (!err) return [3 /*break*/, 1];
-                                    console.log('couldnt load project', err);
+                                    LOG("couldnt load project\n" + err, 'status');
                                     socket.emit('loadedProject', {
                                         value: 'Could not load folder ' + path,
                                         style: 'err'
@@ -368,12 +365,12 @@ function readDirectory(path, socket, result, callback) {
 io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
 io.sockets.on('connection', function (socket) {
     var address = socket.handshake.address;
-    console.log('New connection from ' + JSON.stringify(address) + socket.id);
+    LOG("New connection from " + JSON.stringify(address) + " " + socket.id, 'ip');
     //defaultはguestとして入る
     users.set(socket.id, "guest");
     fs_1.default.mkdir(accountsDir + 'guest/' + socket.id, function (err) {
         if (err) {
-            console.log('could not create ' + accountsDir + 'guest/' + socket.id);
+            LOG("could not create " + accountsDir + "guest/" + socket.id, 'status');
         }
     });
     usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
@@ -383,7 +380,7 @@ io.sockets.on('connection', function (socket) {
     else
         userId = 'guest';
     User.findOne({ _id: userId }).exec(function (err, user) {
-        console.log(user);
+        LOG(user, 'user');
         if (err) {
             socket.emit('login', {
                 id: 'guest',
@@ -417,7 +414,7 @@ io.sockets.on('connection', function (socket) {
                 }
                 exec('./compiler ' + input.filename + ' ' + usersDirectory.get(socket.id) + '/', function (err, stdout, stderr) {
                     // 出力
-                    console.log(err, stdout, stderr);
+                    LOG(stdout + "\n" + stderr, 'Compile');
                     if (err) {
                         socket.emit('output', {
                             value: stderr,
@@ -494,7 +491,6 @@ io.sockets.on('connection', function (socket) {
         return __generator(this, function (_a) {
             if (users.get(socket.id) != 'guest') {
                 result = { type: 'folder', name: input.projectName, value: [] };
-                // console.log(readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result));
                 readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result, function () { }).then(function (val) {
                     socket.emit('loadedProject', {
                         value: val,
@@ -542,11 +538,11 @@ io.sockets.on('connection', function (socket) {
     }); });
     //disconnectしたとき
     socket.on('disconnect', function () {
-        console.log("a");
+        LOG("user disconnected", 'user');
         if (users.get(socket.id) == 'guest') {
             if (usersDirectory.get(socket.id)) {
                 fs_1.default.rmdir((usersDirectory.get(socket.id)), function (err) {
-                    console.log(usersDirectory.get(socket.id));
+                    LOG(usersDirectory.get(socket.id) + " deleted", 'user');
                 });
             }
         }
@@ -558,5 +554,5 @@ app.use(function (req, res, next) {
     res.sendFile('err404.html', { root: rootdirectory });
 });
 httpsServer.listen(port, function () {
-    console.log('Server at https://rootlang.ddns.net');
+    LOG('Server at https://rootlang.ddns.net', 'status');
 });
