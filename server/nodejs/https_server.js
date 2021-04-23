@@ -302,6 +302,17 @@ app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', function (
     LOG('get node modules', 'node_modules');
     res.sendFile('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', { root: rootDir });
 });
+app.get('/avatar/id', function (req, res) {
+    var avatarPath = path.resolve(accountsDir, req.query.id, 'avatar.png');
+    fs_1.default.access(avatarPath, function (err) {
+        if (err) {
+            res.sendFile(path.resolve('/home/pi/Compiler/client/assets/icons', 'guest.png'));
+        }
+        else {
+            res.sendFile(avatarPath);
+        }
+    });
+});
 var users = new Map();
 var usersDirectory = new Map();
 var usersProjectDirectory = new Map();

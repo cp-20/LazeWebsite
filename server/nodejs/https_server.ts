@@ -287,6 +287,18 @@ app.get('/register_check/email', (req: express.Request, res: express.Response) =
 app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', (req: express.Request, res: express.Response) => {
   LOG('get node modules', 'node_modules');
   res.sendFile('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', {root: rootDir});
+});
+
+app.get('/avatar/id', (req: express.Request, res: express.Response) => {
+  let avatarPath = path.resolve(accountsDir, req.query.id, 'avatar.png');
+  fs.access(avatarPath, (err) => {
+		if(err){
+			res.sendFile(path.resolve('/home/pi/Compiler/client/assets/icons', 'guest.png'));
+		}
+		else{
+			res.sendFile(avatarPath);
+		}
+	})
 })
 
 let users: Map<string, string> = new Map();
