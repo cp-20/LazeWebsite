@@ -209,7 +209,6 @@ function everyRequest(req, res, next) {
     }
 }
 app.use(express_1.default.static(rootdirectory));
-app.use(everyRequest);
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -221,6 +220,7 @@ var sessionMiddleware = express_session_1.default({
 app.use(sessionMiddleware);
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
+app.use(everyRequest);
 app.get('/', function (req, res) {
     res.sendFile('index.html', { root: rootdirectory });
 });
