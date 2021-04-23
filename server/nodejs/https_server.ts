@@ -25,6 +25,9 @@ const port : number = 443;
 //log function
 function LOG(log: any, title: string)
 {
+  if(typeof log === 'object' && log != null)
+    console.log(`${title}(${JSON.stringify(log)})\``);
+  else
   console.log(`${title}(${log})\``);
 }
 //mount usb
@@ -290,6 +293,7 @@ app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', (req: expr
 });
 
 app.get('/avatar/id', (req: express.Request, res: express.Response) => {
+  LOG('avatar debug', 'avatar debug');
   let avatarPath = path.resolve(`${accountsDir}${req.query.id}`, 'avatar.png');
   fs.access(avatarPath, (err) => {
 		if(err){

@@ -81,7 +81,10 @@ var io = require('socket.io')(httpsServer);
 var port = 443;
 //log function
 function LOG(log, title) {
-    console.log(title + "(" + log + ")`");
+    if (typeof log === 'object' && log != null)
+        console.log(title + "(" + JSON.stringify(log) + ")`");
+    else
+        console.log(title + "(" + log + ")`");
 }
 //mount usb
 var accountsDir = '/media/usb/compilerserver/accounts/';
@@ -303,6 +306,7 @@ app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', function (
     res.sendFile('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', { root: rootDir });
 });
 app.get('/avatar/id', function (req, res) {
+    LOG('avatar debug', 'avatar debug');
     var avatarPath = path.resolve("" + accountsDir + req.query.id, 'avatar.png');
     fs_1.default.access(avatarPath, function (err) {
         if (err) {
