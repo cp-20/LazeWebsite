@@ -204,7 +204,7 @@ function everyRequest(req, res, next) {
         res.end();
     }
     else {
-        LOG("Request URL: " + req.originalUrl + "\nIP: " + req.socket.remoteAddress, 'ip');
+        LOG("Request URL: " + decodeURI(req.originalUrl) + "\nIP: " + req.socket.remoteAddress, 'ip');
         next();
     }
 }
