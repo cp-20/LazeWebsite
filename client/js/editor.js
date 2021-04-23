@@ -223,5 +223,5 @@ function updateAccount() {
     // 名前
     $('#account-name').text(account.username);
     // アバター画像
-    $('#avatar-img').attr('src', account.avatar || 'assets/icons/guest.svg');
+    $('#avatar-img').attr('src', "/avatar/id>id=" + account.id);
 }
