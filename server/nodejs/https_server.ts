@@ -290,7 +290,7 @@ app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', (req: expr
 });
 
 app.get('/avatar/id', (req: express.Request, res: express.Response) => {
-  let avatarPath = path.resolve(accountsDir, req.query.id, 'avatar.png');
+  let avatarPath = path.resolve(`accountsDir ${req.query.id}`, 'avatar.png');
   fs.access(avatarPath, (err) => {
 		if(err){
 			res.sendFile(path.resolve('/home/pi/Compiler/client/assets/icons', 'guest.png'));
