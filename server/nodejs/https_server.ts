@@ -40,14 +40,14 @@ fs.access(accountsDir, (err) => {
       {
         exec('sudo umount /media/pi/A042-416A', () => {
           exec('sudo mount /dev/sda1 /media/usb', () => {
-            LOG('mounted usb', 'status');
+            LOG('mounted usb', 'mounted usb');
           })
         });
       }
       else
       {
         exec('sudo mount /dev/sda1 /media/usb', () => {
-          LOG('mounted usb', 'status');
+          LOG('mounted usb', 'mounted usb');
         });
       }
     })
@@ -58,13 +58,13 @@ var ipList: Array<string>;
 fs.readFile('/home/pi/ipBlacklist', (err, data) => {
   if(err)
   {
-    LOG('Could not read blacklist.', 'status');
+    LOG('Could not read blacklist.', 'Could not read blacklist.');
   }
   else
   {
     let blacklistData: string = data.toString();
     ipList = blacklistData.split(';\n');
-    LOG(`${ipList.length} blocked ip addresses.`, 'status');
+    LOG(`${ipList.length} blocked ip addresses.`, `${ipList.length} blocked ip addresses.`);
   }
 });
 // const ipfilter = require('express-ipfilter').IpFilter;
@@ -72,13 +72,13 @@ fs.watchFile('/home/pi/ipBlacklist', (curr: any, prev: any) => {
   fs.readFile('/home/pi/ipBlacklist', (err, data) => {
     if(err)
     {
-      LOG('Could not read ipBlacklist.', 'status');
+      LOG('Could not read ipBlacklist.', 'Could not read ipBlacklist.');
     }
     else
     {
       let blacklistData: string = data.toString();
       ipList = blacklistData.split(';\n');
-      LOG(`${ipList.length} blocked ip addresses.`, 'status');
+      LOG(`${ipList.length} blocked ip addresses.`, `${ipList.length} blocked ip addresses.`);
       // app.use(ipfilter(ipList));
     }
   });
@@ -89,7 +89,7 @@ const User: mongoose.Model<any, any> = require('./database');
 mongoose.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true
-}).then(() => {LOG('connected to database', 'status');});
+}).then(() => {LOG('connected to database', 'connected to database');});
 
 mongoose.Promise = global.Promise;
 //passport
@@ -98,21 +98,21 @@ const LocalStrategy = require('passport-local').Strategy;
 
 passport.use(new LocalStrategy( 
   {usernameField: 'loginId', passwordField: 'loginPassword'}, (username: string, password: string, done: any) => {
-    LOG('Login Attempt', 'login');
+    LOG('Login Attempt', 'Login Attempt');
     User.findOne({email: username}).then((user: any) => {
       if(!user)
       {
         User.findOne({username: username}).then((user_: any) => {
           if(!user_)
           {
-            LOG('account not found', 'login');
+            LOG('account not found', 'account not found');
             return done(null, false, {message: 'That email is not registered'});
           }
           bcrypt.compare(password, user_.password, (err, isMatch) => {
-            if(err) LOG(err, 'login');
+            if(err) LOG(err, 'login error');
             if(isMatch)
             {
-              LOG('logged in!', 'login');
+              LOG('logged in!', 'logged in!');
               return done(null, user_);
             }
             else 
@@ -124,10 +124,10 @@ passport.use(new LocalStrategy(
         return;
       }
       bcrypt.compare(password, user.password, (err, isMatch) => {
-        if(err) LOG(err, 'login');
+        if(err) LOG(err, 'login error');
         if(isMatch)
         {
-          LOG('logged in!', 'login');
+          LOG('logged in!', 'logged in!');
           return done(null, user);
         }
         else 
@@ -163,13 +163,13 @@ function everyRequest(req: express.Request, res: express.Response, next: express
 {
     if(ipList.includes(req.socket.remoteAddress!))
     {
-      LOG(`Blacklisted ip tried to access. IP: ${req.socket.remoteAddress}`, 'ip');
+      LOG(`Blacklisted ip tried to access. IP: ${req.socket.remoteAddress}`, 'banned ip tried to access');
       res.send('banned L');
       res.end();
     }
     else
     {
-      LOG(`Request URL: ${decodeURI(req.originalUrl)}\nIP: ${req.socket.remoteAddress}`, 'ip');
+      LOG(`Request URL: ${decodeURI(req.originalUrl)}\nIP: ${req.socket.remoteAddress}`, 'request url');
       next();
     }
 }
@@ -206,7 +206,7 @@ app.post('/login', (req: express.Request, res: express.Response, next: express.N
 })
 
 app.get('/editor', (req: express.Request, res: express.Response) => {
-    LOG(req.user, 'user');
+    LOG(req.user, 'user data');
     res.sendFile('editor.html', {root: rootdirectory});
 })
 
@@ -232,14 +232,14 @@ app.post('/register', (req: express.Request, res: express.Response) => {
     password: password 
   });
   fs.mkdir(path.resolve(accountsDir, id), () => {
-    LOG('created account folder', 'status');
+    LOG('created account folder', 'created account folder');
   })
   bcrypt.genSalt(10, (err: Error, salt) => {
     bcrypt.hash(newUser.password, salt,(err: Error, hash) => {
-      if(err) LOG('Error hashing password.', 'status');
+      if(err) LOG('Error hashing password.', 'Error hashing password.');
       newUser.password = hash;
       newUser.save().then((value: any) => {
-        LOG(value, 'login');
+        LOG(value, 'register user');
         res.redirect('/login');
       });
     });
@@ -254,11 +254,11 @@ app.get('/register_check/id', (req: express.Request, res: express.Response) => {
   if(req.query.id)
   {
     let userId : any = req.query.id;
-    LOG(userId, 'register');
+    LOG(userId, 'id register check');
     User.findOne({username: userId}).exec((err: any, user: any) => {
       if(user)
       {
-        LOG('there is already an account', 'register');
+        LOG('there is already an account', 'there is already an account');
         res.json({success: false});
       }
       else
@@ -273,7 +273,7 @@ app.get('/register_check/email', (req: express.Request, res: express.Response) =
   if(req.query.email)
   {
     let emailAddress : any = req.query.email;
-    LOG(emailAddress, 'register');
+    LOG(emailAddress, 'email register check');
     User.findOne({email: emailAddress}).exec((err: any, user: any) => {
       if(user)
       {
@@ -289,7 +289,7 @@ app.get('/register_check/email', (req: express.Request, res: express.Response) =
 
 
 app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', (req: express.Request, res: express.Response) => {
-  LOG('get node modules', 'node_modules');
+  LOG('get node modules', 'get node modules');
   res.sendFile('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', {root: rootDir});
 });
 
@@ -317,7 +317,7 @@ async function readDirectory(path: string, socket: any, result: dirObject, callb
     fs.readdir(path, {withFileTypes: true},async (err: NodeJS.ErrnoException | null, content: fs.Dirent[])=>{
       if(err)
       {
-        LOG(`couldnt load project\n${err}`, 'status');
+        LOG(err, 'could not load project');
         socket.emit('loadedProject', {
           value: 'Could not load folder ' + path,
           style: 'err'
@@ -364,13 +364,13 @@ io.use(sharedSession(sessionMiddleware, {
 }));
 io.sockets.on('connection', (socket:any) => {
     var address = socket.handshake.address;
-    LOG(`New connection from ${JSON.stringify(address)} ${socket.id}`, 'ip');
+    LOG(`New connection from ${JSON.stringify(address)} ${socket.id}`, 'new connection');
     //defaultはguestとして入る
     users.set(socket.id, "guest");
     fs.mkdir(accountsDir + 'guest/' + socket.id, (err) => {
       if(err)
       {
-        LOG(`could not create ${accountsDir}guest/${socket.id}`, 'status');
+        LOG(`could not create ${accountsDir}guest/${socket.id}`, 'could not create guest folder');
       }
     });
     usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
@@ -380,7 +380,7 @@ io.sockets.on('connection', (socket:any) => {
     else
       userId = 'guest';
     User.findOne({_id: userId}).exec((err: any, user: any) => {
-      LOG(user, 'user');
+      LOG(user, 'user data');
       if(err)
       {
         socket.emit('login', {
@@ -543,13 +543,13 @@ io.sockets.on('connection', (socket:any) => {
     })
     //disconnectしたとき
     socket.on('disconnect', () => {
-      LOG("user disconnected", 'user');
+      LOG("user disconnected", 'user disconnected');
       if(users.get(socket.id) == 'guest')
       {
         if(usersDirectory.get(socket.id))
         {
           fs.rmdir((usersDirectory.get(socket.id)!), (err: NodeJS.ErrnoException | null) => {
-            LOG(`${usersDirectory.get(socket.id)} deleted`, 'user');
+            LOG(`${usersDirectory.get(socket.id)} deleted`, 'user connection deleted');
           });        
         }
       }
@@ -563,5 +563,5 @@ app.use((req :express.Request, res :express.Response, next) => {
 });
 
   httpsServer.listen(port, () => {
-    LOG('Server at https://rootlang.ddns.net', 'status');
+    LOG('Server at https://rootlang.ddns.net', 'Server at https://rootlang.ddns.net');
   })
