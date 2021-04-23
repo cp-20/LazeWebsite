@@ -81,7 +81,10 @@ var io = require('socket.io')(httpsServer);
 var port = 443;
 //log function
 function LOG(log, title) {
-    console.log(title + "(" + log + ")`");
+    if (typeof log === 'object' && log != null)
+        console.log(title + "(" + JSON.stringify(log) + ")`");
+    else
+        console.log(title + "(" + log + ")`");
 }
 //mount usb
 var accountsDir = '/media/usb/compilerserver/accounts/';
@@ -201,12 +204,11 @@ function everyRequest(req, res, next) {
         res.end();
     }
     else {
-        LOG("Request URL: " + req.originalUrl + "\nIP: " + req.socket.remoteAddress, 'ip');
+        LOG("Request URL: " + decodeURI(req.originalUrl) + "\nIP: " + req.socket.remoteAddress, 'ip');
         next();
     }
 }
 app.use(express_1.default.static(rootdirectory));
-app.use(everyRequest);
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -218,6 +220,7 @@ var sessionMiddleware = express_session_1.default({
 app.use(sessionMiddleware);
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
+app.use(everyRequest);
 app.get('/', function (req, res) {
     res.sendFile('index.html', { root: rootdirectory });
 });
@@ -301,6 +304,18 @@ app.get('/register_check/email', function (req, res) {
 app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', function (req, res) {
     LOG('get node modules', 'node_modules');
     res.sendFile('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', { root: rootDir });
+});
+app.get('/avatar/id', function (req, res) {
+    LOG('avatar debug', 'avatar debug');
+    var avatarPath = path.resolve("" + accountsDir + req.query.id, 'avatar.png');
+    fs_1.default.access(avatarPath, function (err) {
+        if (err) {
+            res.sendFile(path.resolve('/home/pi/Compiler/client/assets/icons', 'guest.png'));
+        }
+        else {
+            res.sendFile(avatarPath);
+        }
+    });
 });
 var users = new Map();
 var usersDirectory = new Map();

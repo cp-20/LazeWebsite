@@ -25,6 +25,9 @@ const port : number = 443;
 //log function
 function LOG(log: any, title: string)
 {
+  if(typeof log === 'object' && log != null)
+    console.log(`${title}(${JSON.stringify(log)})\``);
+  else
   console.log(`${title}(${log})\``);
 }
 //mount usb
@@ -166,14 +169,13 @@ function everyRequest(req: express.Request, res: express.Response, next: express
     }
     else
     {
-      LOG(`Request URL: ${req.originalUrl}\nIP: ${req.socket.remoteAddress}`, 'ip');
+      LOG(`Request URL: ${decodeURI(req.originalUrl)}\nIP: ${req.socket.remoteAddress}`, 'ip');
       next();
     }
 }
 
 app.use(express.static(rootdirectory));
 
-app.use(everyRequest);
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -185,6 +187,8 @@ var sessionMiddleware = session({
 app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(everyRequest);
+
 
 app.get('/', (req: express.Request, res: express.Response) => {
     res.sendFile('index.html', {root: rootdirectory});
@@ -287,6 +291,19 @@ app.get('/register_check/email', (req: express.Request, res: express.Response) =
 app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', (req: express.Request, res: express.Response) => {
   LOG('get node modules', 'node_modules');
   res.sendFile('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', {root: rootDir});
+});
+
+app.get('/avatar/id', (req: express.Request, res: express.Response) => {
+  LOG('avatar debug', 'avatar debug');
+  let avatarPath = path.resolve(`${accountsDir}${req.query.id}`, 'avatar.png');
+  fs.access(avatarPath, (err) => {
+		if(err){
+			res.sendFile(path.resolve('/home/pi/Compiler/client/assets/icons', 'guest.png'));
+		}
+		else{
+			res.sendFile(avatarPath);
+		}
+	})
 })
 
 let users: Map<string, string> = new Map();
