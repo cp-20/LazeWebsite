@@ -94,13 +94,13 @@ fs_1.default.access(accountsDir, function (err) {
             if (!err) {
                 exec('sudo umount /media/pi/A042-416A', function () {
                     exec('sudo mount /dev/sda1 /media/usb', function () {
-                        LOG('mounted usb', 'status');
+                        LOG('mounted usb', 'mounted usb');
                     });
                 });
             }
             else {
                 exec('sudo mount /dev/sda1 /media/usb', function () {
-                    LOG('mounted usb', 'status');
+                    LOG('mounted usb', 'mounted usb');
                 });
             }
         });
@@ -110,24 +110,24 @@ fs_1.default.access(accountsDir, function (err) {
 var ipList;
 fs_1.default.readFile('/home/pi/ipBlacklist', function (err, data) {
     if (err) {
-        LOG('Could not read blacklist.', 'status');
+        LOG('Could not read blacklist.', 'Could not read blacklist.');
     }
     else {
         var blacklistData = data.toString();
         ipList = blacklistData.split(';\n');
-        LOG(ipList.length + " blocked ip addresses.", 'status');
+        LOG(ipList.length + " blocked ip addresses.", ipList.length + " blocked ip addresses.");
     }
 });
 // const ipfilter = require('express-ipfilter').IpFilter;
 fs_1.default.watchFile('/home/pi/ipBlacklist', function (curr, prev) {
     fs_1.default.readFile('/home/pi/ipBlacklist', function (err, data) {
         if (err) {
-            LOG('Could not read ipBlacklist.', 'status');
+            LOG('Could not read ipBlacklist.', 'Could not read ipBlacklist.');
         }
         else {
             var blacklistData = data.toString();
             ipList = blacklistData.split(';\n');
-            LOG(ipList.length + " blocked ip addresses.", 'status');
+            LOG(ipList.length + " blocked ip addresses.", ipList.length + " blocked ip addresses.");
             // app.use(ipfilter(ipList));
         }
     });
@@ -138,25 +138,25 @@ var User = require('./database');
 mongoose_1.default.connect('mongodb+srv://coder6583:curvingchicken@compilerserver.akukg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
-}).then(function () { LOG('connected to database', 'status'); });
+}).then(function () { LOG('connected to database', 'connected to database'); });
 mongoose_1.default.Promise = global.Promise;
 //passport
 var passport_1 = __importDefault(require("passport"));
 var LocalStrategy = require('passport-local').Strategy;
 passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordField: 'loginPassword' }, function (username, password, done) {
-    LOG('Login Attempt', 'login');
+    LOG('Login Attempt', 'Login Attempt');
     User.findOne({ email: username }).then(function (user) {
         if (!user) {
             User.findOne({ username: username }).then(function (user_) {
                 if (!user_) {
-                    LOG('account not found', 'login');
+                    LOG('account not found', 'account not found');
                     return done(null, false, { message: 'That email is not registered' });
                 }
                 bcrypt_1.default.compare(password, user_.password, function (err, isMatch) {
                     if (err)
-                        LOG(err, 'login');
+                        LOG(err, 'login error');
                     if (isMatch) {
-                        LOG('logged in!', 'login');
+                        LOG('logged in!', 'logged in!');
                         return done(null, user_);
                     }
                     else {
@@ -168,9 +168,9 @@ passport_1.default.use(new LocalStrategy({ usernameField: 'loginId', passwordFie
         }
         bcrypt_1.default.compare(password, user.password, function (err, isMatch) {
             if (err)
-                LOG(err, 'login');
+                LOG(err, 'login error');
             if (isMatch) {
-                LOG('logged in!', 'login');
+                LOG('logged in!', 'logged in!');
                 return done(null, user);
             }
             else {
@@ -199,12 +199,12 @@ var express_socket_io_session_1 = __importDefault(require("express-socket.io-ses
 //request時に実行するmiddleware function
 function everyRequest(req, res, next) {
     if (ipList.includes(req.socket.remoteAddress)) {
-        LOG("Blacklisted ip tried to access. IP: " + req.socket.remoteAddress, 'ip');
+        LOG("Blacklisted ip tried to access. IP: " + req.socket.remoteAddress, 'banned ip tried to access');
         res.send('banned L');
         res.end();
     }
     else {
-        LOG("Request URL: " + decodeURI(req.originalUrl) + "\nIP: " + req.socket.remoteAddress, 'ip');
+        LOG("Request URL: " + decodeURI(req.originalUrl) + "\nIP: " + req.socket.remoteAddress, 'request url');
         next();
     }
 }
@@ -234,7 +234,7 @@ app.post('/login', function (req, res, next) {
     })(req, res, next);
 });
 app.get('/editor', function (req, res) {
-    LOG(req.user, 'user');
+    LOG(req.user, 'user data');
     res.sendFile('editor.html', { root: rootdirectory });
 });
 app.get('/docs', function (req, res) {
@@ -255,15 +255,15 @@ app.post('/register', function (req, res) {
         password: password
     });
     fs_1.default.mkdir(path.resolve(accountsDir, id), function () {
-        LOG('created account folder', 'status');
+        LOG('created account folder', 'created account folder');
     });
     bcrypt_1.default.genSalt(10, function (err, salt) {
         bcrypt_1.default.hash(newUser.password, salt, function (err, hash) {
             if (err)
-                LOG('Error hashing password.', 'status');
+                LOG('Error hashing password.', 'Error hashing password.');
             newUser.password = hash;
             newUser.save().then(function (value) {
-                LOG(value, 'login');
+                LOG(value, 'register user');
                 res.redirect('/login');
             });
         });
@@ -275,10 +275,10 @@ app.get('/pass_reset', function (req, res) {
 app.get('/register_check/id', function (req, res) {
     if (req.query.id) {
         var userId = req.query.id;
-        LOG(userId, 'register');
+        LOG(userId, 'id register check');
         User.findOne({ username: userId }).exec(function (err, user) {
             if (user) {
-                LOG('there is already an account', 'register');
+                LOG('there is already an account', 'there is already an account');
                 res.json({ success: false });
             }
             else {
@@ -290,7 +290,7 @@ app.get('/register_check/id', function (req, res) {
 app.get('/register_check/email', function (req, res) {
     if (req.query.email) {
         var emailAddress = req.query.email;
-        LOG(emailAddress, 'register');
+        LOG(emailAddress, 'email register check');
         User.findOne({ email: emailAddress }).exec(function (err, user) {
             if (user) {
                 res.json({ success: false });
@@ -302,7 +302,7 @@ app.get('/register_check/email', function (req, res) {
     }
 });
 app.get('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', function (req, res) {
-    LOG('get node modules', 'node_modules');
+    LOG('get node modules', 'get node modules');
     res.sendFile('/node_modules/jquery-resizable-dom/src/jquery-resizable.js', { root: rootDir });
 });
 app.get('/avatar/id', function (req, res) {
@@ -332,7 +332,7 @@ function readDirectory(path, socket, result, callback) {
                             switch (_a.label) {
                                 case 0:
                                     if (!err) return [3 /*break*/, 1];
-                                    LOG("couldnt load project\n" + err, 'status');
+                                    LOG(err, 'could not load project');
                                     socket.emit('loadedProject', {
                                         value: 'Could not load folder ' + path,
                                         style: 'err'
@@ -380,12 +380,12 @@ function readDirectory(path, socket, result, callback) {
 io.use(express_socket_io_session_1.default(sessionMiddleware, {}));
 io.sockets.on('connection', function (socket) {
     var address = socket.handshake.address;
-    LOG("New connection from " + JSON.stringify(address) + " " + socket.id, 'ip');
+    LOG("New connection from " + JSON.stringify(address) + " " + socket.id, 'new connection');
     //defaultはguestとして入る
     users.set(socket.id, "guest");
     fs_1.default.mkdir(accountsDir + 'guest/' + socket.id, function (err) {
         if (err) {
-            LOG("could not create " + accountsDir + "guest/" + socket.id, 'status');
+            LOG("could not create " + accountsDir + "guest/" + socket.id, 'could not create guest folder');
         }
     });
     usersDirectory.set(socket.id, accountsDir + 'guest/' + socket.id);
@@ -395,7 +395,7 @@ io.sockets.on('connection', function (socket) {
     else
         userId = 'guest';
     User.findOne({ _id: userId }).exec(function (err, user) {
-        LOG(user, 'user');
+        LOG(user, 'user data');
         if (err) {
             socket.emit('login', {
                 id: 'guest',
@@ -553,11 +553,11 @@ io.sockets.on('connection', function (socket) {
     }); });
     //disconnectしたとき
     socket.on('disconnect', function () {
-        LOG("user disconnected", 'user');
+        LOG("user disconnected", 'user disconnected');
         if (users.get(socket.id) == 'guest') {
             if (usersDirectory.get(socket.id)) {
                 fs_1.default.rmdir((usersDirectory.get(socket.id)), function (err) {
-                    LOG(usersDirectory.get(socket.id) + " deleted", 'user');
+                    LOG(usersDirectory.get(socket.id) + " deleted", 'user connection deleted');
                 });
             }
         }
@@ -569,5 +569,5 @@ app.use(function (req, res, next) {
     res.sendFile('err404.html', { root: rootdirectory });
 });
 httpsServer.listen(port, function () {
-    LOG('Server at https://rootlang.ddns.net', 'status');
+    LOG('Server at https://rootlang.ddns.net', 'Server at https://rootlang.ddns.net');
 });
