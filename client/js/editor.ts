@@ -235,4 +235,13 @@ function updateAccount() {
 	$('#account-name').text(account.username);
 	// アバター画像
 	$('#avatar-img').attr('src', `/avatar/id?id=${account.id}`);
+	// ドロップダウン更新
+	const accountMenu = $('ul[aria-labelledby="account-menu"]');
+	if (account.id === 'guest') {
+		accountMenu.removeClass('user');
+		accountMenu.addClass('guest');
+	}else {
+		accountMenu.addClass('user');
+		accountMenu.removeClass('guest');
+	}
 }
