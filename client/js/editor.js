@@ -126,6 +126,38 @@ function compile(editor) {
         value: value,
     });
 }
+// ============ WebAssembly関係 ==========
+var memory = new WebAssembly.Memory({ initial: 16 });
+var importObject = {
+    console: {
+        log: function (arg) {
+            console.log(arg);
+        },
+    },
+    js: {
+        mem: memory,
+    },
+};
+socket.on('compileFinished', function (result) {
+    fetch('./main.wasm')
+        .then(function (response) { return response.arrayBuffer(); })
+        .then(function (bytes) { return WebAssembly.instantiate(bytes, importObject); })
+        .then(function (results) {
+        var instance = results.instance;
+        // @ts-ignore
+        var res = instance.exports.main();
+        var byteArray = new Uint8ClampedArray(memory.buffer, 0, 512 * 512 * 4);
+        var img = new ImageData(byteArray, 512, 512);
+        var canvas = document.getElementById('output-canvas');
+        if (canvas) {
+            var ctx = canvas.getContext('2d');
+            if (ctx)
+                ctx.putImageData(img, 0, 0);
+        }
+    })
+        .catch(console.error);
+});
+// ============ WebAssembly関係 ==========
 // プロジェクトのロードor作成をキャンセル
 function setNameCancel() {
     $('#overlay').removeClass('show');
