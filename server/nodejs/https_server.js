@@ -109,25 +109,25 @@ fs_1.default.access(accountsDir, function (err) {
 });
 //ip filter
 var ipList;
-fs_1.default.readFile('/home/pi/ipBlacklist', function (err, data) {
+fs_1.default.readFile('/home/pi/ipBlacklist.json', function (err, data) {
     if (err) {
         LOG('Could not read blacklist.', 'Could not read blacklist.');
     }
     else {
-        var blacklistData = data.toString();
-        ipList = blacklistData.split(';\n');
+        var blacklistData = JSON.parse(data.toString() || "null");
+        ipList = blacklistData.value;
         LOG(ipList.length + " blocked ip addresses.", ipList.length + " blocked ip addresses.");
     }
 });
 // const ipfilter = require('express-ipfilter').IpFilter;
-fs_1.default.watchFile('/home/pi/ipBlacklist', function (curr, prev) {
-    fs_1.default.readFile('/home/pi/ipBlacklist', function (err, data) {
+fs_1.default.watchFile('/home/pi/ipBlacklist.json', function (curr, prev) {
+    fs_1.default.readFile('/home/pi/ipBlacklist.json', function (err, data) {
         if (err) {
             LOG('Could not read ipBlacklist.', 'Could not read ipBlacklist.');
         }
         else {
-            var blacklistData = data.toString();
-            ipList = blacklistData.split(';\n');
+            var blacklistData = JSON.stringify(data.toString() || "null");
+            ipList = blacklistData.value;
             LOG(ipList.length + " blocked ip addresses.", ipList.length + " blocked ip addresses.");
             // app.use(ipfilter(ipList));
         }
