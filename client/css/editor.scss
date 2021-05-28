@@ -342,6 +342,9 @@ div.explorer {
 					&.info .output-value {
 						color: #0a0;
 					}
+					&.console .output-value {
+						color: #33c;
+					}
 
 					&:hover {
 						background-color: rgba(white, 0.02);

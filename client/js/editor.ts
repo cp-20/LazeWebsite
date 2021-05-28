@@ -145,6 +145,7 @@ const memory = new WebAssembly.Memory({ initial: 16 });
 var importObject = {
 	console: {
 		log: function (arg: any) {
+			logConsole(arg, 'console');
 			console.log(arg);
 		},
 	},
