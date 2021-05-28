@@ -317,6 +317,14 @@ app.get('/avatar/id', function (req, res) {
         }
     });
 });
+app.get('/getwasm', function (req, res) {
+    var wasmPath = path.resolve("" + accountsDir + req.query.account, req.query.filename + ".wasm");
+    fs_1.default.access(wasmPath, function (err) {
+        if (!err) {
+            res.sendFile(wasmPath);
+        }
+    });
+});
 var users = new Map();
 var usersDirectory = new Map();
 var usersProjectDirectory = new Map();
@@ -450,6 +458,18 @@ io.sockets.on('connection', function (socket) {
                                 style: 'log'
                             });
                         }
+                        exec("./wat2wasm " + usersDirectory.get(socket.id) + "/" + input.filename + ".wat -o " + usersDirectory.get(socket.id) + "/" + input.filename + ".wasm", function (err, stdout, stderr) {
+                            if (err) {
+                                socket.emit('output', {
+                                    value: stderr,
+                                    style: 'err'
+                                });
+                            }
+                            socket.emit('compileFinished', {
+                                success: true,
+                                wasm: "/getwasm?account=" + users.get(socket.id) + "&filename=" + input.filename
+                            });
+                        });
                         exec('sudo rm -f ' + input.filename + ' .' + input.filename);
                     }
                     return;

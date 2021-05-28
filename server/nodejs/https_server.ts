@@ -305,6 +305,15 @@ app.get('/avatar/id', (req: express.Request, res: express.Response) => {
 		}
 	})
 })
+app.get('/getwasm', (req: express.Request, res: express.Response) => {
+  let wasmPath = path.resolve(`${accountsDir}${req.query.account}`, `${req.query.filename}.wasm`);
+  fs.access(wasmPath, (err) => {
+    if(!err)
+    {
+      res.sendFile(wasmPath)
+    }
+  })
+})
 
 let users: Map<string, string> = new Map();
 let usersDirectory: Map<string, string> = new Map();
@@ -439,6 +448,19 @@ io.sockets.on('connection', (socket:any) => {
                 style: 'log'
               });
             }
+            exec(`./wat2wasm ${usersDirectory.get(socket.id)}/${input.filename}.wat -o ${usersDirectory.get(socket.id)}/${input.filename}.wasm`, (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) => {
+              if(err)
+              {
+                socket.emit('output', {
+                  value: stderr,
+                  style: 'err'
+                });
+              }
+              socket.emit('compileFinished', {
+                success: true,
+                wasm: `/getwasm?account=${users.get(socket.id)}&filename=${input.filename}`
+              });
+            })
             exec('sudo rm -f ' + input.filename + ' .' + input.filename);
           }
           return;
