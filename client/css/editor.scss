@@ -5,10 +5,15 @@
 	src: url('../assets/fonts/Consolas.ttf');
 }
 
-html, body, main.container {
+html,
+body,
+main.container {
 	max-width: 100%;
 	width: 100%;
 	height: 100%;
+}
+body {
+	overflow: hidden;
 }
 
 div.spliter {
@@ -100,19 +105,27 @@ div.explorer {
 					}
 
 					&:not(.opened) {
-						&::before { background-image: url('../assets/icons/folder-close.svg'); }
+						&::before {
+							background-image: url('../assets/icons/folder-close.svg');
+						}
 
-						& + ul { display: none; }
+						& + ul {
+							display: none;
+						}
 					}
 					&.opened {
-							&::before { background-image: url('../assets/icons/folder-open.svg'); }
+						&::before {
+							background-image: url('../assets/icons/folder-open.svg');
+						}
 
-						& + ul { display: block; }
+						& + ul {
+							display: block;
+						}
 					}
 				}
 
 				&:hover {
-					background-color: rgba(black, .05);
+					background-color: rgba(black, 0.05);
 				}
 			}
 		}
@@ -123,7 +136,7 @@ div.explorer {
 	background-color: $color-bg;
 	display: flex;
 	flex-direction: column;
-	
+
 	.settings {
 		display: flex;
 		flex-direction: row-reverse;
@@ -133,14 +146,14 @@ div.explorer {
 		.account-menu {
 			.btn-setting {
 				box-shadow: none;
-				
+
 				&::after {
-					vertical-align: .5em;
+					vertical-align: 0.5em;
 				}
 				&:hover::after {
 					border-top-color: #666;
 				}
-				
+
 				.avatar {
 					display: inline-flex;
 					justify-content: center;
@@ -159,12 +172,20 @@ div.explorer {
 			}
 
 			.dropdown-menu.guest {
-				.guest { display: block; }
-				.user { display: none; }
+				.guest {
+					display: block;
+				}
+				.user {
+					display: none;
+				}
 			}
 			.dropdown-menu:not(.guest) {
-				.guest { display: none; }
-				.user { display: block; }
+				.guest {
+					display: none;
+				}
+				.user {
+					display: block;
+				}
 			}
 		}
 	}
@@ -176,7 +197,7 @@ div.explorer {
 
 		.btn-editor {
 			margin: 0 5px;
-			
+
 			&.btn-compile::before {
 				content: 'コンパイル＆実行';
 			}
@@ -189,7 +210,8 @@ div.explorer {
 			&.btn-newproject::before {
 				content: '新しいプロジェクト';
 			}
-			&:hover::before, &:hover::after {
+			&:hover::before,
+			&:hover::after {
 				visibility: visible;
 				opacity: 1;
 			}
@@ -197,11 +219,11 @@ div.explorer {
 				position: absolute;
 				visibility: hidden;
 				opacity: 0;
-				transition: all .2s;
+				transition: all 0.2s;
 				margin-top: -34px;
 				padding: 1px 5px;
 				border-radius: 3px;
-				background-color: rgba(black, .4);
+				background-color: rgba(black, 0.4);
 				pointer-events: none;
 				transform: translateX(calc(16px - 50%));
 			}
@@ -211,12 +233,12 @@ div.explorer {
 				position: absolute;
 				visibility: hidden;
 				opacity: 0;
-				transition: all .2s;
+				transition: all 0.2s;
 				margin-top: -8px;
 				width: 10px;
 				height: 10px;
 				border: solid transparent 6px;
-				border-top: solid rgba(black, .4) 6px;
+				border-top: solid rgba(black, 0.4) 6px;
 				transform: translateX(-22px);
 			}
 
@@ -239,67 +261,113 @@ div.explorer {
 
 	.editor-console {
 		display: flex;
-		flex-direction: column;
-		height: 150px;
+		flex-direction: row;
 		min-height: 30px;
-		background-color: rgb(30, 30, 30);
+		height: 150px;
 
-		.console-label {
-			height: 30px;
-			border-bottom: solid lightgray 1px;
+		.editor-output {
+			width: calc(50%);
+			min-width: 50px;
+			max-width: calc(100% - 100px);
+			background-color: rgb(30, 30, 30);
 
-			p {
+			.editor-output-label {
+				border-bottom: solid lightgray 1px;
 				color: rgb(216, 228, 228);
-				margin: 0 0 0 10px;
-				line-height: 30px;
+			}
+		}
+		.editor-graphics {
+			flex: 1;
+			background-color: rgb(250, 250, 250);
+
+			.editor-output-label {
+				border-bottom: solid rgb(70, 70, 70) 1px;
+				color: rgb(30, 30, 30);
+			}
+		}
+		.editor-output-pane {
+			height: auto;
+			display: flex;
+			flex-direction: column;
+			min-height: 30px;
+
+			.editor-output-label {
+				height: 30px;
+
+				p {
+					margin: 0 0 0 10px;
+					line-height: 30px;
+				}
+			}
+
+			.editor-output-aria {
+				height: 100%;
+				width: 100%;
+			}
+
+			#editor-console {
+				display: flex;
+				flex-direction: column-reverse;
+				flex: 1;
+				padding-bottom: 5px;
+				overflow: hidden scroll;
+				font-family: 'My Consolas', sans-serif;
+
+				&::-webkit-scrollbar {
+					width: 10px;
+				}
+
+				&::-webkit-scrollbar-thumb {
+					background-color: rgba(white, 0.1);
+
+					&:hover {
+						background-color: rgba(white, 0.2);
+					}
+					&:active {
+						background-color: rgba(white, 0.3);
+					}
+				}
+
+				div {
+					display: flex;
+					padding: 0 5px 0 10px;
+					font-size: 0.9rem;
+
+					&.log .output-value {
+						color: rgb(181, 192, 192);
+					}
+					&.err .output-value {
+						color: #f33;
+					}
+					&.info .output-value {
+						color: #0a0;
+					}
+
+					&:hover {
+						background-color: rgba(white, 0.02);
+
+						.output-timestamp {
+							color: #ddd;
+						}
+					}
+					.output-timestamp {
+						color: #888;
+						margin-left: auto;
+						user-select: none;
+					}
+				}
+			}
+
+			#editor-graphics {
+				canvas {
+					width: 100%;
+					height: 100%;
+				}
 			}
 		}
 
-		#editor-console {
-			display: flex;
-			flex-direction: column-reverse;
-			flex: 1;
-			padding-bottom: 5px;
-			overflow: hidden scroll;
-			font-family: 'My Consolas', sans-serif;
-
-			&::-webkit-scrollbar {
-				width: 10px;
-			}
-
-			&::-webkit-scrollbar-thumb {
-				background-color: rgba(white, .1);
-
-				&:hover {
-					background-color: rgba(white, .2);
-				}
-				&:active {
-					background-color: rgba(white, .3);
-				}
-			}
-
-			div {
-				display: flex;
-				padding: 0 5px 0 10px;
-				font-size: .9rem;
-
-				&.log .output-value { color: rgb(181, 192, 192); }
-				&.err .output-value { color: #f33; }
-				&.info .output-value { color: #0a0; }
-
-				&:hover {
-					background-color: rgba(white, .02);
-
-					.output-timestamp {
-						color: #ddd;
-					}
-				}
-				.output-timestamp {
-					color: #888;
-					margin-left: auto;
-					user-select: none;
-				}
-			}
+		.editor-output-spliter {
+			width: 2px;
 		}
 	}
 }
@@ -314,10 +382,10 @@ div.explorer {
 	width: 100vw;
 	height: 100vh;
 	z-index: 10;
-	background-color: rgba(black, .3);
+	background-color: rgba(black, 0.3);
 	visibility: hidden;
 	opacity: 0;
-	transition: all .1s;
+	transition: all 0.1s;
 
 	.overlay-box {
 		width: 400px;
@@ -325,7 +393,8 @@ div.explorer {
 		padding: 20px;
 		background-color: whitesmoke;
 
-		label, input {
+		label,
+		input {
 			display: block;
 			width: 100%;
 			margin-bottom: 15px;
@@ -376,14 +445,14 @@ div.explorer {
 		width: 300px;
 		height: 40px;
 
-		background-color: rgba(black, .5);
+		background-color: rgba(black, 0.5);
 		color: whitesmoke;
 
 		&.err {
-			background-color: rgba(rgb(184, 12, 0), .7);
+			background-color: rgba(rgb(184, 12, 0), 0.7);
 
 			&::after {
-				background-color: rgba(rgb(153, 10, 0), .9);
+				background-color: rgba(rgb(153, 10, 0), 0.9);
 			}
 		}
 
@@ -411,7 +480,7 @@ div.explorer {
 				margin-bottom: 0;
 			}
 		}
-		animation: popup .5s forwards, popup-end .5s 5.5s;
+		animation: popup 0.5s forwards, popup-end 0.5s 5.5s;
 
 		&.close {
 			@keyframes popup-end2 {
@@ -427,7 +496,7 @@ div.explorer {
 				}
 			}
 
-			animation: popup-end2 .5s forwards;
+			animation: popup-end2 0.5s forwards;
 
 			&::after {
 				@keyframes popup-progress-end2 {
@@ -438,7 +507,7 @@ div.explorer {
 						margin-top: -3px;
 					}
 				}
-				animation: popup-progress-end2 .5s;
+				animation: popup-progress-end2 0.5s;
 			}
 		}
 
@@ -452,7 +521,7 @@ div.explorer {
 			align-items: center;
 
 			margin: 0 10px 0 auto;
-			
+
 			background-color: transparent;
 			outline: 0;
 			border: none;
@@ -475,9 +544,9 @@ div.explorer {
 			margin-top: 37px;
 			height: 3px;
 
-			background-color: rgba(black, .5);
-			
-			animation: popup-progress 5s .5s linear forwards, popup-progress-end .5s 5.5s;
+			background-color: rgba(black, 0.5);
+
+			animation: popup-progress 5s 0.5s linear forwards, popup-progress-end 0.5s 5.5s;
 			@keyframes popup-progress {
 				0% {
 					width: 0;
@@ -502,7 +571,7 @@ div.CodeMirror {
 	height: 100%;
 	padding: 0;
 	font-family: 'My Consolas', sans-serif;
-	font-size: .9rem;
+	font-size: 0.9rem;
 	background-color: whitesmoke;
 
 	.CodeMirror-vscrollbar {
@@ -519,10 +588,10 @@ div.CodeMirror {
 	}
 	.CodeMirror-sizer {
 		// margin-left: 45px!important;
-		padding-right: 10px!important;
+		padding-right: 10px !important;
 	}
 	.CodeMirror-cursor {
-		height: 20px!important;
+		height: 20px !important;
 		border-width: 2px;
 	}
 	.CodeMirror-code {
@@ -538,25 +607,25 @@ div.CodeMirror {
 		padding: 0;
 	}
 	.CodeMirror-gutters {
-		left: 0px!important;
+		left: 0px !important;
 		width: 65px;
 		background-color: whitesmoke;
 
 		.CodeMirror-linenumbers {
-			width: 50px!important;
+			width: 50px !important;
 		}
 		.CodeMirror-foldgutter {
-			width: 15px!important;
+			width: 15px !important;
 		}
 	}
 	.CodeMirror-gutter-wrapper {
 		.CodeMirror-linenumber {
-			width: 40px!important;
+			width: 40px !important;
 			color: #333;
 		}
 		.CodeMirror-gutter-elt:not(.CodeMirror-linenumber) {
-			left: 55px!important;
-			
+			left: 55px !important;
+
 			.CodeMirror-guttermarker-subtle::after {
 				position: relative;
 				top: -6px;
@@ -564,7 +633,9 @@ div.CodeMirror {
 			}
 		}
 	}
-	.CodeMirror-selected, .CodeMirror-activeline-background, .CodeMirror-activeline-gutter {
+	.CodeMirror-selected,
+	.CodeMirror-activeline-background,
+	.CodeMirror-activeline-gutter {
 		background-color: #d7e6fa;
 	}
 	.CodeMirror-activeline-gutter {

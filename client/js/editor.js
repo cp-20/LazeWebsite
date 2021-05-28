@@ -10,7 +10,7 @@ $(function () {
             editor.parentNode.replaceChild(elt, editor);
     }, {
         value: '',
-        mode: "javascript",
+        mode: 'javascript',
         tabSize: 2,
         indentWithTabs: true,
         electricChars: true,
@@ -20,10 +20,14 @@ $(function () {
         matchBrackets: true,
         autoCloseBrackets: true,
         widget: '…',
-        // @ts-ignore
-        extraKeys: { "Ctrl-Q": function (cm) { cm.foldCode(cm.getCursor()); } },
+        extraKeys: {
+            'Ctrl-Q': function (cm) {
+                // @ts-ignore
+                cm.foldCode(cm.getCursor());
+            },
+        },
         foldGutter: true,
-        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
     });
     // @ts-ignore
     editor.setOption('styleActiveLine', { nonEmpty: false });
@@ -33,17 +37,21 @@ $(function () {
     $('#btn-compile').on('click', function () { return compile(editor); });
     $('#btn-newproject').on('click', newProject);
     // newProject
-    $('#project-name').on('keyup', function () { return $('#project-name').val() ? $('#setname-submit').prop('disabled', false) : $('#setname-submit').prop('disabled', true); });
+    $('#project-name').on('keyup', function () { return ($('#project-name').val() ? $('#setname-submit').prop('disabled', false) : $('#setname-submit').prop('disabled', true)); });
     $('#setname-cancel').on('click', setNameCancel);
     // リサイズ可能に
     $('.explorer').resizable({
         handleSelector: '.exp-spliter',
-        resizeHeight: false
+        resizeHeight: false,
     });
     $('.editor-console').resizable({
         handleSelector: '.console-spliter',
         resizeWidth: false,
-        resizeHeightFrom: 'top'
+        resizeHeightFrom: 'top',
+    });
+    $('.editor-output').resizable({
+        handleSelector: '.editor-output-spliter',
+        resizeHeight: false,
     });
     // アカウントのステータス更新
     updateAccount();
@@ -55,7 +63,7 @@ var projectName = 'Project1';
 var account = {
     id: 'guest',
     username: 'ゲスト',
-    avatar: ''
+    avatar: '',
 };
 // ログ出力
 function logConsole(value, style) {
@@ -107,7 +115,7 @@ function save(editor) {
     socket.emit('save', {
         projectName: projectName,
         filename: editFileName,
-        value: value
+        value: value,
     });
 }
 // コンパイル
@@ -115,7 +123,7 @@ function compile(editor) {
     var value = editor.getValue();
     socket.emit('compile', {
         filename: editFileName,
-        value: value
+        value: value,
     });
 }
 // プロジェクトのロードor作成をキャンセル
@@ -137,7 +145,7 @@ function setloadFileName() {
     var projectName = (_a = $('#project-name').val()) === null || _a === void 0 ? void 0 : _a.toString();
     if (projectName) {
         socket.emit('loadProject', {
-            projectName: projectName
+            projectName: projectName,
         });
         $('#overlay').removeClass('show');
     }
@@ -205,7 +213,7 @@ function setNewProjectName() {
         }
         else {
             socket.emit('newProject', {
-                projectName: projectName
+                projectName: projectName,
             });
             $('#overlay').removeClass('show');
         }
