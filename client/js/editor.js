@@ -140,7 +140,8 @@ var importObject = {
     },
 };
 socket.on('compileFinished', function (result) {
-    fetch('./main.wasm')
+    logConsole('---------- START ----------');
+    fetch(result.wasm)
         .then(function (response) { return response.arrayBuffer(); })
         .then(function (bytes) { return WebAssembly.instantiate(bytes, importObject); })
         .then(function (results) {
