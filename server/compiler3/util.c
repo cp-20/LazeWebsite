@@ -61,6 +61,9 @@ bool toByte(string fname, string tempFileName)
         // printf("%lc", c);
         switch(c)
         {
+            case L'	':
+                fputc(' ', output);
+                break;
             case L'＜':
                 fputc('<', output);
                 break;
