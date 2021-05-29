@@ -85,11 +85,15 @@ void Pr_printStm(T_stm stm, FILE *file)
         {
             fprintf(file, "(if");
             Pr_printExp(stm -> u.iff.test, file);
-            fprintf(file, "(block ");
+            fprintf(file, "(then ");
             Pr_printStm(stm -> u.iff.then, file);
             fprintf(file, ")");
             if(stm -> u.iff.elsee)
+            {
+                fprintf(file, "(else ");
                 Pr_printStm(stm -> u.iff.elsee, file);
+                fprintf(file, ")");
+            }
             fprintf(file, ")");
             break;
         } 
