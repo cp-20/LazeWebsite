@@ -306,7 +306,7 @@ app.get('/avatar/id', (req: express.Request, res: express.Response) => {
 	})
 })
 app.get('/getwasm', (req: express.Request, res: express.Response) => {
-  let wasmPath = `${accountsDir}${req.query.account}/.${req.query.filename}.wasm`;
+  let wasmPath = `${accountsDir}${req.query.account}/${req.query.filename}.wasm`;
   fs.access(wasmPath, (err) => {
     if(!err)
     {
@@ -453,7 +453,7 @@ io.sockets.on('connection', (socket:any) => {
                 style: 'log'
               });
             }
-            exec(`./wat2wasm ${usersDirectory.get(socket.id)}/.${input.filename}.wat -o ${usersDirectory.get(socket.id)}/.${input.filename}.wasm`, (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) => {
+            exec(`./wat2wasm ${usersDirectory.get(socket.id)}/.${input.filename}.wat -o ${usersDirectory.get(socket.id)}/${input.filename}.wasm`, (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) => {
               if(err)
               {
                 socket.emit('output', {
