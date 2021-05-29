@@ -1,0 +1,1 @@
+(module (import "console" "log" (func (param f64)))(import "js" "mem" (memory 16))(func (param i64)(param i64)(param i64)(i64.store (i32.wrap_i64(i64.add(i64.mul(i64.mul(get_local 0)(i64.const 4))(i64.const 512))(i64.mul(get_local 1)(i64.const 4))))(get_local 2)))(func (param i64)(param i64)(result i64)(local i64)(set_local 2(i64.const 5)))(export "main" ))
