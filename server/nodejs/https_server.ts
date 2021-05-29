@@ -314,7 +314,7 @@ app.get('/getwasm', (req: express.Request, res: express.Response) => {
     }
     else
     {
-      console.error(wasmPath, err);
+      console.error(wasmPath);
     }
   })
 })

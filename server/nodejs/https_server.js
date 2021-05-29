@@ -324,7 +324,7 @@ app.get('/getwasm', function (req, res) {
             res.sendFile(wasmPath);
         }
         else {
-            console.error(wasmPath, err);
+            console.error(wasmPath);
         }
     });
 });
