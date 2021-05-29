@@ -306,7 +306,7 @@ app.get('/avatar/id', (req: express.Request, res: express.Response) => {
 	})
 })
 app.get('/getwasm', (req: express.Request, res: express.Response) => {
-  let wasmPath = path.resolve(`${accountsDir}${req.query.account}`, `.${req.query.filename}.wasm`);
+  let wasmPath = `${accountsDir}${req.query.account}/.${req.query.filename}.wasm`;
   fs.access(wasmPath, (err) => {
     if(!err)
     {
