@@ -448,6 +448,10 @@ io.sockets.on('connection', function (socket) {
                             style: 'err'
                         });
                         exec('sudo rm -f ' + input.filename + ' .' + input.filename);
+                        socket.emit('compileFinished', {
+                            success: false,
+                            wasmPath: ''
+                        });
                     }
                     else {
                         if (stdout) {
