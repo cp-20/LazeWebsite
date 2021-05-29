@@ -310,7 +310,11 @@ app.get('/getwasm', (req: express.Request, res: express.Response) => {
   fs.access(wasmPath, (err) => {
     if(!err)
     {
-      res.sendFile(wasmPath)
+      res.sendFile(wasmPath);
+    }
+    else
+    {
+      console.error(wasmPath, err);
     }
   })
 })

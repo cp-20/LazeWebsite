@@ -323,6 +323,9 @@ app.get('/getwasm', function (req, res) {
         if (!err) {
             res.sendFile(wasmPath);
         }
+        else {
+            console.error(wasmPath, err);
+        }
     });
 });
 var users = new Map();
