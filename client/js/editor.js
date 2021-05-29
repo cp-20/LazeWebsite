@@ -140,24 +140,29 @@ var importObject = {
     },
 };
 socket.on('compileFinished', function (result) {
-    logConsole('---------- START ----------');
-    fetch(result.wasm)
-        .then(function (response) { return response.arrayBuffer(); })
-        .then(function (bytes) { return WebAssembly.instantiate(bytes, importObject); })
-        .then(function (results) {
-        var instance = results.instance;
-        // @ts-ignore
-        var res = instance.exports.main();
-        var byteArray = new Uint8ClampedArray(memory.buffer, 0, 512 * 512 * 4);
-        var img = new ImageData(byteArray, 512, 512);
-        var canvas = document.getElementById('output-canvas');
-        if (canvas) {
-            var ctx = canvas.getContext('2d');
-            if (ctx)
-                ctx.putImageData(img, 0, 0);
-        }
-    })
-        .catch(console.error);
+    if (result.success) {
+        logConsole('---------- START ----------');
+        fetch(result.wasm)
+            .then(function (response) { return response.arrayBuffer(); })
+            .then(function (bytes) { return WebAssembly.instantiate(bytes, importObject); })
+            .then(function (results) {
+            var instance = results.instance;
+            // @ts-ignore
+            var res = instance.exports.main();
+            var byteArray = new Uint8ClampedArray(memory.buffer, 0, 512 * 512 * 4);
+            var img = new ImageData(byteArray, 512, 512);
+            var canvas = document.getElementById('output-canvas');
+            if (canvas) {
+                var ctx = canvas.getContext('2d');
+                if (ctx)
+                    ctx.putImageData(img, 0, 0);
+            }
+        })
+            .catch(console.error);
+    }
+    else {
+        logConsole('compile erorr', 'err');
+    }
 });
 // ============ WebAssembly関係 ==========
 // プロジェクトのロードor作成をキャンセル

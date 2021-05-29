@@ -155,23 +155,27 @@ var importObject = {
 };
 
 socket.on('compileFinished', (result: { success: boolean; wasm: string }) => {
-	logConsole('---------- START ----------');
-	fetch(result.wasm)
-		.then((response) => response.arrayBuffer())
-		.then((bytes) => WebAssembly.instantiate(bytes, importObject))
-		.then((results) => {
-			const instance = results.instance;
-			// @ts-ignore
-			const res = instance.exports.main();
-			const byteArray = new Uint8ClampedArray(memory.buffer, 0, 512 * 512 * 4);
-			const img = new ImageData(byteArray, 512, 512);
-			const canvas = <HTMLCanvasElement>document.getElementById('output-canvas');
-			if (canvas) {
-				const ctx = canvas.getContext('2d');
-				if (ctx) ctx.putImageData(img, 0, 0);
-			}
-		})
-		.catch(console.error);
+	if (result.success) {
+		logConsole('---------- START ----------');
+		fetch(result.wasm)
+			.then((response) => response.arrayBuffer())
+			.then((bytes) => WebAssembly.instantiate(bytes, importObject))
+			.then((results) => {
+				const instance = results.instance;
+				// @ts-ignore
+				const res = instance.exports.main();
+				const byteArray = new Uint8ClampedArray(memory.buffer, 0, 512 * 512 * 4);
+				const img = new ImageData(byteArray, 512, 512);
+				const canvas = <HTMLCanvasElement>document.getElementById('output-canvas');
+				if (canvas) {
+					const ctx = canvas.getContext('2d');
+					if (ctx) ctx.putImageData(img, 0, 0);
+				}
+			})
+			.catch(console.error);
+	} else {
+		logConsole('compile erorr', 'err');
+	}
 });
 // ============ WebAssembly関係 ==========
 
