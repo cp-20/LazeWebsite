@@ -321,6 +321,7 @@ app.get('/getwasm', function (req, res) {
     var wasmPath = "" + accountsDir + req.query.account + "/." + req.query.filename + ".wasm";
     fs_1.default.access(wasmPath, function (err) {
         if (!err) {
+            LOG(wasmPath, 'wasmPath');
             res.sendFile(wasmPath);
         }
         else {
