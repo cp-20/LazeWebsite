@@ -318,7 +318,7 @@ app.get('/avatar/id', function (req, res) {
     });
 });
 app.get('/getwasm', function (req, res) {
-    console.log(req.query);
+    console.error(req.query);
     // let wasmPath = `${accountsDir}${req.query.account}/.${req.query.filename}.wasm`;
     // fs.access(wasmPath, (err) => {
     //   if(!err)
