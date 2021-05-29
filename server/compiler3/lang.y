@@ -19,7 +19,7 @@
 %union
 {
     int pos;
-    int ival;
+    long long ival;
     double fval;
     string sval;
     A_var var;
@@ -54,7 +54,7 @@
 %token
     COMMA COLON SEMICOLON LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE DOT PLUS MINUS TIMES DIVIDE EQ 
     NEQ LT LE GT GE AND OR ASSIGN ARRAY IF THEN ELSE FROM TO BREAK INTTYPE STRINGTYPE
-    REALTYPE CONTINUE RETURN TYPE VOID NUL TRUEE FALSEE BOOLEAN
+    REALTYPE CONTINUE RETURN TYPE VOID NUL TRUEE FALSEE BOOLEAN MOD
  
 %left SEMICOLON
 
@@ -62,7 +62,7 @@
 %nonassoc LOWER_THAN_ELSE
 %left ELSE
 %left PLUS MINUS
-%left TIMES DIVIDE
+%left TIMES DIVIDE MOD
 %left OR AND
 %nonassoc EQ NEQ GT GE LT LE
 
@@ -79,7 +79,7 @@ decs :   declare {$$ = A_DecList($1, NULL);}
 
 exp :       INT {$$ = A_IntExp(EM_tokPos, $1);}
             | STRING { $$ = A_StringExp(EM_tokPos, $1);}
-            | REAL { $$ = A_RealExp(EM_tokPos, $1); }
+            | REAL { $$ = A_RealExp(EM_tokPos, $1);}
             | NUL {$$ = A_NilExp(EM_tokPos);}
             | TRUEE {$$ = A_BoolExp(EM_tokPos, TRUE);}
             | FALSEE {$$ = A_BoolExp(EM_tokPos, FALSE);}
@@ -89,19 +89,20 @@ exp :       INT {$$ = A_IntExp(EM_tokPos, $1);}
             | exp MINUS exp {$$ = A_OpExp(EM_tokPos, A_minusOp, $1, $3);}
             | exp TIMES exp {$$ = A_OpExp(EM_tokPos, A_timesOp, $1, $3);}
             | exp DIVIDE exp {$$ = A_OpExp(EM_tokPos, A_divideOp, $1, $3);}
+            | exp MOD exp {$$ = A_OpExp(EM_tokPos, A_modOp, $1, $3);}
             // 4 shift/reduce conflictss
             | MINUS exp %prec UMINUS {$$ = A_OpExp(EM_tokPos, A_minusOp, A_IntExp(0, 0), $2);}
             | exp EQ exp {$$ = A_OpExp(EM_tokPos, A_eqOp, $1, $3);}
             | exp NEQ exp {$$ = A_OpExp(EM_tokPos, A_neqOp, $1, $3);}
-            | exp GE exp {$$ = A_OpExp(EM_tokPos, A_ltOp, $1, $3);}
-            | exp GT exp {$$ = A_OpExp(EM_tokPos, A_leOp, $1, $3);}
-            | exp LE exp {$$ = A_OpExp(EM_tokPos, A_gtOp, $1, $3);}
-            | exp LT exp {$$ = A_OpExp(EM_tokPos, A_geOp, $1, $3);}
+            | exp GE exp {$$ = A_OpExp(EM_tokPos, A_geOp, $1, $3);}
+            | exp GT exp {$$ = A_OpExp(EM_tokPos, A_gtOp, $1, $3);}
+            | exp LE exp {$$ = A_OpExp(EM_tokPos, A_leOp, $1, $3);}
+            | exp LT exp {$$ = A_OpExp(EM_tokPos, A_ltOp, $1, $3);}
             // 6 shift/reduce conflicts
             | id LPAREN explist RPAREN {$$ = A_CallExp(EM_tokPos, $1, $3);} 
             | LPAREN exp RPAREN {$$ = $2;}
-            | exp AND exp {$$ = A_IfExp(EM_tokPos, $1, $3, A_BoolExp(EM_tokPos, 0));}
-            | exp OR exp {$$ = A_IfExp(EM_tokPos, $1, A_BoolExp(EM_tokPos, 1), $3);}
+            | exp AND exp {$$ = A_OpExp(EM_tokPos, A_andOp, $1, $3);}
+            | exp OR exp {$$ = A_OpExp(EM_tokPos, A_orOp, $1, $3);}
 
 assignExp : lvalue ASSIGN exp { $$ = A_AssignExp(EM_tokPos, $1, $3);}
 
@@ -120,9 +121,9 @@ stm :       funcDec {$$ = A_DeclarationStm(EM_tokPos, $1);}
 /* stmlist :            {$$ = NULL;}
             | stm stmlist {$$ = A_CompoundStm(EM_tokPos, $1, $2);} */
 stmlist :   stm {$$ = A_StmList($1, NULL);}
-        |   stm stmlist {$$ = A_StmList($1, $2);}
+        |   stm stmlist {$$ = A_StmList($1, $2); }
 
-return :    LPAREN exp RPAREN RETURN {$$ = A_ReturnStm(EM_tokPos, $2);}
+return :    RETURN LPAREN exp RPAREN {$$ = A_ReturnStm(EM_tokPos, $3);}
 
 type :      id {$$ = A_NameTy(EM_tokPos, $1);}
             | VOID {$$ = A_NameTy(EM_tokPos, S_Symbol("void"));}
@@ -145,6 +146,8 @@ funcCall :  id LPAREN RPAREN {$$ = A_CallStm(EM_tokPos, $1, NULL);}
 assign :    lvalue ASSIGN exp {$$ = A_AssignStm(EM_tokPos, $1, $3);}
             | lvalue PLUS PLUS {$$ = A_AssignStm(EM_tokPos, $1, A_OpExp(EM_tokPos, A_plusOp, A_VarExp(EM_tokPos, $1), A_IntExp(EM_tokPos, 1)));}
             | lvalue MINUS MINUS {$$ = A_AssignStm(EM_tokPos, $1, A_OpExp(EM_tokPos, A_minusOp, A_VarExp(EM_tokPos, $1), A_IntExp(EM_tokPos, 1)));}
+            | lvalue PLUS ASSIGN exp {$$ = A_AssignStm(EM_tokPos, $1, A_OpExp(EM_tokPos, A_plusOp, A_VarExp(EM_tokPos, $1), $4));}
+            | lvalue MINUS ASSIGN exp {$$ = A_AssignStm(EM_tokPos, $1, A_OpExp(EM_tokPos, A_minusOp, A_VarExp(EM_tokPos, $1), $4));}
 
 declare :   type COLON assign SEMICOLON {$$ = A_VarDec(EM_tokPos, $3, $1 -> u.name);}
             | type COLON lvalue SEMICOLON{$$ = A_VarDec(EM_tokPos, A_AssignStm(EM_tokPos, $3, NULL), $1 -> u.name);}
@@ -155,7 +158,8 @@ if :        IF LPAREN exp RPAREN THEN stm  %prec LOWER_THAN_ELSE {$$ = A_IfStm(E
 
 while :     LPAREN exp RPAREN TO stm {$$ = A_WhileStm(EM_tokPos, $2, $5);}
 
-for :       LPAREN exp RPAREN FROM LPAREN exp RPAREN TO LPAREN exp RPAREN stm {$$ = A_ForStm(EM_tokPos, $2, $6, $10, $12);}
+for :       LPAREN stm RPAREN FROM LPAREN exp RPAREN TO LPAREN stm RPAREN stm {$$ = A_ForStm(EM_tokPos, $2, $6, $10, $12);}
+            /* | LPAREN INT RPAREN FROM LPAREN INT RPAREN INT TO stm {$$ = A_ForStm} */
 
 explist:    exp COMMA explist {$$ = A_ExpList($1, $3);}
             | exp { $$ = A_ExpList($1, 0); }

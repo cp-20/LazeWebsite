@@ -1,4 +1,5 @@
 #pragma once
+#include "symbol.h"
 
 typedef int A_pos;
 
@@ -23,8 +24,8 @@ typedef struct A_efieldList_ *A_efieldList;
 
 typedef enum 
 {
-    A_plusOp, A_minusOp, A_timesOp, A_divideOp, 
-    A_eqOp, A_neqOp, A_ltOp, A_leOp, A_gtOp, A_geOp
+    A_plusOp, A_minusOp, A_timesOp, A_divideOp, A_modOp, 
+    A_eqOp, A_neqOp, A_ltOp, A_leOp, A_gtOp, A_geOp, A_andOp, A_orOp
 } A_oper;
 
 struct A_stm_
@@ -42,7 +43,7 @@ struct A_stm_
         struct {A_dec dec;} declaration;
         struct {A_exp test; A_stm then, elsee;} iff;
         struct {A_exp test; A_stm body;} whilee;
-        struct {A_exp assign; A_exp condition; A_exp increment; A_stm body;} forr;
+        struct {A_stm assign; A_exp condition; A_stm increment; A_stm body;} forr;
         struct {S_symbol func; A_expList args;} call;
         struct {A_exp ret;} returnn;
     } u;
@@ -65,7 +66,7 @@ struct A_var_
         } field;
 	    struct 
         {
-            A_var var;
+            S_symbol name;
 		    A_exp exp;
         } subscript;
 	} u;
@@ -84,7 +85,7 @@ struct A_exp_
     {
         A_var var;
 	    /* nil; - needs only the pos */
-	    int intt;
+	    long long intt;
 	    string stringg;
         double real;
         bool booll;
@@ -154,7 +155,7 @@ struct A_efieldList_ {A_efield head; A_efieldList tail;};
 A_stm A_AssignStm(A_pos pos, A_var var, A_exp exp);
 A_stm A_IfStm(A_pos pos, A_exp test, A_stm then, A_stm elsee);
 A_stm A_WhileStm(A_pos pos, A_exp test, A_stm body);
-A_stm A_ForStm(A_pos pos, A_exp assign, A_exp condition, A_exp increment, A_stm body);
+A_stm A_ForStm(A_pos pos, A_stm assign, A_exp condition, A_stm increment, A_stm body);
 A_stm A_BreakStm(A_pos pos);
 A_stm A_ContinueStm(A_pos pos);
 A_stm A_CompoundStm(A_pos pos, A_stmList stmlist);
@@ -169,7 +170,7 @@ A_var A_SubscriptVar(A_pos pos, A_var var, A_exp exp);
 
 A_exp A_VarExp(A_pos pos, A_var var);
 A_exp A_NilExp(A_pos pos);
-A_exp A_IntExp(A_pos pos, int i);
+A_exp A_IntExp(A_pos pos, long long i);
 A_exp A_StringExp(A_pos pos, string s);
 A_exp A_RealExp(A_pos pos, double f);
 A_exp A_BoolExp(A_pos pos, bool b);

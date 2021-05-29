@@ -5,11 +5,13 @@
 #include "absyn.h"
 #include "y.tab.h"
 #include "parse.h"
+#include "printtree.h"
 #include <stdlib.h>
 #include <string.h>
 
 YYSTYPE yylval;
 extern int yydebug;
+extern int funcs;
 
 int yylex(void);
 
@@ -44,6 +46,7 @@ void parseTest(string fname)
 int main(int argc, char **argv)
 {
     // yydebug = 1;
+    funcs = 2;
     string fname, directory;
     int tok;
     if(argc != 2 && argc != 3)
@@ -54,10 +57,12 @@ int main(int argc, char **argv)
     fname = argv[1];
     directory = argv[2];
     string tempFileName = concat(".", fname);
+    string resultFilename = concat(tempFileName, ".wat");
     if(argc == 3)
     {
         string fullFname = concat(directory, fname);
         string fullTempFname = concat(directory, tempFileName);
+        string fullResultFname = concat(directory, resultFilename);
         FILE *temp = fopen(fullTempFname, "w");
         fclose(temp);
         EM_reset(fullTempFname);
@@ -65,7 +70,8 @@ int main(int argc, char **argv)
         fprintf(stdout, "\n");
         // parse(tempFileName);
         // parseTest(fullTempFname);
-        SEM_transProg(parse(fullTempFname));
+
+        Pr_printTree(SEM_transProg(parse(fullTempFname)), fullResultFname);
     }
     else
     {
@@ -74,7 +80,7 @@ int main(int argc, char **argv)
         EM_reset(tempFileName);
         while(!toByte(fname, tempFileName));
         fprintf(stdout, "\n");
-        SEM_transProg(parse(tempFileName));
+        Pr_printTree(SEM_transProg(parse(tempFileName)), resultFilename);
         // parse(tempFileName);
         // parseTest(tempFileName);
     }

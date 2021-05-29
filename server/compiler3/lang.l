@@ -1,4 +1,5 @@
 %{
+    #include <stdlib.h>
     #include <stdio.h>
     #include "util.h"
     #include "symbol.h"
@@ -28,7 +29,7 @@
 %}
 digits [0-9]+
 char [㐀-龯ぁ-んァ-ヶa-zA-Z]
-charAndNum [㐀-龯ぁ-んァ-ヶ]*
+charAndNum [㐀-龯ぁ-んァ-ヶa-zA-Z0-9]*
 %%
 
 " " {adjust(); continue;}
@@ -36,6 +37,7 @@ charAndNum [㐀-龯ぁ-んァ-ヶ]*
 "," {adjust(); return COMMA;}
 \. {adjust(); return DOT;}
 {digits} {adjust(); yylval.ival = atoi(yytext); return INT;}
+0x[0-9a-fA-F]+ {adjust(); /*yylval.ival = strtol(yytext, NULL, 10);*/ sscanf(yytext, "%llx", &(yylval.ival)); return INT;}
 {digits}\.{digits}f? {adjust(); yylval.fval = atof(yytext); return REAL;}
 \".*\" {adjust(); yylval.sval = strdup(yytext); return STRING;}
 : {adjust(); return COLON;}
@@ -51,6 +53,7 @@ charAndNum [㐀-龯ぁ-んァ-ヶ]*
 \- {adjust(); return MINUS;}
 \* {adjust(); return TIMES;}
 \/ {adjust(); return DIVIDE;}
+% {adjust(); return MOD;}
 == {adjust(); return EQ;}
 != {adjust(); return NEQ;}
 \<= {adjust(); return LE;}
