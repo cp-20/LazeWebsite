@@ -469,6 +469,7 @@ io.sockets.on('connection', function (socket) {
                                 success: false,
                                 wasmPath: ''
                             });
+                            return;
                         }
                         exec("./wat2wasm " + usersDirectory.get(socket.id) + "/." + input.filename + ".wat -o " + usersDirectory.get(socket.id) + "/" + input.filename + ".wasm", function (err, stdout, stderr) {
                             if (err) {
