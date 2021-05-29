@@ -318,18 +318,15 @@ app.get('/avatar/id', function (req, res) {
     });
 });
 app.get('/getwasm', function (req, res) {
-    console.error(req.query);
-    // let wasmPath = `${accountsDir}${req.query.account}/.${req.query.filename}.wasm`;
-    // fs.access(wasmPath, (err) => {
-    //   if(!err)
-    //   {
-    //     res.sendFile(wasmPath);
-    //   }
-    //   else
-    //   {
-    //     console.error(wasmPath);
-    //   }
-    // })
+    var wasmPath = "" + accountsDir + req.query.account + "/." + req.query.filename + ".wasm";
+    fs_1.default.access(wasmPath, function (err) {
+        if (!err) {
+            res.sendFile(wasmPath);
+        }
+        else {
+            console.error(wasmPath);
+        }
+    });
 });
 var users = new Map();
 var usersDirectory = new Map();

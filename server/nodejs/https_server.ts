@@ -306,18 +306,17 @@ app.get('/avatar/id', (req: express.Request, res: express.Response) => {
 	})
 })
 app.get('/getwasm', (req: express.Request, res: express.Response) => {
-  console.error(req.query);
-  // let wasmPath = `${accountsDir}${req.query.account}/.${req.query.filename}.wasm`;
-  // fs.access(wasmPath, (err) => {
-  //   if(!err)
-  //   {
-  //     res.sendFile(wasmPath);
-  //   }
-  //   else
-  //   {
-  //     console.error(wasmPath);
-  //   }
-  // })
+  let wasmPath = `${accountsDir}${req.query.account}/.${req.query.filename}.wasm`;
+  fs.access(wasmPath, (err) => {
+    if(!err)
+    {
+      res.sendFile(wasmPath);
+    }
+    else
+    {
+      console.error(wasmPath);
+    }
+  })
 })
 
 let users: Map<string, string> = new Map();
