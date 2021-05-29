@@ -868,7 +868,7 @@ YY_RULE_SETUP
 case 5:
 YY_RULE_SETUP
 #line 39 "lang.l"
-{adjust(); yylval.ival = atoi(yytext); return INT;}
+{adjust(); yylval.ival = atoll(yytext); return INT;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP

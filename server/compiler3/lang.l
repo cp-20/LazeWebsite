@@ -36,7 +36,7 @@ charAndNum [㐀-龯ぁ-んァ-ヶa-zA-Z0-9]*
 \n {adjust(); EM_newLine(); continue;}
 "," {adjust(); return COMMA;}
 \. {adjust(); return DOT;}
-{digits} {adjust(); yylval.ival = atoi(yytext); return INT;}
+{digits} {adjust(); yylval.ival = atoll(yytext); return INT;}
 0x[0-9a-fA-F]+ {adjust(); /*yylval.ival = strtol(yytext, NULL, 10);*/ sscanf(yytext, "%llx", &(yylval.ival)); return INT;}
 {digits}\.{digits}f? {adjust(); yylval.fval = atof(yytext); return REAL;}
 \".*\" {adjust(); yylval.sval = strdup(yytext); return STRING;}
