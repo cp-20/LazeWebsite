@@ -52,10 +52,9 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from) {
-    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
-        to[j] = from[i];
-    return to;
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
 };
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -318,6 +317,14 @@ app.get('/avatar/id', function (req, res) {
         }
     });
 });
+app.get('/getwasm', function (req, res) {
+    var wasmPath = path.resolve("" + accountsDir + req.query.account, "." + req.query.filename + ".wasm");
+    fs_1.default.access(wasmPath, function (err) {
+        if (!err) {
+            res.sendFile(wasmPath);
+        }
+    });
+});
 var users = new Map();
 var usersDirectory = new Map();
 var usersProjectDirectory = new Map();
@@ -357,12 +364,12 @@ function readDirectory(path, socket, result, callback) {
                                     return [4 /*yield*/, Promise.all(content.map(fn))];
                                 case 2:
                                     temp = _a.sent();
-                                    tempfolders = new Map(__spreadArray([], __read(folders_1)).sort(function (a, b) { return Number(a[0] > b[0]); }));
+                                    tempfolders = new Map(__spread(folders_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
                                     tempfolders.forEach(function (folder) {
                                         if (result.value)
                                             result.value.push(folder);
                                     });
-                                    tempfiles = new Map(__spreadArray([], __read(files_1)).sort(function (a, b) { return Number(a[0] > b[0]); }));
+                                    tempfiles = new Map(__spread(files_1).sort(function (a, b) { return Number(a[0] > b[0]); }));
                                     tempfiles.forEach(function (file) {
                                         if (result.value)
                                             result.value.push(file);
@@ -451,6 +458,18 @@ io.sockets.on('connection', function (socket) {
                                 style: 'log'
                             });
                         }
+                        exec("./wat2wasm " + usersDirectory.get(socket.id) + "/." + input.filename + ".wat -o " + usersDirectory.get(socket.id) + "/." + input.filename + ".wasm", function (err, stdout, stderr) {
+                            if (err) {
+                                socket.emit('output', {
+                                    value: stderr,
+                                    style: 'err'
+                                });
+                            }
+                            socket.emit('compileFinished', {
+                                success: true,
+                                wasm: "/getwasm?account=" + users.get(socket.id) + "&filename=" + input.filename
+                            });
+                        });
                         exec('sudo rm -f ' + input.filename + ' .' + input.filename);
                     }
                     return;
