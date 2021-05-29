@@ -456,6 +456,10 @@ io.sockets.on('connection', (socket:any) => {
                 value: stderr,
                 style: 'log'
               });
+              socket.emit('compileFinished', {
+                success: false,
+                wasmPath: ''
+              });
             }
             exec(`./wat2wasm ${usersDirectory.get(socket.id)}/.${input.filename}.wat -o ${usersDirectory.get(socket.id)}/${input.filename}.wasm`, (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) => {
               if(err)
