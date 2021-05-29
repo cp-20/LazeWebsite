@@ -306,11 +306,16 @@ app.get('/avatar/id', (req: express.Request, res: express.Response) => {
 	})
 })
 app.get('/getwasm', (req: express.Request, res: express.Response) => {
-  let wasmPath = path.resolve(`${accountsDir}${req.query.account}`, `.${req.query.filename}.wasm`);
+  let wasmPath = `${accountsDir}${req.query.account}/${req.query.filename}.wasm`;
   fs.access(wasmPath, (err) => {
     if(!err)
     {
-      res.sendFile(wasmPath)
+      LOG(wasmPath, 'wasmPath');
+      res.sendFile(wasmPath);
+    }
+    else
+    {
+      console.error(wasmPath);
     }
   })
 })
@@ -433,6 +438,10 @@ io.sockets.on('connection', (socket:any) => {
               style: 'err'
             });
             exec('sudo rm -f ' + input.filename + ' .' + input.filename);
+            socket.emit('compileFinished', {
+              success: false,
+              wasmPath: ''
+            });
           }else {
             if(stdout)
             {
@@ -448,7 +457,7 @@ io.sockets.on('connection', (socket:any) => {
                 style: 'log'
               });
             }
-            exec(`./wat2wasm ${usersDirectory.get(socket.id)}/.${input.filename}.wat -o ${usersDirectory.get(socket.id)}/.${input.filename}.wasm`, (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) => {
+            exec(`./wat2wasm ${usersDirectory.get(socket.id)}/.${input.filename}.wat -o ${usersDirectory.get(socket.id)}/${input.filename}.wasm`, (err: NodeJS.ErrnoException| null, stdout: Stream, stderr: Stream) => {
               if(err)
               {
                 socket.emit('output', {
