@@ -33,6 +33,7 @@ charAndNum [㐀-龯ぁ-んァ-ヶa-zA-Z0-9]*
 %%
 
 " " {adjust(); continue;}
+"   " {adjust(); continue;}
 \n {adjust(); EM_newLine(); continue;}
 "," {adjust(); return COMMA;}
 \. {adjust(); return DOT;}
