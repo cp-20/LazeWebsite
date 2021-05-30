@@ -35,7 +35,7 @@ A_stm A_WhileStm(A_pos pos, A_exp test, A_stm body)
     p-> u.whilee.body = body;
     return p;
 }
-A_stm A_ForStm(A_pos pos, A_exp assign , A_exp condition, A_exp increment, A_stm body)
+A_stm A_ForStm(A_pos pos, A_stm assign, A_exp condition, A_stm increment, A_stm body)
 {
     A_stm p = checked_malloc(sizeof(*p));
     p-> kind = A_forStm;
@@ -87,7 +87,7 @@ A_stm A_CallStm(A_pos pos, S_symbol func, A_expList args)
 A_stm A_ReturnStm(A_pos pos, A_exp exp)
 {
     A_stm p = checked_malloc(sizeof(*p));
-    p-> kind - A_returnStm;
+    p-> kind = A_returnStm;
     p -> pos = pos;
     p-> u.returnn.ret = exp;
     return p;
@@ -117,7 +117,7 @@ A_var A_SubscriptVar(A_pos pos, A_var var, A_exp exp)
     A_var p = checked_malloc(sizeof(*p));
     p->kind=A_subscriptVar;
     p->pos=pos;
-    p->u.subscript.var=var;
+    p->u.subscript.name=var;
     p->u.subscript.exp=exp;
     return p;
 }
@@ -154,7 +154,7 @@ A_exp A_NilExp(A_pos pos)
     return p;
 }
 
-A_exp A_IntExp(A_pos pos, int i)
+A_exp A_IntExp(A_pos pos, long long i)
 {
     A_exp p = checked_malloc(sizeof(*p));
     p->kind=A_intExp;
@@ -177,7 +177,7 @@ A_exp A_RealExp(A_pos pos, double f)
     A_exp p = checked_malloc(sizeof(*p));
     p->kind=A_realExp;
     p->pos=pos;
-    p->u.intt=f;
+    p->u.real=f;
     return p;
 }
 
@@ -196,8 +196,7 @@ A_exp A_CallExp(A_pos pos, S_symbol func, A_expList args)
     p->kind=A_callExp;
     p->pos=pos;
     p->u.call.func=func;
-    p->u.call.args -> head =args-> head;
-    p->u.call.args -> tail =args-> tail;
+    p->u.call.args =args;
     return p;
 }
 
@@ -357,7 +356,15 @@ A_field A_Field(A_pos pos, S_symbol name, S_symbol typ)
     p->pos=pos;
     p->name=name;
     p->typ=typ;
-    p->escape=TRUE;
+    // printf("%s", S_name(typ));
+    if(p -> typ == S_Symbol("int") || p -> typ == S_Symbol("real"))
+    {
+        p->escape=FALSE;
+    }
+    else
+    {
+        p -> escape = TRUE;
+    }
     return p;
 }
 
@@ -380,6 +387,7 @@ A_expList A_ExpList(A_exp head, A_expList tail)
 A_stmList A_StmList(A_stm head, A_stmList tail)
 {
     A_stmList p = checked_malloc(sizeof(*p));
+    // printf("%d", head -> kind);
     p->head=head;
     p->tail=tail;
     return p;

@@ -94,8 +94,9 @@ extern int yydebug;
     TRUEE = 300,
     FALSEE = 301,
     BOOLEAN = 302,
-    UMINUS = 303,
-    LOWER_THAN_ELSE = 304
+    MOD = 303,
+    UMINUS = 304,
+    LOWER_THAN_ELSE = 305
   };
 #endif
 /* Tokens.  */
@@ -144,8 +145,9 @@ extern int yydebug;
 #define TRUEE 300
 #define FALSEE 301
 #define BOOLEAN 302
-#define UMINUS 303
-#define LOWER_THAN_ELSE 304
+#define MOD 303
+#define UMINUS 304
+#define LOWER_THAN_ELSE 305
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -154,7 +156,7 @@ union YYSTYPE
 #line 20 "lang.y"
 
     int pos;
-    int ival;
+    long long ival;
     double fval;
     string sval;
     A_var var;
@@ -169,7 +171,7 @@ union YYSTYPE
     A_fieldList fieldList;
     A_decList decList;
 
-#line 173 "y.tab.h"
+#line 175 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
