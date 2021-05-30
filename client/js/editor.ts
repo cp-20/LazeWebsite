@@ -179,7 +179,7 @@ socket.on('compileFinished', (result: { success: boolean; wasm: string }) => {
 			.then((results) => {
 				const instance = results.instance;
 				// @ts-ignore
-				const res = instance.exports.main();
+				const res = instance.exports.main($("#output-canvas").height(), $("#output-canvas").height(),);
 				const byteArray = new Uint8ClampedArray(memory.buffer, 0, 512 * 512 * 4);
 				const img = new ImageData(byteArray, 512, 512);
 				const canvas = <HTMLCanvasElement>document.getElementById('output-canvas');

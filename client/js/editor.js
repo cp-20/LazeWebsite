@@ -48,22 +48,10 @@ $(function () {
         handleSelector: '.console-spliter',
         resizeWidth: false,
         resizeHeightFrom: 'top',
-        // onDrag: () => {
-        // 	const canvas = <HTMLCanvasElement>document.getElementById('output-canvas');
-        // 	canvas.width = canvas.scrollWidth;
-        // 	canvas.height = canvas.scrollHeight;
-        // 	return true;
-        // },
     });
     $('.editor-output').resizable({
         handleSelector: '.editor-output-spliter',
         resizeHeight: false,
-        // onDrag: () => {
-        // 	const canvas = <HTMLCanvasElement>document.getElementById('output-canvas');
-        // 	canvas.width = canvas.scrollWidth;
-        // 	canvas.height = canvas.scrollHeight;
-        // 	return true;
-        // },
     });
     var canvas = document.getElementById('output-canvas');
     canvas.width = 512;
@@ -163,7 +151,7 @@ socket.on('compileFinished', function (result) {
             .then(function (results) {
             var instance = results.instance;
             // @ts-ignore
-            var res = instance.exports.main();
+            var res = instance.exports.main($("#output-canvas").height(), $("#output-canvas").height());
             var byteArray = new Uint8ClampedArray(memory.buffer, 0, 512 * 512 * 4);
             var img = new ImageData(byteArray, 512, 512);
             var canvas = document.getElementById('output-canvas');
