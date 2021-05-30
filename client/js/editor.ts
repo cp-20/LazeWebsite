@@ -53,10 +53,22 @@ $(() => {
 		handleSelector: '.console-spliter',
 		resizeWidth: false,
 		resizeHeightFrom: 'top',
+		onDrag: () => {
+			const canvas = <HTMLCanvasElement>document.getElementById('output-canvas');
+			canvas.width = canvas.scrollWidth;
+			canvas.height = canvas.scrollHeight;
+			return true;
+		},
 	});
 	$('.editor-output').resizable({
 		handleSelector: '.editor-output-spliter',
 		resizeHeight: false,
+		onDrag: () => {
+			const canvas = <HTMLCanvasElement>document.getElementById('output-canvas');
+			canvas.width = canvas.scrollWidth;
+			canvas.height = canvas.scrollHeight;
+			return true;
+		},
 	});
 
 	// アカウントのステータス更新

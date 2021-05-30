@@ -48,10 +48,22 @@ $(function () {
         handleSelector: '.console-spliter',
         resizeWidth: false,
         resizeHeightFrom: 'top',
+        onDrag: function () {
+            var canvas = document.getElementById('output-canvas');
+            canvas.width = canvas.scrollWidth;
+            canvas.height = canvas.scrollHeight;
+            return true;
+        },
     });
     $('.editor-output').resizable({
         handleSelector: '.editor-output-spliter',
         resizeHeight: false,
+        onDrag: function () {
+            var canvas = document.getElementById('output-canvas');
+            canvas.width = canvas.scrollWidth;
+            canvas.height = canvas.scrollHeight;
+            return true;
+        },
     });
     // アカウントのステータス更新
     updateAccount();
