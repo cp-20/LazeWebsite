@@ -130,7 +130,7 @@ function compile(editor) {
     });
 }
 // ============ WebAssembly関係 ==========
-var memory = new WebAssembly.Memory({ initial: 16 });
+var memory = new WebAssembly.Memory({ initial: 17 });
 var importObject = {
     console: {
         log: function (arg) {

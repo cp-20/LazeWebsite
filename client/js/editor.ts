@@ -156,7 +156,7 @@ function compile(editor: CodeMirror.Editor) {
 }
 
 // ============ WebAssembly関係 ==========
-const memory = new WebAssembly.Memory({ initial: 16 });
+const memory = new WebAssembly.Memory({ initial: 17 });
 
 var importObject = {
 	console: {
