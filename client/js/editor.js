@@ -151,7 +151,7 @@ socket.on('compileFinished', function (result) {
             .then(function (results) {
             var instance = results.instance;
             // @ts-ignore
-            var res = instance.exports.main($("#output-canvas").height(), $("#output-canvas").height());
+            var res = instance.exports.main(BigInt($("#output-canvas").height()), BigInt($("#output-canvas").width()));
             var byteArray = new Uint8ClampedArray(memory.buffer, 0, 512 * 512 * 4);
             var img = new ImageData(byteArray, 512, 512);
             var canvas = document.getElementById('output-canvas');
