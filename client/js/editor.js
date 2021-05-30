@@ -48,23 +48,26 @@ $(function () {
         handleSelector: '.console-spliter',
         resizeWidth: false,
         resizeHeightFrom: 'top',
-        onDrag: function () {
-            var canvas = document.getElementById('output-canvas');
-            canvas.width = canvas.scrollWidth;
-            canvas.height = canvas.scrollHeight;
-            return true;
-        },
+        // onDrag: () => {
+        // 	const canvas = <HTMLCanvasElement>document.getElementById('output-canvas');
+        // 	canvas.width = canvas.scrollWidth;
+        // 	canvas.height = canvas.scrollHeight;
+        // 	return true;
+        // },
     });
     $('.editor-output').resizable({
         handleSelector: '.editor-output-spliter',
         resizeHeight: false,
-        onDrag: function () {
-            var canvas = document.getElementById('output-canvas');
-            canvas.width = canvas.scrollWidth;
-            canvas.height = canvas.scrollHeight;
-            return true;
-        },
+        // onDrag: () => {
+        // 	const canvas = <HTMLCanvasElement>document.getElementById('output-canvas');
+        // 	canvas.width = canvas.scrollWidth;
+        // 	canvas.height = canvas.scrollHeight;
+        // 	return true;
+        // },
     });
+    var canvas = document.getElementById('output-canvas');
+    canvas.width = 512;
+    canvas.height = 512;
     // アカウントのステータス更新
     updateAccount();
 });
