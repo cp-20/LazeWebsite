@@ -51,3 +51,8 @@ interface createProjectData
 {
 	projectName: string;
 }
+
+interface loadFileData
+{
+	fileName: string;
+}

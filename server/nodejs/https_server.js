@@ -584,6 +584,27 @@ io.sockets.on('connection', function (socket) {
             return [2 /*return*/];
         });
     }); });
+    socket.on('loadFile', function (input) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            fs_1.default.readFile(usersProjectDirectory.get(socket.id) + "/" + input.fileName, function (err, data) {
+                if (err) {
+                    socket.emit('loadedFile', {
+                        fileContent: '',
+                        logValue: "Could not load " + input.fileName,
+                        style: 'err'
+                    });
+                }
+                else {
+                    socket.emit('loadedFile', {
+                        fileContent: data.toString(),
+                        logValue: "Loaded " + input.fileName,
+                        style: 'log'
+                    });
+                }
+            });
+            return [2 /*return*/];
+        });
+    }); });
     //disconnectしたとき
     socket.on('disconnect', function () {
         LOG("user disconnected", 'user disconnected');

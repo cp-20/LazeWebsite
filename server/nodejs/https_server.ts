@@ -577,6 +577,24 @@ io.sockets.on('connection', (socket:any) => {
         })
       }
     })
+    socket.on('loadFile', async (input: loadFileData) => {
+      fs.readFile(`${usersProjectDirectory.get(socket.id)}/${input.fileName}`, (err, data) => {
+        if(err){
+          socket.emit('loadedFile', {
+            fileContent: '',
+            logValue: `Could not load ${input.fileName}`,
+            style: 'err'
+          })
+        }
+        else{
+          socket.emit('loadedFile', {
+            fileContent: data.toString(),
+            logValue: `Loaded ${input.fileName}`,
+            style: 'log'
+          })
+        }
+      })
+    })
     //disconnectしたとき
     socket.on('disconnect', () => {
       LOG("user disconnected", 'user disconnected');
