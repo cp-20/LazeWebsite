@@ -98,7 +98,7 @@ function logConsole(value: string, style = 'log') {
 	let output = document.createElement('div');
 	output.classList.add(style);
 	output.innerHTML = `<span class="output-value">${value}</span><span class="output-timestamp">${moment().format('HH:mm')}</span>`;
-	outputArea.prepend(output);
+	outputArea.append(output);
 
 	// スクロール
 	outputArea.scrollTop = outputArea.scrollHeight;
@@ -179,7 +179,7 @@ socket.on('compileFinished', (result: { success: boolean; wasm: string }) => {
 			.then((results) => {
 				const instance = results.instance;
 				// @ts-ignore
-				const res = instance.exports.main(BigInt(Math.floor($("#output-canvas").height())), BigInt(Math.floor($("#output-canvas").width())));
+				const res = instance.exports.main(BigInt(Math.floor($('#output-canvas').height())), BigInt(Math.floor($('#output-canvas').width())));
 				const byteArray = new Uint8ClampedArray(memory.buffer, 0, 512 * 512 * 4);
 				const img = new ImageData(byteArray, 512, 512);
 				const canvas = <HTMLCanvasElement>document.getElementById('output-canvas');
