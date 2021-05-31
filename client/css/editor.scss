@@ -90,6 +90,7 @@ div.explorer {
 				text-overflow: ellipsis;
 				white-space: nowrap;
 				overflow-x: hidden;
+				cursor: pointer;
 
 				&.ui-folder {
 					&::before {
@@ -301,7 +302,7 @@ div.explorer {
 			}
 
 			.editor-output-aria {
-				height: 100%;
+				height: calc(100% - 30px);
 				width: 100%;
 			}
 

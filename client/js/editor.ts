@@ -53,22 +53,10 @@ $(() => {
 		handleSelector: '.console-spliter',
 		resizeWidth: false,
 		resizeHeightFrom: 'top',
-		// onDrag: () => {
-		// 	const canvas = <HTMLCanvasElement>document.getElementById('output-canvas');
-		// 	canvas.width = canvas.scrollWidth;
-		// 	canvas.height = canvas.scrollHeight;
-		// 	return true;
-		// },
 	});
 	$('.editor-output').resizable({
 		handleSelector: '.editor-output-spliter',
 		resizeHeight: false,
-		// onDrag: () => {
-		// 	const canvas = <HTMLCanvasElement>document.getElementById('output-canvas');
-		// 	canvas.width = canvas.scrollWidth;
-		// 	canvas.height = canvas.scrollHeight;
-		// 	return true;
-		// },
 	});
 
 	const canvas = <HTMLCanvasElement>document.getElementById('output-canvas');
@@ -249,6 +237,7 @@ function parseDir(dir: dirObject) {
 				};
 			}
 			if (subdir.type === 'file') file.classList.add('ui-file');
+			// file.onclick = function () {};
 			root.appendChild(file);
 
 			if (subdir.type === 'folder') {
