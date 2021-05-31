@@ -532,6 +532,7 @@ io.sockets.on('connection', (socket:any) => {
       if(users.get(socket.id) != 'guest')
       {
         let result: dirObject = {type: 'folder', name: input.projectName, value: []};
+        usersProjectDirectory.set(socket.id, usersDirectory.get(socket.id) + '/' + input.projectName);
         readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result, () => {}).then((val) => {
           socket.emit('loadedProject', {
             value: val,

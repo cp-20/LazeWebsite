@@ -539,6 +539,7 @@ io.sockets.on('connection', function (socket) {
         return __generator(this, function (_a) {
             if (users.get(socket.id) != 'guest') {
                 result = { type: 'folder', name: input.projectName, value: [] };
+                usersProjectDirectory.set(socket.id, usersDirectory.get(socket.id) + '/' + input.projectName);
                 readDirectory(usersDirectory.get(socket.id) + '/' + input.projectName, socket, result, function () { }).then(function (val) {
                     socket.emit('loadedProject', {
                         value: val,
