@@ -586,7 +586,7 @@ io.sockets.on('connection', function (socket) {
     }); });
     socket.on('loadFile', function (input) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            console.error(input.fileName);
+            console.error(usersProjectDirectory.get(socket.id) + "/" + input.fileName);
             fs_1.default.readFile(usersProjectDirectory.get(socket.id) + "/" + input.fileName, function (err, data) {
                 if (err) {
                     socket.emit('loadedFile', {

@@ -578,7 +578,7 @@ io.sockets.on('connection', (socket:any) => {
       }
     })
     socket.on('loadFile', async (input: loadFileData) => {
-      console.error(input.fileName);
+      console.error(`${usersProjectDirectory.get(socket.id)}/${input.fileName}`);
       fs.readFile(`${usersProjectDirectory.get(socket.id)}/${input.fileName}`, (err, data) => {
         if(err){
           socket.emit('loadedFile', {
