@@ -91,6 +91,7 @@ function logConsole(value, style) {
     output.classList.add(style);
     output.innerHTML = "<span class=\"output-value\">" + value + "</span><span class=\"output-timestamp\">" + moment().format('HH:mm') + "</span>";
     outputArea.append(output);
+    outputArea.scrollTop = outputArea.scrollHeight;
     // スクロール
     outputArea.scrollTop = outputArea.scrollHeight;
 }
