@@ -58,6 +58,11 @@ $(function () {
     canvas.height = 512;
     // アカウントのステータス更新
     updateAccount();
+    // ファイルロード
+    socket.on('loadedFile', function (result) {
+        editor.setValue(result.fileContent);
+        logConsole(result.logValue, result.style);
+    });
 });
 // 変数
 var editContents = new Map();
@@ -220,9 +225,14 @@ function parseDir(dir) {
                     file.classList.toggle('opened');
                 };
             }
-            if (subdir.type === 'file')
+            if (subdir.type === 'file') {
                 file.classList.add('ui-file');
-            // file.onclick = function () {};
+                file.onclick = function () {
+                    socket.emit('loadFile', {
+                        fileName: file.innerText,
+                    });
+                };
+            }
             root.appendChild(file);
             if (subdir.type === 'folder') {
                 var folder = document.createElement('ul');

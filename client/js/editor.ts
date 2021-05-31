@@ -65,6 +65,12 @@ $(() => {
 
 	// アカウントのステータス更新
 	updateAccount();
+
+	// ファイルロード
+	socket.on('loadedFile', (result: { fileContent: string; logValue: string; style: string }) => {
+		editor.setValue(result.fileContent);
+		logConsole(result.logValue, result.style);
+	});
 });
 
 // 変数
@@ -236,8 +242,14 @@ function parseDir(dir: dirObject) {
 					file.classList.toggle('opened');
 				};
 			}
-			if (subdir.type === 'file') file.classList.add('ui-file');
-			// file.onclick = function () {};
+			if (subdir.type === 'file') {
+				file.classList.add('ui-file');
+				file.onclick = function () {
+					socket.emit('loadFile', {
+						fileName: file.innerText,
+					});
+				};
+			}
 			root.appendChild(file);
 
 			if (subdir.type === 'folder') {
